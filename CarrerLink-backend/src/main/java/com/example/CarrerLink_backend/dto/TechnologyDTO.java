@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class TechnologyDTO {
-    private int TechId;
+    private int techId;
 
-    private String TechName;
+    private String techName;
 
 }

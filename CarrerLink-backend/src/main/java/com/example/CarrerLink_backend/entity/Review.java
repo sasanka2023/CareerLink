@@ -6,23 +6,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
-@Table(name = "skillset")
+@Table(name = "reviews")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SkillSet {
+public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int skillId;
+    private int reviewId;
 
-    private String skillName;
+    private String reviewerName;
 
-    private String skillLevel;
+    private String review;
 
     @ManyToOne
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "company_id")
+    private Company companies;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
     private Student students;
+
 }

@@ -5,16 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RequireCoursesDTO {
+public class ProductDTO {
+    private int productId;
 
-    private int courceId;
-    private String courceName;
-    private String requiredSkill;
-    private String skillLevel;
-
-    private String url;
+    private String productName;
 }
