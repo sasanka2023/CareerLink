@@ -29,7 +29,5 @@ public class CompanyDTO {
     private List<ReviewDTO> reviews;
     private List<ProductDTO> products;
 
-
-
 }
 
