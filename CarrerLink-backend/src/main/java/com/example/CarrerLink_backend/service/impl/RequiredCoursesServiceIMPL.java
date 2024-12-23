@@ -17,19 +17,20 @@ public class RequiredCoursesServiceIMPL implements RequirdCoursesService {
 
     @Override
     public String saveRequiredCourses(RequireCoursesDTO requireCoursesDTO) {
-        RequiredCources requiredCources = new RequiredCources(
+       /* RequiredCources requiredCources = new RequiredCources(
                 requireCoursesDTO.getCourceId(),
                 requireCoursesDTO.getCourceName(),
                 requireCoursesDTO.getRequiredSkill(),
                 requireCoursesDTO.getSkillLevel()
         );
         requiredCoursesRepo.save(requiredCources);
-        return requireCoursesDTO.getCourceName();
+        return requireCoursesDTO.getCourceName();*/
+        return null;
     }
 
     @Override
     public List<RequireCoursesDTO> getAllRequiredCourses() {
-        List<RequiredCources> getAllRequiredCourses = requiredCoursesRepo.findAll();
+       /* List<RequiredCources> getAllRequiredCourses = requiredCoursesRepo.findAll();
         List<RequireCoursesDTO> requireCoursesDTOList = new ArrayList<>();
         for (RequiredCources requiredCources : getAllRequiredCourses) {
             RequireCoursesDTO requireCoursesDTO = new RequireCoursesDTO(
@@ -40,12 +41,13 @@ public class RequiredCoursesServiceIMPL implements RequirdCoursesService {
             );
             requireCoursesDTOList.add(requireCoursesDTO);
         }
-        return requireCoursesDTOList;
+        return requireCoursesDTOList;*/
+        return null;
     }
 
     @Override
     public RequireCoursesDTO getRequiredCoursesById(int id) {
-        if (requiredCoursesRepo.findById(id).isPresent()) {
+      /*  if (requiredCoursesRepo.findById(id).isPresent()) {
             RequiredCources requiredCources = requiredCoursesRepo.findById(id).get();
             RequireCoursesDTO requireCoursesDTO = new RequireCoursesDTO(
                     requiredCources.getCourceId(),
@@ -54,7 +56,7 @@ public class RequiredCoursesServiceIMPL implements RequirdCoursesService {
                     requiredCources.getSkillLevel()
             );
             return requireCoursesDTO;
-        }
+        }*/
         return null;
     }
 }

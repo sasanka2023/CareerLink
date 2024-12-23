@@ -1,9 +1,6 @@
 package com.example.CarrerLink_backend.dto;
 
-import com.example.CarrerLink_backend.entity.AcedemicResults;
-import com.example.CarrerLink_backend.entity.Job;
-import com.example.CarrerLink_backend.entity.SkillSet;
-import com.example.CarrerLink_backend.entity.Technology;
+import com.example.CarrerLink_backend.entity.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,5 +26,6 @@ public class StudentgetResponseDTO {
     private String university;
     private String department;
     private String degree;
+    private List<ReviewDTO> reviews;
 
 }

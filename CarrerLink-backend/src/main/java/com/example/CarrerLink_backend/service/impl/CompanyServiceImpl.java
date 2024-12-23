@@ -16,7 +16,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Page<CompanyDTO> getCompanies(String location, String category, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+      /*  PageRequest pageRequest = PageRequest.of(page, size);
 
         // Fetch companies with filters and pagination
         Page<Company> companies = companyRepository.findByLocationAndCategory(location, category, pageRequest);
@@ -28,12 +28,13 @@ public class CompanyServiceImpl implements CompanyService {
                 c.getCategory(),
                 c.getLocation(),
                 c.getEmail()
-        ));
+        ));*/
+        return null;
     }
 
     @Override
     public Page<CompanyDTO> getAllCompanies(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        /*PageRequest pageRequest = PageRequest.of(page, size);
 
         // Fetch all companies from the database with pagination
         Page<Company> companies = companyRepository.findAll(pageRequest);
@@ -45,7 +46,8 @@ public class CompanyServiceImpl implements CompanyService {
                 c.getCategory(),
                 c.getLocation(),
                 c.getEmail()
-        ));
+        ));*/
+        return null;
     }
 
 }

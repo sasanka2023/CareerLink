@@ -16,14 +16,17 @@ import java.util.List;
 public class Technology {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int TechId;
+    private int techId;
 
-    private String TechName;
+    private String techName;
 
     @ManyToMany(mappedBy = "technologies")
     private List<Job> jobs;
 
     @ManyToMany(mappedBy = "technologies")
     private List<Student> students;
+
+    @ManyToMany(mappedBy = "technologies")
+    private List<Company> companies;
 
 }

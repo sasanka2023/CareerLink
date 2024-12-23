@@ -51,5 +51,6 @@ public class Student {
     private String department;
     private String degree;
 
-
+    @OneToMany(mappedBy = "students")
+    private List<Review> reviews;
 }

@@ -9,20 +9,22 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "skillset")
+@Table(name = "clients")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SkillSet {
+public class Client {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int skillId;
+    private int clientId;
 
-    private String skillName;
+    private String clientName;
 
-    private String skillLevel;
+    @ManyToMany(mappedBy = "clients")
+    private List<Company> companies;
 
-    @ManyToOne
-    @JoinColumn(name = "studentId")
-    private Student students;
+
+
+
 }
