@@ -12,5 +12,5 @@ import java.util.List;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     List<Company> findByLocationAndCategory(String location, String category);
-
+    List<Company> findByNameContainingIgnoreCase(String name);
 }
