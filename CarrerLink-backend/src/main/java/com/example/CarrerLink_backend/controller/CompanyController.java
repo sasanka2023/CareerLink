@@ -2,42 +2,57 @@ package com.example.CarrerLink_backend.controller;
 
 import com.example.CarrerLink_backend.dto.CompanyDTO;
 import com.example.CarrerLink_backend.service.CompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import com.example.CarrerLink_backend.utill.StandardResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/companies")
-@Validated
+@RequestMapping("api/companies")
+@AllArgsConstructor
 public class CompanyController {
 
-    @Autowired
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
-    @GetMapping
-    public ResponseEntity<Page<CompanyDTO>> getCompanies(
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Page<CompanyDTO> companies = companyService.getCompanies(location, category, page, size);
-        return ResponseEntity.ok(companies);
+    @Operation(
+            summary = "Get all companies",
+            description = "Fetch all companies with filters location and category."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all companies"),
+            @ApiResponse(responseCode = "400", description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/{location}/{category}")
+    public ResponseEntity<StandardResponse> getCompanies(
+            @PathVariable(required = false) String location,
+            @PathVariable(required = false) String category
+    ) {
+        List<CompanyDTO> companies = companyService.getCompanies(location, category);
+        return ResponseEntity.ok(new StandardResponse(true, "Companies fetched successfully", companies));
     }
 
-    // Method without filters to fetch all companies
-    @GetMapping("/all")
-    public ResponseEntity<Page<CompanyDTO>> getAllCompanies(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Page<CompanyDTO> companies = companyService.getAllCompanies(page, size);
-        return ResponseEntity.ok(companies);
+    @Operation(
+            summary = "Get all companies",
+            description = "Fetch all companies without any filters."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all companies"),
+            @ApiResponse(responseCode = "400", description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping()
+    public ResponseEntity<StandardResponse> getAllCompanies() {
+        List<CompanyDTO> companies = companyService.getAllCompanies();
+        return ResponseEntity.ok(new StandardResponse(true, "Companies fetched successfully", companies));
     }
-
 }
+
