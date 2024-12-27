@@ -18,9 +18,6 @@ public class StudentSaveRequestDTO {
     private String password;
     private String address;
     private String userName;
-    private List<JobgetResponseDTO> jobs;
-    private List<SkillSetDTO> skills;
-    private List<TechnologyDTO> technologies;
     private List<AcedemicResultsDTO> acedemicResults;
     private String university;
     private String department;
