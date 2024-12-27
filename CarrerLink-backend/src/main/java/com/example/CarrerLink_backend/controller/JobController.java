@@ -2,7 +2,9 @@ package com.example.CarrerLink_backend.controller;
 
 
 import com.example.CarrerLink_backend.dto.JobgetResponseDTO;
+import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
 import com.example.CarrerLink_backend.service.JobService;
+import com.example.CarrerLink_backend.service.impl.JobServiceImpl;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -10,10 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,6 +55,24 @@ private final JobService jobService;
     public ResponseEntity<StandardResponse> getJobs(){
         List<JobgetResponseDTO> jobs = jobService.getJobs();
         return ResponseEntity.ok(new StandardResponse(true,"Jobs fetched successfully",jobs));
+    }
+
+    @PostMapping(path = "/save")
+    public ResponseEntity<StandardResponse> saveJob(@RequestBody JobgetResponseDTO jobgetResponseDTO){
+        String msg = jobService.saveJob(jobgetResponseDTO);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<StandardResponse> updateJob(@RequestBody JobgetResponseDTO jobgetResponseDTO){
+        String msg = jobService.updateJob(jobgetResponseDTO);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<StandardResponse> deleteJob(@RequestParam int jobId){
+        String msg = jobService.deleteJob(jobId);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
     }
 
 
