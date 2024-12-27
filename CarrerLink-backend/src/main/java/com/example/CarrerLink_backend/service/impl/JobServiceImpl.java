@@ -21,6 +21,15 @@ public class JobServiceImpl implements JobService {
     private final ModelMapper modelMapper;
 
     @Override
+    public  String saveJob(JobgetResponseDTO jobgetResponseDTO) {
+        Job job =modelMapper.map(jobgetResponseDTO,Job.class);
+        jobRepo.save(job);
+        return job.getJobTitle()+"saved";
+
+    }
+
+
+    @Override
     public List<JobgetResponseDTO> getJobs(String jobType, String company) {
         List<Job> jobs = jobRepo.findByJobTypeAndCompanyNameEquals(jobType,company);
         return modelMapper.map(jobs,new TypeToken<List<JobgetResponseDTO>>() {}.getType());
@@ -30,5 +39,27 @@ public class JobServiceImpl implements JobService {
     public List<JobgetResponseDTO> getJobs() {
         List<Job> jobs = jobRepo.findAll();
         return modelMapper.map(jobs,new TypeToken<List<JobgetResponseDTO>>() {}.getType());
+    }
+
+    @Override
+    public String updateJob(JobgetResponseDTO jobgetResponseDTO) {
+        if(jobRepo.existsById(jobgetResponseDTO.getJobId())){
+            Job job = modelMapper.map(jobgetResponseDTO,Job.class);
+            jobRepo.save(job);
+            return job.getJobTitle()+"updated";
+        }else{
+            throw new RuntimeException("Job not found");
+        }
+
+    }
+
+    @Override
+    public String deleteJob(int jobId) {
+        if(jobRepo.existsById(jobId)){
+            jobRepo.delete(modelMapper.map(jobId,Job.class));
+            return "Job deleted";
+        }else{
+            throw new RuntimeException("Job not found");
+        }
     }
 }
