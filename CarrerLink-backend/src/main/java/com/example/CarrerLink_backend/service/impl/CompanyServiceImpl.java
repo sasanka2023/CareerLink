@@ -1,16 +1,23 @@
 package com.example.CarrerLink_backend.service.impl;
 
-import com.example.CarrerLink_backend.dto.CompanyDTO;
+import com.example.CarrerLink_backend.dto.*;
+import com.example.CarrerLink_backend.entity.Client;
 import com.example.CarrerLink_backend.entity.Company;
+import com.example.CarrerLink_backend.entity.Products;
+import com.example.CarrerLink_backend.entity.Technology;
+import com.example.CarrerLink_backend.repo.ClientRepo;
 import com.example.CarrerLink_backend.repo.CompanyRepository;
+import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.service.CompanyService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -18,51 +25,71 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper;
+    private final TechnologyRepo technologyRepo;
+    private final ClientRepo clientRepo;
 
     @Override
-    public List<CompanyDTO> getCompanies(String location, String category) {
+    public List<CompanygetResponseDTO> getCompanies(String location, String category) {
         List<Company> companies = companyRepository.findByLocationAndCategory(location, category);
-        return modelMapper.map(companies, new TypeToken<List<CompanyDTO>>() {}.getType());
+        return modelMapper.map(companies, new TypeToken<List<CompanygetResponseDTO>>() {}.getType());
     }
 
     @Override
-    public List<CompanyDTO> getAllCompanies() {
+    public List<CompanygetResponseDTO> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
-        return modelMapper.map(companies, new TypeToken<List<CompanyDTO>>() {}.getType());
+        return modelMapper.map(companies, new TypeToken<List<CompanygetResponseDTO>>() {}.getType());
     }
 
     @Override
-    public List<CompanyDTO> searchCompanyByName(String name) {
+    public List<CompanygetResponseDTO> searchCompanyByName(String name) {
         List<Company> companies = companyRepository.findByNameContainingIgnoreCase(name);
-        return modelMapper.map(companies, new TypeToken<List<CompanyDTO>>() {}.getType());
+        return modelMapper.map(companies, new TypeToken<List<CompanygetResponseDTO>>() {}.getType());
     }
 
     @Override
-    public Company saveCompany(Company company) {
-        return companyRepository.save(company);
+    public String saveCompany(CompanySaveRequestDTO companySaveRequestDTO) {
+        Company company = modelMapper.map(companySaveRequestDTO, Company.class);
+        companyRepository.save(company);
+        return "Company saved successfully";
     }
 
     @Override
-    public Company updateCompany(Long id, Company companyDetails) {
-        Optional<Company> existingCompany = companyRepository.findById(id);
+    @Transactional
+    public String updateCompany(CompanyUpdateRequestDTO companyUpdateRequestDTO) {
+        if (companyRepository.existsById(companyUpdateRequestDTO.getId())) {
+            Company company = modelMapper.map(companyUpdateRequestDTO, Company.class);
+            if (companyUpdateRequestDTO.getProducts() != null) {
+                for (Products product : company.getProducts()) {
+                    product.setCompany(company);
+                }
+            }
+            if (companyUpdateRequestDTO.getClients() != null) {
 
-        if (existingCompany.isEmpty()) {
-            throw new RuntimeException("Company with ID " + id + " not found.");
+                List<Client> clients = new ArrayList<>();
+                for (ClientDTO mappedClient : companyUpdateRequestDTO.getClients()) {
+                    Client client = clientRepo.findByClientName(mappedClient.getClientName())
+                            .orElseThrow(() -> new RuntimeException("Client with name " + mappedClient.getClientName() + " not found."));
+                    clients.add(client);
+                }
+                company.setClients(clients);
+            }
+            // Handle technologies
+            if (companyUpdateRequestDTO.getTechnologies() != null) {
+                List<Technology> technologies = new ArrayList<>();
+                for (TechnologyDTO mappedTechnology : companyUpdateRequestDTO.getTechnologies()) {
+                    Technology technology = technologyRepo.findByTechName(mappedTechnology.getTechName())
+                            .orElseThrow(() -> new RuntimeException("Technology with name " + mappedTechnology.getTechName() + " not found."));
+                    technologies.add(technology);
+                }
+                company.setTechnologies(technologies);
+            }
+            // Save the company
+            companyRepository.save(company);
+            return "updated successfully";
         }
-
-        Company company = existingCompany.get();
-        company.setName(companyDetails.getName());
-        company.setLogo(companyDetails.getLogo());
-        company.setDescription(companyDetails.getDescription());
-        company.setCategory(companyDetails.getCategory());
-        company.setMobile(companyDetails.getMobile());
-        company.setLocation(companyDetails.getLocation());
-        company.setCoverImage(companyDetails.getCoverImage());
-        company.setEmail(companyDetails.getEmail());
-        company.setRequirements(companyDetails.getRequirements());
-        company.setWebsite(companyDetails.getWebsite());
-
-        return companyRepository.save(company);
+        else{
+            throw new RuntimeException("Company with ID " + companyUpdateRequestDTO.getId() + " not found.");
+        }
     }
 
     @Override

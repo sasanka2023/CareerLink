@@ -39,7 +39,7 @@ public class Company {
     )
     private List<Client> clients;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
     private List<Job> jobs;
 
     @ManyToMany
@@ -50,11 +50,11 @@ public class Company {
     )
     private List<Technology> technologies;
 
-    @OneToMany(mappedBy = "companies")
+    @OneToMany(mappedBy = "companies",cascade = CascadeType.ALL)
     private List<Review> reviews;
 
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
     private List<Products> products;
 
 }
