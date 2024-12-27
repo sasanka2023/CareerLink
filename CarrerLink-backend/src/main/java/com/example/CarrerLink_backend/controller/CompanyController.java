@@ -1,7 +1,9 @@
 package com.example.CarrerLink_backend.controller;
 
-import com.example.CarrerLink_backend.dto.CompanyDTO;
-import com.example.CarrerLink_backend.entity.Company;
+import com.example.CarrerLink_backend.dto.CompanySaveRequestDTO;
+import com.example.CarrerLink_backend.dto.CompanyUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.CompanygetResponseDTO;
+
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +36,7 @@ public class CompanyController {
             @PathVariable(required = false) String location,
             @PathVariable(required = false) String category
     ) {
-        List<CompanyDTO> companies = companyService.getCompanies(location, category);
+        List<CompanygetResponseDTO> companies = companyService.getCompanies(location, category);
         return ResponseEntity.ok(new StandardResponse(true, "Companies fetched successfully", companies));
     }
 
@@ -49,7 +51,7 @@ public class CompanyController {
     })
     @GetMapping()
     public ResponseEntity<StandardResponse> getAllCompanies() {
-        List<CompanyDTO> companies = companyService.getAllCompanies();
+        List<CompanygetResponseDTO> companies = companyService.getAllCompanies();
         return ResponseEntity.ok(new StandardResponse(true, "Companies fetched successfully", companies));
     }
 
@@ -62,7 +64,7 @@ public class CompanyController {
     })
     @GetMapping("/search")
     public ResponseEntity<StandardResponse> searchCompanyByName(@RequestParam String name) {
-        List<CompanyDTO> companies = companyService.searchCompanyByName(name);
+        List<CompanygetResponseDTO> companies = companyService.searchCompanyByName(name);
         return ResponseEntity.ok(new StandardResponse(true, "Company fetched successfully", companies));
     }
 
@@ -74,8 +76,8 @@ public class CompanyController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<StandardResponse> saveCompany(@RequestBody Company company) {
-        Company savedCompany = companyService.saveCompany(company);
+    public ResponseEntity<StandardResponse> saveCompany(@RequestBody CompanySaveRequestDTO companySaveRequestDTO) {
+        String savedCompany = companyService.saveCompany(companySaveRequestDTO);
         return ResponseEntity.status(201)
                 .body(new StandardResponse(true, "Company saved successfully", savedCompany));
     }
@@ -88,9 +90,9 @@ public class CompanyController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PutMapping("/{id}")
-    public ResponseEntity<StandardResponse> updateCompany(@PathVariable Long id, @RequestBody Company company) {
-        Company updatedCompany = companyService.updateCompany(id, company);
+    @PutMapping()
+    public ResponseEntity<StandardResponse> updateCompany(@RequestBody CompanyUpdateRequestDTO companyUpdateRequestDTO) {
+        String updatedCompany = companyService.updateCompany(companyUpdateRequestDTO);
         return ResponseEntity.ok(new StandardResponse(true, "Company updated successfully", updatedCompany));
     }
 
