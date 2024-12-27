@@ -33,7 +33,7 @@ public class Student {
     private List<Job> jobs;
 
 
-    @OneToMany(mappedBy = "students")
+    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
     private List<SkillSet> skills;
 
     @ManyToMany
@@ -44,13 +44,13 @@ public class Student {
     )
     private List<Technology> technologies;
 
-    @OneToMany(mappedBy = "students")
+    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
     private List<AcedemicResults> acedemicResults;
 
     private String university;
     private String department;
     private String degree;
 
-    @OneToMany(mappedBy = "students")
+    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
     private List<Review> reviews;
 }

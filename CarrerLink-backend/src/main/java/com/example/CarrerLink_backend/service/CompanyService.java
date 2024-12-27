@@ -1,13 +1,18 @@
 package com.example.CarrerLink_backend.service;
 
-import com.example.CarrerLink_backend.dto.CompanyDTO;
-import com.example.CarrerLink_backend.repo.CompanyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
+import com.example.CarrerLink_backend.dto.CompanySaveRequestDTO;
+import com.example.CarrerLink_backend.dto.CompanyUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.CompanygetResponseDTO;
 
-@Service
+import java.util.List;
+
 public interface CompanyService {
-    Page<CompanyDTO> getCompanies(String location, String category, int page, int size);
-    Page<CompanyDTO> getAllCompanies(int page, int size);
+    List<CompanygetResponseDTO> getCompanies(String location, String category);
+    List<CompanygetResponseDTO> getAllCompanies();
+
+    List<CompanygetResponseDTO> searchCompanyByName(String name);
+    String saveCompany(CompanySaveRequestDTO companySaveRequestDTO);
+    String updateCompany(CompanyUpdateRequestDTO company);
+    void deleteCompany(Long id);
 }
+

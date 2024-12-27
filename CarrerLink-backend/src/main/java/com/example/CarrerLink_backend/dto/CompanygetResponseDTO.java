@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CompanyDTO {
+public class CompanygetResponseDTO {
 
     private Long id;
     private String name;
@@ -28,8 +28,6 @@ public class CompanyDTO {
     private List<TechnologyDTO> technologies;
     private List<ReviewDTO> reviews;
     private List<ProductDTO> products;
-
-
 
 }
 
