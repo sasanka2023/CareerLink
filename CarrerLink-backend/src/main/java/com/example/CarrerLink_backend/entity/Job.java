@@ -35,8 +35,6 @@ public class Job {
             inverseJoinColumns = @JoinColumn(name = "Tech_id"))
     private List<Technology> technologies;
 
-    @ManyToMany(mappedBy = "jobs")
-    private List<Student> students;
 
     @ManyToOne
     @JoinColumn(name = "company_id")

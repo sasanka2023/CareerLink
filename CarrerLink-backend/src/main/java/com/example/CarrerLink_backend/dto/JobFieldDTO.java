@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ClientDTO {
-    private int clientId;
+public class JobFieldDTO {
+    private int jobFieldId;
 
-    private String clientName;
+    private String jobField;
 }
