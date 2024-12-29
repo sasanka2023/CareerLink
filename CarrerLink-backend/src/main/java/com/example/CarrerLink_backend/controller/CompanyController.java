@@ -23,8 +23,8 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @Operation(
-            summary = "Get all companies",
-            description = "Fetch all companies with filters location and category."
+            summary = "Get companies with filters",
+            description = "Fetch companies with filters location and category."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully fetched all companies"),

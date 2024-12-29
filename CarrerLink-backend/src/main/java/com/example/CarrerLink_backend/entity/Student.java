@@ -28,9 +28,9 @@ public class Student {
     @JoinTable(
             name = "appied_jobs",
             joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "job_id")
+            inverseJoinColumns = @JoinColumn(name = "jobfield_id")
     )
-    private List<Job> jobs;
+    private List<JobField> jobsFields;
 
 
     @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
