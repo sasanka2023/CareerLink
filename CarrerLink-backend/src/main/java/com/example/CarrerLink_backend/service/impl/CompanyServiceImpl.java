@@ -31,7 +31,20 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanygetResponseDTO> getCompanies(String location, String category) {
-        List<Company> companies = companyRepository.findByLocationAndCategory(location, category);
+        List<Company> companies;
+
+        if (location != null && category != null) {
+            companies = companyRepository.findByLocationAndCategory(location, category);
+        } else if (location != null) {
+            companies = companyRepository.findByLocation(location);
+        } else if (category != null) {
+            companies = companyRepository.findByCategory(category);
+        } else {
+            companies = companyRepository.findAll();
+        }
+        if (companies.isEmpty()) {
+            throw new RuntimeException("No companies found for the given filters.");
+        }
         return modelMapper.map(companies, new TypeToken<List<CompanygetResponseDTO>>() {}.getType());
     }
 
