@@ -31,10 +31,10 @@ public class CompanyController {
             @ApiResponse(responseCode = "400", description = "Invalid path parameters"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/{location}/{category}")
+    @GetMapping({"/filter"})
     public ResponseEntity<StandardResponse> getCompanies(
-            @PathVariable(required = false) String location,
-            @PathVariable(required = false) String category
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String category
     ) {
         List<CompanygetResponseDTO> companies = companyService.getCompanies(location, category);
         return ResponseEntity.ok(new StandardResponse(true, "Companies fetched successfully", companies));
