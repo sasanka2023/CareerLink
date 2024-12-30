@@ -56,7 +56,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public String deleteJob(int jobId) {
         if(jobRepo.existsById(jobId)){
-            jobRepo.delete(modelMapper.map(jobId,Job.class));
+            jobRepo.deleteById(jobId);
             return "Job deleted";
         }else{
             throw new RuntimeException("Job not found");
