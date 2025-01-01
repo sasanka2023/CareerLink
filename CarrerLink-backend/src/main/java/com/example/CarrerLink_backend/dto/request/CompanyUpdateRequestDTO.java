@@ -1,6 +1,8 @@
-package com.example.CarrerLink_backend.dto;
+package com.example.CarrerLink_backend.dto.request;
 
-
+import com.example.CarrerLink_backend.dto.ClientDTO;
+import com.example.CarrerLink_backend.dto.ProductDTO;
+import com.example.CarrerLink_backend.dto.TechnologyDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CompanygetResponseDTO {
-
+public class CompanyUpdateRequestDTO {
     private Long id;
     private String name;
     private String logo;
@@ -24,10 +25,6 @@ public class CompanygetResponseDTO {
     private String requirements;
     private String website;
     private List<ClientDTO> clients;
-    private List<JobgetResponseDTO> jobs;
     private List<TechnologyDTO> technologies;
-    private List<ReviewDTO> reviews;
     private List<ProductDTO> products;
-
 }
-

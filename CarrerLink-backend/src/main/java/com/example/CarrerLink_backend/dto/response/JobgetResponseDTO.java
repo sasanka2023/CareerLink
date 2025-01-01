@@ -1,6 +1,7 @@
-package com.example.CarrerLink_backend.dto;
+package com.example.CarrerLink_backend.dto.response;
 
 
+import com.example.CarrerLink_backend.dto.TechnologyDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package com.example.CarrerLink_backend.service.impl;
 
 
-import com.example.CarrerLink_backend.dto.JobgetResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.entity.Job;
 import com.example.CarrerLink_backend.repo.JobRepo;
 import com.example.CarrerLink_backend.service.JobService;
