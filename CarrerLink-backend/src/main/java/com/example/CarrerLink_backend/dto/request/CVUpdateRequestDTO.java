@@ -1,14 +1,20 @@
-package com.example.CarrerLink_backend.dto;
+package com.example.CarrerLink_backend.dto.request;
 
-import com.example.CarrerLink_backend.entity.Student;
+
+import com.example.CarrerLink_backend.entity.SkillSet;
+import com.example.CarrerLink_backend.entity.Technology;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class CVUpdateRequestDTO {
+    private int id;
     private String name;
     private String address;
     private String email;
@@ -16,8 +22,12 @@ public class CVUpdateRequestDTO {
     private String linkedinLink;
     private String education;
     private String experience;
-    private String skills;
+    private Set<SkillSet> skills;
+
     private String additionalInfo;
     private String lastUpdated;
     private String projects;
+    private String bio;
+    private String referee;
+    private String refereeEmail;
 }

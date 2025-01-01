@@ -1,15 +1,14 @@
-package com.example.CarrerLink_backend.dto;
+package com.example.CarrerLink_backend.dto.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CompanyUpdateRequestDTO {
+public class CompanySaveRequestDTO {
     private Long id;
     private String name;
     private String logo;
@@ -21,7 +20,4 @@ public class CompanyUpdateRequestDTO {
     private String email;
     private String requirements;
     private String website;
-    private List<ClientDTO> clients;
-    private List<TechnologyDTO> technologies;
-    private List<ProductDTO> products;
 }

@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name="cv")
 @Data
@@ -22,8 +25,18 @@ public class CV {
     private String linkedinLink;
     private String education;
     private String experience;
-    private String skills;
+
+    @OneToMany(mappedBy = "cv",cascade = CascadeType.ALL)
+    private Set<SkillSet> skills;
+
+
     private String additionalInfo;
     private String lastUpdated;
     private String projects;
+    private String bio;
+    private String referee;
+    private String refereeEmail;
+    @OneToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 }

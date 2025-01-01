@@ -2,6 +2,8 @@ package com.example.CarrerLink_backend.service.impl;
 
 
 import com.example.CarrerLink_backend.dto.*;
+import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
+import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.repo.JobFieldRepo;
 import com.example.CarrerLink_backend.repo.StudentRepo;
@@ -30,7 +32,15 @@ public class StudentServiceImpl implements StudentService {
 
         Student student = modelMapper.map(studentSaveRequestDTO,Student.class);
         saveAcedemicResults(studentSaveRequestDTO,student);
-        studentRepo.save(student);
+        Student savedStudent = studentRepo.save(student);
+
+        CV cv = new CV();
+        cv.setStudent(savedStudent);
+       // setTechnologiesForCv(cv,savedStudent);
+        savedStudent.setCv(cv);
+
+
+        studentRepo.save(savedStudent);
         return "Student saved successfully";
     }
 
@@ -87,4 +97,12 @@ public class StudentServiceImpl implements StudentService {
             student.setJobsFields(jobFields);
         }
     }
+
+   /* public void setTechnologiesForCv(CV cv,Student student){
+        List<String> techs = new ArrayList<>();
+        for(Technology technology : student.getTechnologies()){
+            techs.add(technology.getTechName());
+        }
+
+    }*/
 }
