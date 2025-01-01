@@ -1,8 +1,8 @@
 package com.example.CarrerLink_backend.controller;
 
-import com.example.CarrerLink_backend.dto.CompanySaveRequestDTO;
-import com.example.CarrerLink_backend.dto.CompanyUpdateRequestDTO;
-import com.example.CarrerLink_backend.dto.CompanygetResponseDTO;
+import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
+import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.utill.StandardResponse;

@@ -1,6 +1,5 @@
 package com.example.CarrerLink_backend.service.impl;
 
-import com.example.CarrerLink_backend.dto.JobgetResponseDTO;
 import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
 import com.example.CarrerLink_backend.entity.RequiredCources;
 import com.example.CarrerLink_backend.repo.RequiredCoursesRepo;
@@ -10,7 +9,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

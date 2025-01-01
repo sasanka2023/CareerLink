@@ -25,4 +25,12 @@ public class SkillSet {
     @ManyToOne
     @JoinColumn(name = "studentId")
     private Student students;
+
+    @ManyToOne
+    @JoinColumn(name = "cv_id")
+    private CV cv;
+
+
+
+
 }

@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @EnableJpaRepositories
 public interface CVRepo extends JpaRepository<CV, Integer> {
 
+
+
 }
