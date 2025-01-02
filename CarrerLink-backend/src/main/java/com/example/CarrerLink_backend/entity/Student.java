@@ -53,4 +53,9 @@ public class Student {
 
     @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cv_id")
+    private CV cv;
 }
