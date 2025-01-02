@@ -1,7 +1,7 @@
 package com.example.CarrerLink_backend.config;
 
 
-import com.example.CarrerLink_backend.dto.JobgetResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.entity.Job;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

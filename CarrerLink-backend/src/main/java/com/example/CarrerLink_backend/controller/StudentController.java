@@ -1,8 +1,8 @@
 package com.example.CarrerLink_backend.controller;
 
 
-import com.example.CarrerLink_backend.dto.StudentSaveRequestDTO;
-import com.example.CarrerLink_backend.dto.StudentUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
+import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.service.StudentService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;

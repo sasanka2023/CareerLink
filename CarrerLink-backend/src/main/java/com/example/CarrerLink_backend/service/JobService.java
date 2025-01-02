@@ -1,6 +1,6 @@
 package com.example.CarrerLink_backend.service;
 
-import com.example.CarrerLink_backend.dto.JobgetResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 
 import java.util.List;
 

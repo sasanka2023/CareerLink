@@ -1,10 +1,8 @@
 package com.example.CarrerLink_backend.controller;
 
 
-import com.example.CarrerLink_backend.dto.JobgetResponseDTO;
-import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.service.JobService;
-import com.example.CarrerLink_backend.service.impl.JobServiceImpl;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 
