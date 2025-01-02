@@ -20,8 +20,12 @@ public class JobgetResponseDTO {
     private String jobType;
     private String description;
 
-    private String companyName;
+
     private int rate;
     private String location;
     private List<TechnologyDTO> technologies;
+    private Long companyId;
+
+    public void setCompany(Object o) {
+    }
 }

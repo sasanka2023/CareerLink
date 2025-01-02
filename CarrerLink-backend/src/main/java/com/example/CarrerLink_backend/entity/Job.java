@@ -23,7 +23,6 @@ public class Job {
     private String jobType;
     private String description;
 
-    private String companyName;
     private int rate;
     private String location;
 
