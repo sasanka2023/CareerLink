@@ -13,4 +13,8 @@ import java.util.List;
 public interface JobRepo extends JpaRepository<Job,Integer> {
 
     List<Job> findByJobTypeAndCompanyNameEquals(String jobType, String company);
+
+    List<Job> findByCompanyName(String company);
+
+    List<Job> findByJobType(String jobType);
 }
