@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';  // For React Router v7
 import Header from './components/Headers/Header';
@@ -36,6 +37,7 @@ function App() {
       </main>
       <Footer />
     </>
+
   );
 }
 
