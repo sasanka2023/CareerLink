@@ -1,6 +1,7 @@
-package com.example.CarrerLink_backend.dto;
+package com.example.CarrerLink_backend.dto.response;
 
 
+import com.example.CarrerLink_backend.dto.TechnologyDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,12 @@ public class JobgetResponseDTO {
     private String jobType;
     private String description;
 
-    private String companyName;
+
     private int rate;
     private String location;
     private List<TechnologyDTO> technologies;
+    private Long companyId;
+
+    public void setCompany(Object o) {
+    }
 }

@@ -28,12 +28,12 @@ public class Student {
     @JoinTable(
             name = "appied_jobs",
             joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "job_id")
+            inverseJoinColumns = @JoinColumn(name = "jobfield_id")
     )
-    private List<Job> jobs;
+    private List<JobField> jobsFields;
 
 
-    @OneToMany(mappedBy = "students")
+    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
     private List<SkillSet> skills;
 
     @ManyToMany
@@ -44,13 +44,18 @@ public class Student {
     )
     private List<Technology> technologies;
 
-    @OneToMany(mappedBy = "students")
+    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
     private List<AcedemicResults> acedemicResults;
 
     private String university;
     private String department;
     private String degree;
 
-    @OneToMany(mappedBy = "students")
+    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cv_id")
+    private CV cv;
 }

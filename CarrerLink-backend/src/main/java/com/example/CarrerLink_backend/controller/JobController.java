@@ -1,7 +1,7 @@
 package com.example.CarrerLink_backend.controller;
 
 
-import com.example.CarrerLink_backend.dto.JobgetResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.service.JobService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +22,7 @@ public class JobController {
 private final JobService jobService;
 
     @Operation(
-            summary = "Get all jobs",
+            summary = "Get jobs with filters",
             description = "Fetch all jobs with optional filters job type,rate and company."
     )
     @ApiResponses(value ={
@@ -33,10 +30,11 @@ private final JobService jobService;
             @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
             @ApiResponse(responseCode = "500",description = "Internal server error")
     })
-    @GetMapping("/{jobType}/{company}")
+    @GetMapping("/filter")
     public ResponseEntity<StandardResponse> getJobs(
-            @PathVariable(required = false) String jobType,
-            @PathVariable(required = false) String company
+            @RequestParam(required = false) String jobType,
+            @RequestParam(required = false) String company
+
     ){
         List<JobgetResponseDTO> jobs = jobService.getJobs(jobType,company);
         return ResponseEntity.ok(new StandardResponse(true,"Jobs fetched successfully",jobs));
@@ -56,6 +54,52 @@ private final JobService jobService;
     public ResponseEntity<StandardResponse> getJobs(){
         List<JobgetResponseDTO> jobs = jobService.getJobs();
         return ResponseEntity.ok(new StandardResponse(true,"Jobs fetched successfully",jobs));
+    }
+
+    @Operation(
+            summary = "save a job",
+            description = "save job"
+    )
+    @ApiResponses(value ={
+            @ApiResponse(responseCode = "200",description = "Successfully saved job"),
+            @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500",description = "Internal server error")
+    })
+
+    @PostMapping(path = "/save")
+    public ResponseEntity<StandardResponse> saveJob(@RequestBody JobgetResponseDTO jobgetResponseDTO){
+        String msg = jobService.saveJob(jobgetResponseDTO);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+    @Operation(
+            summary = "update a job",
+            description = "update job"
+    )
+    @ApiResponses(value ={
+            @ApiResponse(responseCode = "200",description = "Successfully updated job"),
+            @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500",description = "Internal server error")
+    })
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<StandardResponse> updateJob(@RequestBody JobgetResponseDTO jobgetResponseDTO){
+        String msg = jobService.updateJob(jobgetResponseDTO);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+    @Operation(
+            summary = "delete a job",
+            description = "delete job"
+    )
+    @ApiResponses(value ={
+            @ApiResponse(responseCode = "200",description = "Successfully deleted job"),
+            @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500",description = "Internal server error")
+    })
+
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<StandardResponse> deleteJob(@RequestParam int jobId){
+        String msg = jobService.deleteJob(jobId);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
     }
 
 

@@ -23,7 +23,6 @@ public class Job {
     private String jobType;
     private String description;
 
-    private String companyName;
     private int rate;
     private String location;
 
@@ -35,8 +34,6 @@ public class Job {
             inverseJoinColumns = @JoinColumn(name = "Tech_id"))
     private List<Technology> technologies;
 
-    @ManyToMany(mappedBy = "jobs")
-    private List<Student> students;
 
     @ManyToOne
     @JoinColumn(name = "company_id")

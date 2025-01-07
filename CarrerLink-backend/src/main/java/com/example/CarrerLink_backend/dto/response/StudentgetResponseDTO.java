@@ -1,7 +1,7 @@
-package com.example.CarrerLink_backend.dto;
+package com.example.CarrerLink_backend.dto.response;
 
-import com.example.CarrerLink_backend.entity.*;
-import jakarta.persistence.*;
+
+import com.example.CarrerLink_backend.dto.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,14 +12,13 @@ import java.util.List;
 @Data
 public class StudentgetResponseDTO {
     private int StudentId;
-
     private String firstName;
     private String lastName;
     private String email;
     private String password;
     private String address;
     private String userName;
-    private List<JobgetResponseDTO> jobs;
+    private List<JobFieldDTO> jobsFields;
     private List<SkillSetDTO> skills;
     private List<TechnologyDTO> technologies;
     private List<AcedemicResultsDTO> acedemicResults;
