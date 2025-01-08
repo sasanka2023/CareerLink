@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 
 @Entity
@@ -21,8 +22,10 @@ public class AcedemicResults {
 
     private String course;
     private String result;
+    private String skillLevel;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student students;
+
 }
