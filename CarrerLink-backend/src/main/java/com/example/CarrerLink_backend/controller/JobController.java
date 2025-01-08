@@ -67,8 +67,9 @@ private final JobService jobService;
     })
 
     @PostMapping(path = "/save")
-    public ResponseEntity<StandardResponse> saveJob(@RequestBody JobgetResponseDTO jobgetResponseDTO){
-        String msg = jobService.saveJob(jobgetResponseDTO);
+
+    public ResponseEntity<StandardResponse> saveJob(@RequestBody JobgetResponseDTO jobgetResponseDTO, @RequestParam Long companyId){
+        String msg = jobService.saveJob(jobgetResponseDTO,companyId);
         return  ResponseEntity.ok(new StandardResponse(true, msg, null));
     }
     @Operation(

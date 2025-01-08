@@ -24,6 +24,8 @@ public class Student {
     private String password;
     private String address;
     private String userName;
+
+
     @ManyToMany
     @JoinTable(
             name = "appied_jobs",
@@ -58,4 +60,18 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cv_id")
     private CV cv;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_job", // This is the table name
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_id")
+    )
+    private List<Job> jobs;
+
+    public void addJob(Job job) {
+        jobs.add(job);
+        job.getStudents().add(this);
+    }
+
 }

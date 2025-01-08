@@ -2,11 +2,15 @@ package com.example.CarrerLink_backend.service.impl;
 
 
 import com.example.CarrerLink_backend.dto.*;
+import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
+import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.repo.AcademicCourseRepo;
 import com.example.CarrerLink_backend.repo.JobFieldRepo;
+import com.example.CarrerLink_backend.repo.JobRepo;
 import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.service.SkillAnalysisService;
@@ -15,6 +19,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +30,11 @@ public class StudentServiceImpl implements StudentService {
     private final ModelMapper modelMapper;
     private final StudentRepo studentRepo;
     private final TechnologyRepo technologyRepo;
+    private final JobRepo jobRepo;
     private final JobFieldRepo jobFieldRepo;
+
     private final SkillAnalysisService skillAnalysisService;
+
     private static final String ACTION_1 = " not found. ";
     private final AcademicCourseRepo academicCourseRepo;
 
@@ -115,4 +123,58 @@ public class StudentServiceImpl implements StudentService {
         }
 
     }*/
+
+    @Override
+    public String applyJob(ApplyJobRequestDTO applyJobRequestDTO) {
+
+        int studentId = applyJobRequestDTO.getStudentId();
+        int jobId = applyJobRequestDTO.getJobId();
+
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        Job job = jobRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        student.getJobs().add(job);
+
+        studentRepo.save(student);
+
+        return "Student with ID: " + studentId + " applied for job with ID: " + jobId;
+    }
+
+    @Override
+    public List<StudentgetResponseDTO> getAllApplicants(@RequestParam int jobId) {
+        Job job = jobRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        List<Student> students = job.getStudents();
+
+        List<StudentgetResponseDTO> studentgetResponseDTOS = new ArrayList<>();
+
+        for (Student student : students) {
+            StudentgetResponseDTO studentgetResponseDTO = modelMapper.map(student, StudentgetResponseDTO.class);
+            studentgetResponseDTOS.add(studentgetResponseDTO);
+        }
+
+        return studentgetResponseDTOS;
+    }
+
+    @Override
+    public List<ApplyJobResponseDTO> getJobByStudent(@RequestParam int studentId) {
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        List<Job> jobs = student.getJobs();
+
+        List<ApplyJobResponseDTO> applyJobResponseDTOS = new ArrayList<>();
+
+        for (Job job : jobs) {
+            ApplyJobResponseDTO applyJobResponseDTO = modelMapper.map(job, ApplyJobResponseDTO.class);
+            applyJobResponseDTOS.add(applyJobResponseDTO);
+        }
+
+        return applyJobResponseDTOS;
+    }
+
 }
