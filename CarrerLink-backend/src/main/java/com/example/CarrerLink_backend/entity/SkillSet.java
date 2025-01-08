@@ -32,5 +32,6 @@ public class SkillSet {
 
 
 
-
+//    @ManyToMany(mappedBy = "skills")
+//    private List<AcedemicResults> acedemicResults;
 }

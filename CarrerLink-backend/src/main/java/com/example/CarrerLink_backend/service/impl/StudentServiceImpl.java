@@ -5,9 +5,11 @@ import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.entity.*;
+import com.example.CarrerLink_backend.repo.AcademicCourseRepo;
 import com.example.CarrerLink_backend.repo.JobFieldRepo;
 import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
+import com.example.CarrerLink_backend.service.SkillAnalysisService;
 import com.example.CarrerLink_backend.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,24 +26,29 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepo studentRepo;
     private final TechnologyRepo technologyRepo;
     private final JobFieldRepo jobFieldRepo;
+    private final SkillAnalysisService skillAnalysisService;
     private static final String ACTION_1 = " not found. ";
+    private final AcademicCourseRepo academicCourseRepo;
+
 
     @Override
     @Transactional
     public String saveStudent(StudentSaveRequestDTO studentSaveRequestDTO) {
 
         Student student = modelMapper.map(studentSaveRequestDTO,Student.class);
-        saveAcedemicResults(studentSaveRequestDTO,student);
         Student savedStudent = studentRepo.save(student);
+        saveAcedemicResults(studentSaveRequestDTO,savedStudent);
+
+        skillAnalysisService.saveSkillsFromAcedemicResults(savedStudent);
 
         CV cv = new CV();
         cv.setStudent(savedStudent);
-       // setTechnologiesForCv(cv,savedStudent);
+
         savedStudent.setCv(cv);
 
 
         studentRepo.save(savedStudent);
-        return "Student saved successfully";
+        return "Student saved successfully with ID: " + savedStudent.getStudentId();
     }
 
     @Override
@@ -71,9 +78,12 @@ public class StudentServiceImpl implements StudentService {
         if (studentSaveRequestDTO.getAcedemicResults() != null) {
             for (AcedemicResults acedemicResults : student.getAcedemicResults()) {
                 acedemicResults.setStudents(student);
+
             }
         }
     }
+
+
 
     public void updateTechnologies(StudentUpdateRequestDTO studentUpdateRequestDTO, Student student){
         if (studentUpdateRequestDTO.getTechnologies() != null) {
