@@ -3,6 +3,7 @@ package com.example.CarrerLink_backend.service.impl;
 
 import com.example.CarrerLink_backend.entity.AcedemicResults;
 
+import com.example.CarrerLink_backend.entity.CV;
 import com.example.CarrerLink_backend.entity.SkillSet;
 import com.example.CarrerLink_backend.entity.Student;
 import com.example.CarrerLink_backend.repo.AcademicCourseRepo;
@@ -34,6 +35,7 @@ public class SkillAnalysisServiceImpl implements SkillAnalysisService {
             skills.setSkillName(results.getCourse());
             skills.setSkillLevel(skillLevel);
             skills.setStudents(savedStudent);
+            skills.setCv(savedStudent.getCv());
             skillSetList.add(skills);
         }
         skillSetRepo.saveAll(skillSetList);

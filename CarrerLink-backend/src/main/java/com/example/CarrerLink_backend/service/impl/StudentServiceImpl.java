@@ -5,10 +5,7 @@ import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.entity.*;
-import com.example.CarrerLink_backend.repo.AcademicCourseRepo;
-import com.example.CarrerLink_backend.repo.JobFieldRepo;
-import com.example.CarrerLink_backend.repo.StudentRepo;
-import com.example.CarrerLink_backend.repo.TechnologyRepo;
+import com.example.CarrerLink_backend.repo.*;
 import com.example.CarrerLink_backend.service.SkillAnalysisService;
 import com.example.CarrerLink_backend.service.StudentService;
 import lombok.AllArgsConstructor;
@@ -29,7 +26,7 @@ public class StudentServiceImpl implements StudentService {
     private final SkillAnalysisService skillAnalysisService;
     private static final String ACTION_1 = " not found. ";
     private final AcademicCourseRepo academicCourseRepo;
-
+    private final CVRepo cvRepo;
 
     @Override
     @Transactional
@@ -39,15 +36,13 @@ public class StudentServiceImpl implements StudentService {
         Student savedStudent = studentRepo.save(student);
         saveAcedemicResults(studentSaveRequestDTO,savedStudent);
 
-        skillAnalysisService.saveSkillsFromAcedemicResults(savedStudent);
-
         CV cv = new CV();
         cv.setStudent(savedStudent);
-
+        CV savedCV = cvRepo.save(cv); // Save the CV explicitly
         savedStudent.setCv(cv);
 
-
         studentRepo.save(savedStudent);
+        skillAnalysisService.saveSkillsFromAcedemicResults(savedStudent);
         return "Student saved successfully with ID: " + savedStudent.getStudentId();
     }
 
