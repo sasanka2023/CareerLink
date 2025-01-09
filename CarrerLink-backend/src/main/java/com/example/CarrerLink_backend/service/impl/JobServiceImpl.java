@@ -29,9 +29,9 @@ public class JobServiceImpl implements JobService {
     private CompanyRepository companyRepository;
 
     @Override
-    public  String saveJob(JobgetResponseDTO jobgetResponseDTO) {
+    public  String saveJob(JobgetResponseDTO jobgetResponseDTO, Long companyId) {
         Job job =modelMapper.map(jobgetResponseDTO,Job.class);
-        Optional<Company> company = companyRepository.findById(jobgetResponseDTO.getCompanyId());
+        Optional<Company> company = companyRepository.findById(companyId);
         if (company.isPresent()) {
             job.setCompany(company.get()); // Setting the company to the Job entity
         } else {
