@@ -15,6 +15,7 @@ public class CompanygetResponseDTO {
 
     private Long id;
     private String name;
+    private String username;
     private String logo;
     private String description;
     private String category;

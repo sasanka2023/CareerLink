@@ -1,8 +1,10 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.LoginRequestDTO;
 import com.example.CarrerLink_backend.dto.request.RegisterRequestDTO;
+import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.response.LoginResponseDTO;
 import com.example.CarrerLink_backend.dto.response.RegisterResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
@@ -44,6 +46,22 @@ public class AuthController {
     public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO registerRequestDTO){
 
         RegisterResponseDTO res = authService.register(registerRequestDTO);
+        if(res.getError()!=null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @PostMapping("/register/company")
+    public ResponseEntity<RegisterResponseDTO> registerCompany(@RequestBody CompanySaveRequestDTO companySaveRequestDTO) throws IllegalAccessException {
+        RegisterResponseDTO res = authService.registerCompany(companySaveRequestDTO);
+        if(res.getError()!=null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @PostMapping("/register/student")
+    public ResponseEntity<RegisterResponseDTO> registerStudent(@RequestBody StudentSaveRequestDTO studentSaveRequestDTO) throws IllegalAccessException {
+        RegisterResponseDTO res = authService.registerStudent(studentSaveRequestDTO);
         if(res.getError()!=null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
 
         return ResponseEntity.status(HttpStatus.OK).body(res);

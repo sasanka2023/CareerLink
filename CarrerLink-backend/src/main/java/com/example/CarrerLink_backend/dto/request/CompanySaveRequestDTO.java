@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 public class CompanySaveRequestDTO {
     private Long id;
     private String name;
+    private String username;
+    private String password;
     private String logo;
     private String description;
     private String category;
