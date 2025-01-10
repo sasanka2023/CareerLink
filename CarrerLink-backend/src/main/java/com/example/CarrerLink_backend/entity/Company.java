@@ -18,6 +18,8 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String username;
+    private String password;
     private String logo;
     private String description;
     private String category;

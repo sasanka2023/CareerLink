@@ -42,11 +42,16 @@ public class SecurityConfig {
                         sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(r->r.
                              requestMatchers("/login","/api/auth/login","/api/auth/register")
-                            .permitAll().anyRequest().authenticated())
+                            .permitAll()
+                            .requestMatchers("/api/companies/**").hasRole("STUDENT") // Accessible by Student role
+                            .requestMatchers("/api/students/**").hasRole("COMPANY") // Accessible by Company role
+
+                             // Any other endpoints require authentication
+                    .anyRequest().authenticated())
                     .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class
                     )
                     .authenticationProvider(authenticationProvider())
-                  //  .httpBasic(Customizer.withDefaults())
+                    .httpBasic(Customizer.withDefaults())
 
                     .build();
     }
