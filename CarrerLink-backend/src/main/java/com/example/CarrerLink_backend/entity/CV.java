@@ -39,4 +39,14 @@ public class CV {
     @OneToOne
     @JoinColumn(name = "student_id")
     private Student student;
+
+        @Override
+        public String toString() {
+            return "CV{" +
+                    "studentId=" + (student != null ? student.getStudentId() : "null") +
+                    // other fields
+                    '}';
+        }
+
+
 }

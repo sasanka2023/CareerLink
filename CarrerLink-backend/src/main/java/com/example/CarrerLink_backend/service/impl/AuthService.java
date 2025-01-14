@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -57,23 +58,27 @@ public class AuthService {
             return new LoginResponseDTO(null,null,"user not found","error");
 
         }
+
+        UserEntity user = userRepo.findByUsername(loginRequestDTO.getUsername());
+        if(user == null) return new LoginResponseDTO(null,null,"user not found","error");
+
         Map<String,Object> claims = new HashMap<String,Object>();
-        claims.put("role","User");
-        claims.put("email","company@gmail.com");
+        claims.put("role",user.getRole());
+        claims.put("email",user.getEmail());
         String token = jwtService.getJWTToken(loginRequestDTO.getUsername(),claims);
 
         System.out.println(jwtService.getFieldFromToken(token,"role"));
         return new LoginResponseDTO(token, LocalDateTime.now(),null,"token generate success");
 
     }
-
+    @Transactional
     public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO){
         if(isUserEnable(registerRequestDTO.getUsername())) return new RegisterResponseDTO(null,"user allready exists in the System");
         UserEntity userData = this.createUser(registerRequestDTO);
         if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
         return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
     }
-
+    @Transactional
     public RegisterResponseDTO registerStudent(StudentSaveRequestDTO studentSaveRequestDTO) throws IllegalAccessException {
         if(Boolean.TRUE.equals(isUserEnable(studentSaveRequestDTO.getUserName()))) {
             throw new IllegalAccessException("User already exists in the System");
@@ -92,7 +97,7 @@ public class AuthService {
         if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
         return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
     }
-
+    @Transactional
     public RegisterResponseDTO registerCompany(CompanySaveRequestDTO companySaveRequestDTO) throws IllegalAccessException {
         if(Boolean.TRUE.equals(isUserEnable(companySaveRequestDTO.getUsername()))) {
             throw new IllegalAccessException("User already exists in the System");

@@ -106,4 +106,18 @@ public class StudentController {
     }
 
 
+    @Operation(summary = "Get student by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping()
+
+    public ResponseEntity<StandardResponse> getStudentById(@RequestParam int stId){
+        StudentgetResponseDTO students = studentService.getStudentById(stId);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
+    }
+
+
 }

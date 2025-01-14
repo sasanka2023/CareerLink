@@ -41,11 +41,11 @@ public class SecurityConfig {
                     .sessionManagement(s->s.
                         sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(r->r.
-                             requestMatchers("/login","/api/auth/login","/api/auth/register")
+                             requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student")
                             .permitAll()
-                            .requestMatchers("/api/companies/**").hasRole("STUDENT") // Accessible by Student role
-                            .requestMatchers("/api/students/**").hasRole("COMPANY") // Accessible by Company role
-
+                            .requestMatchers("/api/companies/**").hasRole("COMPANY") // Accessible by Student role
+                            .requestMatchers("/api/students/**").hasRole("STUDENT") // Accessible by Company role
+                            .requestMatchers("/api/cv/**", "/api/jobs/**","/api/v1/requiredCourses/**").authenticated()
                              // Any other endpoints require authentication
                     .anyRequest().authenticated())
                     .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class

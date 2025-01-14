@@ -45,15 +45,19 @@ public class StudentServiceImpl implements StudentService {
     public String saveStudent(StudentSaveRequestDTO studentSaveRequestDTO) {
 
         Student student = modelMapper.map(studentSaveRequestDTO,Student.class);
-        Student savedStudent = studentRepo.save(student);
-        saveAcedemicResults(studentSaveRequestDTO,savedStudent);
+        //Student savedStudent = studentRepo.save(student);
+        //saveAcedemicResults(studentSaveRequestDTO,savedStudent);
 
         CV cv = new CV();
-        cv.setStudent(savedStudent);
-        CV savedCV = cvRepo.save(cv); // Save the CV explicitly
-        savedStudent.setCv(cv);
+        cv.setStudent(student);
+        // CV savedCV = cvRepo.save(cv); // Save the CV explicitly
+        //savedStudent.setCv(savedCV);
+        student.setCv(cv);
 
-        studentRepo.save(savedStudent);
+        //
+        saveAcedemicResults(studentSaveRequestDTO,student);
+        Student savedStudent = studentRepo.save(student);
+        //cv.setStudent(savedStudent);
         skillAnalysisService.saveSkillsFromAcedemicResults(savedStudent);
         return "Student saved successfully with ID: " + savedStudent.getStudentId();
     }
@@ -115,13 +119,7 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-   /* public void setTechnologiesForCv(CV cv,Student student){
-        List<String> techs = new ArrayList<>();
-        for(Technology technology : student.getTechnologies()){
-            techs.add(technology.getTechName());
-        }
 
-    }*/
 
     @Override
     public String applyJob(ApplyJobRequestDTO applyJobRequestDTO) {
@@ -174,6 +172,12 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return applyJobResponseDTOS;
+    }
+
+    @Override
+    public StudentgetResponseDTO getStudentById(int stId) {
+        Student student = studentRepo.findById(stId).orElseThrow(()->new RuntimeException("Student not found"));
+        return modelMapper.map(student, StudentgetResponseDTO.class);
     }
 
 }
