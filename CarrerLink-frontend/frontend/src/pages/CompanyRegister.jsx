@@ -1,7 +1,10 @@
 import React from "react";
-import registrationBackground from "../assets/HeroSection/students-recognize-the-importance-of-gaining-internship-experience-xlarge.png"; // Update this path
+import { useNavigate } from "react-router-dom";
+import registrationBackground from "../assets/HeroSection/students-recognize-the-importance-of-gaining-internship-experience-xlarge.png";
 
 const CompanyRegister = () => {
+    const navigate = useNavigate(); // Hook for navigation
+
     return (
         <div
             className="h-screen flex justify-center items-center bg-cover bg-center"
@@ -14,7 +17,12 @@ const CompanyRegister = () => {
                     Company Authentication
                 </h2>
                 <div className="flex justify-center mb-4">
-                    <button className="px-4 py-2 text-gray-500">Login</button>
+                    <button
+                        onClick={() => navigate("/company-auth")}
+                        className="px-4 py-2 text-gray-500"
+                    >
+                        Login
+                    </button>
                     <button className="px-4 py-2 ml-4 border-b-2 border-black">
                         Register
                     </button>

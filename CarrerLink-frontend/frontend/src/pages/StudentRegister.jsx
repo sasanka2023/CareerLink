@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/HeroSection/students-recognize-the-importance-of-gaining-internship-experience-xlarge.png";
 
 const StudentRegister = () => {
     const [academicStatus, setAcademicStatus] = useState([]);
     const [newCourse, setNewCourse] = useState({ course: "", grade: "" });
+    const navigate = useNavigate(); // Hook for navigation
 
     const addCourse = () => {
         if (newCourse.course && newCourse.grade) {
@@ -24,10 +26,15 @@ const StudentRegister = () => {
                     Student Authentication
                 </h2>
                 <div className="flex justify-center mb-4">
-                    <button className="px-4 py-2 w-1/2 text-center border-b-2 border-black">
+                    <button
+                        className="px-4 py-2 w-1/2 text-center text-gray-500"
+                        onClick={() => navigate("/student-auth")}
+                    >
                         Login
                     </button>
-                    <button className="px-4 py-2 w-1/2 text-center text-gray-500">
+                    <button
+                        className="px-4 py-2 w-1/2 text-center border-b-2 border-black font-semibold"
+                    >
                         Register
                     </button>
                 </div>
