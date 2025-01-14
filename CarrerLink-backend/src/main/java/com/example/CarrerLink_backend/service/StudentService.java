@@ -22,4 +22,5 @@ public interface StudentService {
     List<ApplyJobResponseDTO> getJobByStudent(int studentId);
 
 
+    StudentgetResponseDTO getStudentById(int stId);
 }

@@ -74,4 +74,8 @@ public class Student {
         job.getStudents().add(this);
     }
 
+    public String toString(){
+        return "Student{" +"cvId" +(cv != null ? cv.getId() : "null") + '}';
+    }
+
 }
