@@ -6,14 +6,14 @@ on:
       - develop
       - main
     paths:
-      - Frontend/**
+      - frontend/**
       - .github/workflows/frontend-build.yml
   pull_request:
     branches:
       - develop
       - main
     paths:
-      - Frontend/**
+      - frontend/**
       - .github/workflows/frontend-build.yml
   schedule:
     - cron: "0 12 * * 0" # Weekly builds on Sundays at noon
@@ -43,7 +43,7 @@ jobs:
       # Step 3: Install dependencies and build project
       - name: Build React App
         run: |
-          echo "Building React project in Frontend folder..."
-          cd CareerLink-frontend/frontend
+          echo "Building React project in frontend folder..."
+          cd frontend
           npm install
           npm run build
