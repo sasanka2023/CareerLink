@@ -41,9 +41,9 @@ jobs:
           node-version: '20.18.1'
 
       # Step 3: Install dependencies and build project
-      - name: Build React App
+      - name: Build React project
         run: |
           echo "Building React project in frontend folder..."
-          cd frontend
+          cd CareerLink-frontend/frontend  # Corrected path
           npm install
           npm run build
