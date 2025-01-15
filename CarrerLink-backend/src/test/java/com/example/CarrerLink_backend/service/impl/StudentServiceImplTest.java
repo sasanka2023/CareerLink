@@ -68,11 +68,12 @@ class StudentServiceImplTest {
         CV cv = new CV();
         cv.setId(1);
         cv.setStudent(student);
+        student.setCv(cv);
 
         // Mock external calls
         when(modelMapper.map(studentSaveRequestDTO, Student.class)).thenReturn(student);
         when(studentRepo.save(student)).thenReturn(student);
-        when(cvRepo.save(any(CV.class))).thenReturn(cv);
+
         doNothing().when(skillAnalysisService).saveSkillsFromAcedemicResults(student);
         // Act
         String result = studentService.saveStudent(studentSaveRequestDTO);
@@ -80,6 +81,6 @@ class StudentServiceImplTest {
         // Assert
         assertEquals("Student saved successfully with ID: 1", result);
         verify(studentRepo, times(1)).save(student); // Ensure student was saved twice
-        verify(cvRepo, times(1)).save(cv); // Ensure CV was saved once
+
     }
 }

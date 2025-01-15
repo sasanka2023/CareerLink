@@ -45,19 +45,13 @@ public class StudentServiceImpl implements StudentService {
     public String saveStudent(StudentSaveRequestDTO studentSaveRequestDTO) {
 
         Student student = modelMapper.map(studentSaveRequestDTO,Student.class);
-        //Student savedStudent = studentRepo.save(student);
-        //saveAcedemicResults(studentSaveRequestDTO,savedStudent);
-
         CV cv = new CV();
         cv.setStudent(student);
-        // CV savedCV = cvRepo.save(cv); // Save the CV explicitly
-        //savedStudent.setCv(savedCV);
         student.setCv(cv);
 
-        //
         saveAcedemicResults(studentSaveRequestDTO,student);
         Student savedStudent = studentRepo.save(student);
-        //cv.setStudent(savedStudent);
+
         skillAnalysisService.saveSkillsFromAcedemicResults(savedStudent);
         return "Student saved successfully with ID: " + savedStudent.getStudentId();
     }
