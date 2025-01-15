@@ -64,31 +64,31 @@ export default function Header() {
                     <div className="hidden sm:flex sm:items-center">
                         <div className="flex space-x-4">
                             <a
-                                href="#"
+                                href="/home"
                                 className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
                             >
                                 Home
                             </a>
                             <a
-                                href="#"
+                                href="/jobs"
                                 className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
                             >
                                 Jobs
                             </a>
                             <a
-                                href="#"
+                                href="/employer"
                                 className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
                             >
                                 Employer
                             </a>
                             <a
-                                href="#"
+                                href="/courses"
                                 className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
                             >
                                 Courses
                             </a>
                             <a
-                                href="#"
+                                href="/contact"
                                 className="rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-700 hover:text-white"
                             >
                                 Contact
