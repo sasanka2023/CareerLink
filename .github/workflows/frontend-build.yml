@@ -47,3 +47,7 @@ jobs:
           cd CarrerLink-frontend/frontend  # Corrected path
           npm install
           npm run build
+
+      - name: Lint project
+        run: npx eslint . --rule 'jsx-a11y/anchor-is-valid: off'
+
