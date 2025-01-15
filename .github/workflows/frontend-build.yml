@@ -1,0 +1,49 @@
+name: Frontend Build Workflow
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - Frontend/**
+      - .github/workflows/frontend-build.yml
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - Frontend/**
+      - .github/workflows/frontend-build.yml
+  schedule:
+    - cron: "0 12 * * 0" # Weekly builds on Sundays at noon
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  frontend-build:
+    name: Build React Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js 20.18.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.18.1'
+
+      # Step 3: Install dependencies and build project
+      - name: Build React App
+        run: |
+          echo "Building React project in Frontend folder..."
+          cd CarrerLink-frontend\frontend
+          npm install
+          npm run build
