@@ -49,5 +49,5 @@ jobs:
           npm run build
 
       - name: Lint project
-        run: npx eslint . --rule 'jsx-a11y/anchor-is-valid: off'
+        run: npx eslint . --rule "jsx-a11y/anchor-is-valid:off"
 
