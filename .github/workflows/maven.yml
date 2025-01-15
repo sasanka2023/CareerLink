@@ -6,7 +6,7 @@ on:
       - "develop"
       - "main"
     paths:
-      - CarrerLink-test/**
+      - CarrerLink-backend/**
       - .github/workflows/maven.yml
 
   pull_request:
@@ -14,7 +14,7 @@ on:
       - "develop"
       - "main"
     paths:
-      - CarrerLink-test/**
+      - CarrerLink-backend/**
       - .github/workflows/maven.yml
 
   schedule:
