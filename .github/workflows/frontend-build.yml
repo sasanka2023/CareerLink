@@ -6,14 +6,14 @@ on:
       - develop
       - main
     paths:
-      - frontend/**
+      - CarrerLink-frontend/frontend/**
       - .github/workflows/frontend-build.yml
   pull_request:
     branches:
       - develop
       - main
     paths:
-      - frontend/**
+      - CarrerLink-frontend/frontend/**
       - .github/workflows/frontend-build.yml
   schedule:
     - cron: "0 12 * * 0" # Weekly builds on Sundays at noon
@@ -44,6 +44,6 @@ jobs:
       - name: Build React project
         run: |
           echo "Building React project in frontend folder..."
-          cd frontend  # Corrected path
+          cd CarrerLink-frontend/frontend  # Corrected path
           npm install
           npm run build
