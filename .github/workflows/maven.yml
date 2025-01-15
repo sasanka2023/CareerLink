@@ -1,0 +1,52 @@
+name: "Backend Build and Testing"
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "main"
+    paths:
+      - CarrerLink-test/**
+      - .github/workflows/maven.yml
+
+  pull_request:
+    branches:
+      - "develop"
+      - "main"
+    paths:
+      - CarrerLink-test/**
+      - .github/workflows/maven.yml
+
+  schedule:
+    - cron: "0 0 * * 0"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  backend:
+    name: Analyze and Build Maven Project
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Step 2: Set up Java
+      - name: Set up JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+          cache: maven
+
+      # Step 3: Build Maven project
+      - name: Build Java Project with Maven
+        run: |
+          echo "Building Maven project in the CarrerLink-test directory..."
+          mvn clean install -DskipTests
+        working-directory: CarrerLink-backend
