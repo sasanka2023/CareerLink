@@ -44,6 +44,6 @@ jobs:
       - name: Build React project
         run: |
           echo "Building React project in frontend folder..."
-          cd CareerLink-frontend/frontend  # Corrected path
+          cd frontend  # Corrected path
           npm install
           npm run build
