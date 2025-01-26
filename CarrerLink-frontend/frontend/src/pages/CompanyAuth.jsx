@@ -1,9 +1,33 @@
-import React from "react";
+import React, {useState} from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import backgroundImage from "../assets/HeroSection/students-recognize-the-importance-of-gaining-internship-experience-xlarge.png"; // Import the image
 
 const CompanyAuth = () => {
     const navigate = useNavigate(); // Initialize useNavigate
+
+    // State for username and password
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    // Mock credentials for authentication (replace this with API logic)
+    const validCredentials = {
+        username: "123",
+        password: "123",
+    };
+
+    // Handle form submission
+    const handleLogin = (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        // Check credentials
+        if (username === validCredentials.username && password === validCredentials.password) {
+            // Redirect to CompanyDashboardPage if credentials are correct
+            navigate("/company-dashboard");
+        } else {
+            // Show an alert for invalid credentials
+            alert("Invalid username or password!");
+        }
+    };
 
     return (
         <div
@@ -27,17 +51,21 @@ const CompanyAuth = () => {
                         Register
                     </button>
                 </div>
-                <form>
+                <form onSubmit={handleLogin}>{}
                     <label className="block mb-2 font-semibold">Username</label>
                     <input
                         type="text"
                         placeholder="Enter username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         className="w-full p-2 border rounded mb-4"
                     />
                     <label className="block mb-2 font-semibold">Password</label>
                     <input
                         type="password"
                         placeholder="Enter password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className="w-full p-2 border rounded mb-4"
                     />
                     <button

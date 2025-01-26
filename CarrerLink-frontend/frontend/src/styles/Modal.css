@@ -1,0 +1,136 @@
+/* Modal overlay styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal content styles */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    width: 600px; /* Increased width for better layout */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 90%;
+    overflow-y: auto;
+}
+
+/* Close button styles */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* Title styles */
+.modal-form h2 {
+    font-size: 26px; /* Larger font size */
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Input and textarea styles */
+.modal-form input,
+.modal-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Tech stack and skill input containers */
+.tech-stack-container,
+.skills-container {
+    display: flex;
+    flex-direction: row; /* Align text box and button horizontally */
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Space between rows */
+}
+
+/* Text box and add button layout */
+.tech-stack-container input,
+.skills-container input {
+    width: 75%; /* Make the text box 75% of the width */
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.add-btn {
+    background-color: black;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 20%; /* Button width */
+    font-size: 14px; /* Small text for buttons */
+}
+
+.add-btn:hover {
+    background-color: #333;
+}
+
+/* Submit button styles */
+.submit-btn {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 30%;
+    font-size: 14px;
+}
+
+.submit-btn:hover {
+    background-color: #333;
+}
+
+/* Labels for inputs */
+label {
+    margin-bottom: 5px;
+    display: block;
+    font-weight: normal;
+}
+
+/* Styling for file input */
+input[type="file"] {
+    padding: 8px;
+    margin-bottom: 15px;
+}
+
+/* Styling for the form */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Adding space between inputs */
+}
+
+/* Input file styling */
+input[type="file"] {
+    width: 100%;
+}
+
+/* Making the modal title responsive */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 90%;
+    }
+}

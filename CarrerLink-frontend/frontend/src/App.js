@@ -13,12 +13,14 @@ import Jobs from './pages/Jobs';
 import Employer from './pages/Employer';
 import Courses from './pages/Courses';
 import Contact from './pages/Contact';
+import CompanyDashboardPage from "./pages/CompanyDashboard";
 
 // Define the routes for v7
 const router = createBrowserRouter([
   { path: '/', element: <HeroSection /> },
   { path: '/company-auth', element: <CompanyAuth /> },
   { path: '/company-register', element: <CompanyRegister /> },
+    { path: '/company-dashboard', element: <CompanyDashboardPage /> },
   { path: '/student-auth', element: <StudentAuth /> },
   { path: '/student-register', element: <StudentRegister /> },
   { path: '/home', element: <Home /> },
