@@ -1,0 +1,593 @@
+/* ===================== General Layout ===================== */
+.dashboard-container {
+    background-color: #f7f7fc; /* Light grey background */
+    padding: 20px 0; /* Vertical padding */
+    min-height: 100vh; /* Ensure full height */
+}
+
+/* Shared Container for About Us and Job Vacancies */
+.shared-container {
+    max-width: 1200px; /* Ensure consistent width */
+    margin: 0 auto; /* Center align */
+    padding: 0 20px; /* Add horizontal padding */
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Add spacing between sections */
+}
+
+/* ===================== About Us Section ===================== */
+.about-us-section {
+    margin-top: 30px; /* Space between profile and About Us section */
+    padding: 40px;
+    background-color: #F3F4F6; /* Grey background for the whole container */
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.about-us-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #444;
+    padding: 10px;
+    border-radius: 5px;
+    width: fit-content;
+    margin-bottom: 50px;
+    margin-left: 50px;
+}
+
+.about-us-content {
+    padding: 30px;
+    background-color: white; /* White content box */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the content */
+    width: 90%; /* Reduced width of the content box */
+    margin: 0 auto; /* Center the content box */
+}
+
+.description-box {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #555;
+}
+
+.subtopics {
+    margin-top: 20px;
+}
+
+.subtopic h3 {
+    font-size: 17px;
+    margin-bottom: 10px;
+    font-weight: bold; /* Bold the subtopic titles */
+    color: #333;
+}
+
+.subtopic ul {
+    padding-left: 20px;
+    list-style-type: disc; /* Bullet points for Technologies and Products */
+}
+
+.subtopic ul li {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Specific styles for Clients section without bullets */
+.subtopic ul {
+    list-style-type: none; /* No bullets for Clients */
+}
+
+.subtopic ul li {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* ===================== Company Profile Section ===================== */
+.company-profile {
+    position: relative;
+    width: 100%;
+    background-color: white;
+    padding-bottom: 20px;
+}
+
+.cover-photo {
+    width: 100%;
+    height: 393.34px;
+    position: relative;
+    background-color: #E7E6F2;
+    z-index: 1;
+}
+
+.cover-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    padding: 70px;
+    padding-top: 0px;
+}
+
+.profile-picture {
+    position: absolute;
+    width: 352px;
+    height: 375.94px;
+    overflow: hidden;
+    background-color: #F9F9FF;
+    border: 15px solid white;
+    border-radius: 30px;
+    z-index: 3;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.company-details {
+    margin-left: 450px;
+    position: absolute;
+    font-family: DM Sans;
+}
+
+.company-details h1 {
+    margin: 0;
+    z-index: 4;
+    color: #716E97;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 46px;
+}
+
+.company-details p {
+    padding-top: max(1rem, 1%);
+    color: #9795B5;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+/* ===================== Contact Us Section ===================== */
+.contact-us-section {
+    background-color: #F3F4F6;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.contact-us-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px; /* Space between title and content */
+}
+
+.contact-details-container {
+    background-color: #fff; /* White background for the container */
+    padding: 20px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 90%;
+    margin: 0 auto; /* Centers the container */
+}
+
+.contact-detail-item {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #555;
+    gap: 10px;
+    margin-bottom: 15px; /* Adds space between contact items */
+}
+
+.contact-icon {
+    font-size: 1rem;
+    color: black; /* Change icons to black */
+}
+
+.contact-text {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.update-details-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.update-details-button:hover {
+    background-color: #444;
+}
+
+/* ===================== Job Vacancies Section ===================== */
+.job-vacancies-section {
+    background-color: #F3F4F6;
+    padding: 20px 30px;
+}
+
+.job-vacancies-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.job-vacancies-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Add Job Button */
+.add-job-button {
+    background-color: #000;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-job-button:hover {
+    background-color: #444;
+}
+
+/* Job Cards Container */
+.job-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+/* ===================== CV List Section ===================== */
+.cv-list-section {
+    background-color: #F3F4F6;
+    border-radius: 8px;
+    padding: 20px 30px;
+    width: 100%;
+    align-self: center;
+}
+
+.cv-list-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.applicants-container {
+    max-height: 300px; /* Limit the height for scrollability */
+    overflow-y: auto; /* Enable scrolling */
+    padding-right: 10px;
+}
+
+/* Applicant Card */
+.applicant-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Applicant Name */
+.applicant-name {
+    font-size: 18px;
+}
+
+/* Buttons */
+.view-cv-button,
+.approve-button {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100px;
+}
+
+.view-cv-button:hover,
+.approve-button:hover {
+    background-color: #444;
+}
+
+/* Interview Date */
+.interview-date {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.date-input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* ===================== User Reviews Section ===================== */
+.user-reviews-section {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Move the title outside the container */
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Reviews Carousel */
+.reviews-carousel {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    background-color: #F3F4F6;
+}
+
+/* Arrow buttons */
+.arrow-button {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    padding: 10px;
+    transition: transform 0.3s ease;
+}
+
+.arrow-button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.arrow-button:hover:not(:disabled) {
+    transform: scale(1.2);
+}
+
+/* Reviews Container */
+.reviews-container {
+    display: flex;
+    gap: 20px;
+    overflow: hidden;
+    flex: 1;
+    justify-content: space-between;
+}
+
+/* Review Card */
+.review-card {
+    flex: 1;
+    max-width: 30%;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    text-align: left;
+}
+
+/* Reviewer's name and rating */
+.reviewer-name-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 150px; /* Space between the rating and name */
+}
+
+/* Reviewer name */
+.reviewer-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Review rating stars */
+.review-rating {
+    color: gold;
+    font-size: 1rem;
+}
+
+/* Review text */
+.review-text {
+    font-size: 1rem;
+    color: #555;
+    text-align: left;
+}
+
+/* =============== General Layout =============== */
+body {
+    background-color: #F3F4F6;
+    margin: 0;
+    font-family: "Arial", sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button-primary {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.button-primary:hover {
+    background-color: #444;
+}
+
+/* =============== Sections =============== */
+.about-us-section,
+.contact-us-section,
+.job-vacancies-section,
+.cv-list-section {
+    background-color: #F3F4F6;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.contact-details-container,
+.job-cards-container,
+.applicants-container,
+.reviews-container {
+    @extend .flex-container;
+}
+
+.review-card,
+.applicant-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* =============== Company Profile =============== */
+.profile-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    left: 130px;
+}
+
+/* ===================== Global Container Adjustments ===================== */
+.container {
+    max-width: 1200px; /* Increase width for more space */
+    margin: 0 auto;
+    padding: 0 20px; /* Ensure proper spacing on smaller screens */
+}
+
+/* ===================== About Us Section ===================== */
+.about-us-section {
+    background-color: #F3F4F6;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.about-us-section .section-title {
+    margin-left: 0; /* Ensure the title aligns with the container */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* ===================== Job Vacancies Section ===================== */
+.job-vacancies-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #F3F4F6;
+    border-radius: 8px;
+}
+
+.job-vacancies-section .section-title {
+    margin-left: 0; /* Align with container */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* ===================== CV List Section ===================== */
+.cv-list-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #F3F4F6;
+    border-radius: 8px;
+}
+
+.cv-list-section .section-title {
+    margin-left: 0; /* Align with container */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.cv-list-section .sub-topic {
+    margin-left: 0; /* Sub-topic aligns with container */
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* ===================== User Reviews Section ===================== */
+.user-reviews-section {
+    max-width: 1200px;
+    margin: 40px auto 0 auto; /* Align with other sections */
+}
+
+.user-reviews-section .section-title {
+    margin-left: 0; /* Align title with the container */
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* ===================== Contact Us Section ===================== */
+.contact-us-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #F3F4F6;
+    border-radius: 8px;
+}
+
+.contact-us-section .section-title {
+    margin-left: 0; /* Align with container */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+
