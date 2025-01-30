@@ -1,16 +1,58 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/HeroSection/students-recognize-the-importance-of-gaining-internship-experience-xlarge.png";
-
+import StudentRegisterApi from "../api/StudentRegisterApi";
 const StudentRegister = () => {
     const [academicStatus, setAcademicStatus] = useState([]);
-    const [newCourse, setNewCourse] = useState({ course: "", grade: "" });
+    const [newCourse, setNewCourse] = useState({ course: "", result: "" });
     const navigate = useNavigate(); // Hook for navigation
+    const [formData,setFormData] = useState({
+        firstName:'',
+        lastName:'',
+        email:'',
+        userName:'',
+        password:'',
+        address:'',
+        university:'',
+        department:'',
+        degree:'',
+        academicStatus:[]
 
+
+    })
     const addCourse = () => {
-        if (newCourse.course && newCourse.grade) {
-            setAcademicStatus([...academicStatus, newCourse]);
-            setNewCourse({ course: "", grade: "" });
+        const updatedAcademicStatus = [...academicStatus, newCourse];
+        setAcademicStatus(updatedAcademicStatus);
+        setNewCourse({ course: "", result: "" });
+        setFormData((prev) => ({
+            ...prev,
+            academicStatus: updatedAcademicStatus
+        }));
+    };
+
+    const handelChange = (event) =>{
+        event.preventDefault();
+        const {name,value} = event.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]:value
+        }));
+        
+    }
+
+    const handleSubmit = async (event) =>{
+        event.preventDefault();
+        console.log(formData);
+        try {
+            const response = await StudentRegisterApi(formData);
+            console.log('Response:', response);
+            navigate("/student-auth",{
+                state: { message: "Successfully registered!" },
+            });
+            
+        } catch (error) {
+            console.error('Error during registration:', error);
+            alert('Registration failed. Please try again.');
         }
     };
 
@@ -38,54 +80,66 @@ const StudentRegister = () => {
                         Register
                     </button>
                 </div>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <input
                             type="text"
                             placeholder="First name"
                             className="p-2 border rounded"
+                            name = "firstName"
+                            onChange={handelChange}
                         />
                         <input
                             type="text"
                             placeholder="Last name"
                             className="p-2 border rounded"
+                            name = "lastName"
+                            onChange={handelChange}
                         />
                         <input
                             type="email"
                             placeholder="Enter email"
                             className="p-2 border rounded"
+                            name="email"
+                            onChange={handelChange}
                         />
                         <input
                             type="text"
                             placeholder="Choose username"
                             className="p-2 border rounded"
+                            name="userName"
+                            onChange={handelChange}
                         />
                         <input
                             type="password"
                             placeholder="Choose password"
                             className="p-2 border rounded"
+                            name="password"
+                            onChange={handelChange}
                         />
                         <input
                             type="text"
                             placeholder="Enter location"
                             className="p-2 border rounded"
+                            name="address"
+                            onChange={handelChange}
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-4">
-                        <select className="p-2 border rounded">
+                        <select className="p-2 border rounded" name="university" placeholder="select university" onChange={handelChange}>
                             <option>Select university</option>
-                            <option>University A</option>
-                            <option>University B</option>
+                            <option value="UniA">University A</option>
+                            <option value="UniB">University B</option>
                         </select>
-                        <select className="p-2 border rounded">
+                        <select className="p-2 border rounded" name="department" onChange={handelChange}>
                             <option>Select department</option>
-                            <option>Department A</option>
-                            <option>Department B</option>
+                            <option value="deA">Department A</option>
+                            <option value="deB">Department B</option>
                         </select>
-                        <select className="p-2 border rounded">
+                        <select className="p-2 border rounded" name="degree" onChange={handelChange}>
                             <option>Select degree</option>
-                            <option>Degree A</option>
-                            <option>Degree B</option>
+                            <option value = "DegA">Degree A</option>
+                            <option value= "DegB">Degree B</option>
                         </select>
                     </div>
                     <div className="mb-4">
@@ -94,6 +148,7 @@ const StudentRegister = () => {
                             <select
                                 className="p-2 border rounded mr-2 flex-1"
                                 value={newCourse.course}
+                                name="course"
                                 onChange={(e) =>
                                     setNewCourse({
                                         ...newCourse,
@@ -101,21 +156,22 @@ const StudentRegister = () => {
                                     })
                                 }
                             >
-                                <option value="">Select course</option>
-                                <option value="Course A">Course A</option>
+                                <option>Select course</option>
+                                <option value="OOP">OOP</option>
                                 <option value="Course B">Course B</option>
                             </select>
                             <select
                                 className="p-2 border rounded mr-2 w-24"
-                                value={newCourse.grade}
+                                value={newCourse.result}
+                                name="result"
                                 onChange={(e) =>
                                     setNewCourse({
                                         ...newCourse,
-                                        grade: e.target.value,
+                                        result: e.target.value,
                                     })
                                 }
                             >
-                                <option value="">Grade</option>
+                                <option value="">Result</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="F">F</option>
@@ -135,7 +191,7 @@ const StudentRegister = () => {
                                     className="flex justify-between border-b py-2"
                                 >
                                     <span>{status.course}</span>
-                                    <span>{status.grade}</span>
+                                    <span>{status.result}</span>
                                 </li>
                             ))}
                         </ul>
