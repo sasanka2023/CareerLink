@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import JobApplicationForm from './JobApplicationForm';
 import '../styles/Jobs.css'; // Adjusted path
 
 
 function Jobs() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
   return (
     <div className="job-card">
       <div className="job-header">
         <h2>Senior UI/UX Designer</h2>
         
-        <button className="apply-btn">Apply Now</button>
+        <button className="apply-btn" onClick={() => setIsFormOpen(true)}>Apply Now</button>
+        
       </div>
       <div className="job-description">
         <h3>Job description</h3>
@@ -30,6 +33,7 @@ function Jobs() {
           <li>Excellent communication skills</li>
         </ul>
       </div>
+      {isFormOpen && <JobApplicationForm onClose={() => setIsFormOpen(false)} />}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import Jobs from './pages/Jobs';
 import Employer from './pages/Employer';
 import Courses from './pages/Courses';
 import Contact from './pages/Contact';
+import JobApplicationForm from './pages/JobApplicationForm';
 
 // Define the routes for v7
 const router = createBrowserRouter([
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
   { path: '/employer', element: <Employer /> },
   { path: '/courses', element: <Courses /> },
   { path: '/contact', element: <Contact /> },
+  {path: '/job-application-form', element: <JobApplicationForm />},
 ]);
 
 function App() {
