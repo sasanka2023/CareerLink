@@ -16,7 +16,7 @@ import java.util.List;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int StudentId;
+    private int studentId;
 
     private String firstName;
     private String lastName;
@@ -35,7 +35,7 @@ public class Student {
     private List<JobField> jobsFields;
 
 
-    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
     private List<SkillSet> skills;
 
     @ManyToMany

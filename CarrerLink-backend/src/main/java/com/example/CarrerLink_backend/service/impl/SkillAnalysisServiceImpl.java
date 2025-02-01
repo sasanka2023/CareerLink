@@ -34,7 +34,7 @@ public class SkillAnalysisServiceImpl implements SkillAnalysisService {
             SkillSet skills = new SkillSet();
             skills.setSkillName(results.getCourse());
             skills.setSkillLevel(skillLevel);
-            skills.setStudents(savedStudent);
+            skills.setStudent(savedStudent);
             skills.setCv(savedStudent.getCv());
             skillSetList.add(skills);
         }
