@@ -61,6 +61,10 @@ public class Student {
     @JoinColumn(name = "cv_id")
     private CV cv;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<Projects> projects;
+
+
     @ManyToMany
     @JoinTable(
             name = "student_job", // This is the table name
