@@ -60,7 +60,7 @@ public class AuthService {
         }
 
         UserEntity user = userRepo.findByUsername(loginRequestDTO.getUsername());
-        if(user == null) return new LoginResponseDTO(null,null,"user not found","error");
+        //if(user == null) return new LoginResponseDTO(null,null,"user not found","error");
 
         Map<String,Object> claims = new HashMap<String,Object>();
         claims.put("role",user.getRole());
@@ -71,13 +71,13 @@ public class AuthService {
         return new LoginResponseDTO(token, LocalDateTime.now(),null,"token generate success");
 
     }
-    @Transactional
-    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO){
-        if(isUserEnable(registerRequestDTO.getUsername())) return new RegisterResponseDTO(null,"user allready exists in the System");
-        UserEntity userData = this.createUser(registerRequestDTO);
-        if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
-        return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
-    }
+//    @Transactional
+//    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO){
+//        if(isUserEnable(registerRequestDTO.getUsername())) return new RegisterResponseDTO(null,"user allready exists in the System");
+//        UserEntity userData = this.createUser(registerRequestDTO);
+//        if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
+//        return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
+//    }
     @Transactional
     public RegisterResponseDTO registerStudent(StudentSaveRequestDTO studentSaveRequestDTO) throws IllegalAccessException {
         if(Boolean.TRUE.equals(isUserEnable(studentSaveRequestDTO.getUserName()))) {

@@ -42,14 +42,14 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO registerRequestDTO){
-
-        RegisterResponseDTO res = authService.register(registerRequestDTO);
-        if(res.getError()!=null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-
-        return ResponseEntity.status(HttpStatus.OK).body(res);
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO registerRequestDTO){
+//
+//        RegisterResponseDTO res = authService.register(registerRequestDTO);
+//        if(res.getError()!=null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(res);
+//    }
 
     @PostMapping("/register/company")
     public ResponseEntity<RegisterResponseDTO> registerCompany(@RequestBody CompanySaveRequestDTO companySaveRequestDTO) throws IllegalAccessException {

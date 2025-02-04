@@ -14,11 +14,16 @@ import Employer from './pages/Employer';
 import Courses from './pages/Courses';
 import Contact from './pages/Contact';
 
+import CompanyDashboardPage from "./pages/CompanyDashboard";
+
+import StudentDashBoard from './pages/StudentDashBoard';
+
 // Define the routes for v7
 const router = createBrowserRouter([
   { path: '/', element: <HeroSection /> },
   { path: '/company-auth', element: <CompanyAuth /> },
   { path: '/company-register', element: <CompanyRegister /> },
+    { path: '/company-dashboard', element: <CompanyDashboardPage /> },
   { path: '/student-auth', element: <StudentAuth /> },
   { path: '/student-register', element: <StudentRegister /> },
   { path: '/home', element: <Home /> },
@@ -26,6 +31,7 @@ const router = createBrowserRouter([
   { path: '/employer', element: <Employer /> },
   { path: '/courses', element: <Courses /> },
   { path: '/contact', element: <Contact /> },
+  { path: '/student', element: <StudentDashBoard /> },
 ]);
 
 function App() {
