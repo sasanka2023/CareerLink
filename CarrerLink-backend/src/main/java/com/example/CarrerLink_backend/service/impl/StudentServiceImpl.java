@@ -174,4 +174,10 @@ public class StudentServiceImpl implements StudentService {
         return modelMapper.map(student, StudentgetResponseDTO.class);
     }
 
+    @Override
+    public StudentgetResponseDTO getStudentByUserName(String userName) {
+        Student student = studentRepo.findByUserName(userName).orElseThrow(()-> new RuntimeException("Student not found"));
+        return modelMapper.map(student,StudentgetResponseDTO.class);
+    }
+
 }

@@ -26,5 +26,6 @@ public class StudentgetResponseDTO {
     private String department;
     private String degree;
     private List<ReviewDTO> reviews;
+    private List<ProjectsDTO> projects;
 
 }
