@@ -55,12 +55,12 @@ public class AuthService {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(),loginRequestDTO.getPassword()));
         }catch(Exception e){
-            return new LoginResponseDTO(null,null,"user not found","error");
+            return new LoginResponseDTO(null,null,"user not found","error",null);
 
         }
 
         UserEntity user = userRepo.findByUsername(loginRequestDTO.getUsername());
-        //if(user == null) return new LoginResponseDTO(null,null,"user not found","error");
+
 
         Map<String,Object> claims = new HashMap<String,Object>();
         claims.put("role",user.getRole());
@@ -68,7 +68,7 @@ public class AuthService {
         String token = jwtService.getJWTToken(loginRequestDTO.getUsername(),claims);
 
         System.out.println(jwtService.getFieldFromToken(token,"role"));
-        return new LoginResponseDTO(token, LocalDateTime.now(),null,"token generate success");
+        return new LoginResponseDTO(token, LocalDateTime.now(),null,"token generate success",user.getUsername());
 
     }
 //    @Transactional

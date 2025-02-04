@@ -1,9 +1,13 @@
 import React from "react";
 import { useState } from "react";
+import { useContext } from "react";
 import { useNavigate,useLocation } from "react-router-dom"; // Import useNavigate
 import backgroundImage from "../assets/HeroSection/students-recognize-the-importance-of-gaining-internship-experience-xlarge.png"; // Import the image
 import LoginApi from "../api/LoginApi";
+import { AuthContext } from "../api/AuthProvider";
+
 const CompanyAuth = () => {
+    const { setToken } = useContext(AuthContext);
  
     const [formData,setFormData] = useState({
         username:'',
@@ -22,17 +26,23 @@ const CompanyAuth = () => {
         )
     }
 
-    const handleSubmit = async (event) =>{
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        //    console.log(LoginApi(formData))
-       const errorMessage = await LoginApi(formData);
-       if(errorMessage){
-        setError(errorMessage);
-       }
-       else{
-        console.log('Login successful')
-       }
-    }
+        setError(""); // Clear previous errors
+
+        try {
+            const response = await LoginApi(formData);
+            
+            if (response.token) {
+                setToken(response.token);
+                navigate("/company"); // Redirect to Dashboard on success
+            } else {
+                setError(response.message || "Invalid credentials. Please try again.");
+            }
+        } catch (error) {
+            setError("An unexpected error occurred. Please try again later.");
+        }
+    };
 
     return (
         <div
