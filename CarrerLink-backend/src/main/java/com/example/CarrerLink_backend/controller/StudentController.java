@@ -130,7 +130,7 @@ public class StudentController {
     public ResponseEntity<StandardResponse> getRecommendedCourses(@RequestParam int studentId) {
         List<String> recommendedCourses = courseRecommendationService.getRecommendedCourses(studentId);
 
-        if (recommendedCourses.isEmpty() || recommendedCourses.contains("No skills found for this student.")) {
+        if (recommendedCourses.isEmpty()) {
             return ResponseEntity.status(404).body(new StandardResponse(false, "No recommendations found.", recommendedCourses));
         }
 
