@@ -1,6 +1,6 @@
-
+// App.js
 import React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';  // For React Router v7
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Header from './components/Headers/Header';
 import Footer from './components/Footer/Footer';
 import HeroSection from './pages/HeroSection';
@@ -18,7 +18,10 @@ import CompanyDashboardPage from "./pages/CompanyDashboard";
 
 import StudentDashBoard from './pages/StudentDashBoard';
 
-// Define the routes for v7
+import { AuthProvider } from './api/AuthProvider';
+
+// Define routes.
+
 const router = createBrowserRouter([
   { path: '/', element: <HeroSection /> },
   { path: '/company-auth', element: <CompanyAuth /> },
@@ -36,14 +39,15 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
-      <Header />
-      <main>
-        <RouterProvider router={router} /> {/* Use RouterProvider for v7 */}
-      </main>
-      <Footer />
-    </>
-
+    <AuthProvider>
+      <>
+        <Header />
+        <main>
+          <RouterProvider router={router} />
+        </main>
+        <Footer />
+      </>
+    </AuthProvider>
   );
 }
 

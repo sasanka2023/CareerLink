@@ -23,4 +23,6 @@ public interface StudentService {
 
 
     StudentgetResponseDTO getStudentById(int stId);
+
+    StudentgetResponseDTO getStudentByUserName(String userName);
 }

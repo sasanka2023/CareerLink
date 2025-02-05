@@ -4,7 +4,7 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <nav className="bg-gray-200 rounded-lg m-4">
+        <nav className="bg-gray-200 rounded-lg m-1">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
 

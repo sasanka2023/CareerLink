@@ -6,6 +6,7 @@ import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
+import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentController {
     private final StudentService studentService;
-
+    private final CourseRecommendationService courseRecommendationService;
 
     @Operation(summary = "Save a student")
     @ApiResponses(value = {
@@ -112,12 +113,45 @@ public class StudentController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping()
+    @GetMapping("{stId}")
 
-    public ResponseEntity<StandardResponse> getStudentById(@RequestParam int stId){
+    public ResponseEntity<StandardResponse> getStudentById(@PathVariable int stId){
         StudentgetResponseDTO students = studentService.getStudentById(stId);
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
+
+
+    @Operation(summary = "Get recommended courses for a student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched recommended courses"),
+            @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/recommend-courses")
+    public ResponseEntity<StandardResponse> getRecommendedCourses(@RequestParam int studentId) {
+        List<String> recommendedCourses = courseRecommendationService.getRecommendedCourses(studentId);
+
+        if (recommendedCourses.isEmpty()) {
+            return ResponseEntity.status(404).body(new StandardResponse(false, "No recommendations found.", recommendedCourses));
+        }
+
+        return ResponseEntity.ok(new StandardResponse(true, "Recommended courses fetched successfully", recommendedCourses));
+    }
+
+
+
+    @Operation(summary = "Get student by username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/username/{userName}")
+    public ResponseEntity<StandardResponse> getStudentByUserName(@PathVariable String userName){
+        StudentgetResponseDTO students = studentService.getStudentByUserName(userName);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
+    }
+
 
 
 }
