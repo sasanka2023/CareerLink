@@ -2,6 +2,7 @@ version: 0.2
 
 phases:
   pre_build:
+    working-directory: CarrerLink-backend
     commands:
       - mvn clean install -DskipTests
       - echo Logging in to Amazon ECR...
@@ -11,12 +12,14 @@ phases:
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
+    working-directory: CarrerLink-backend
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
+    working-directory: CarrerLink-backend
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
@@ -34,5 +37,5 @@ phases:
 
 artifacts:
   files:
-    - imagedefinitions.json
-    - target/CarrerLink_backend-0.0.1-SNAPSHOT.jar
+    - CarrerLink-backend/imagedefinitions.json
+    - CarrerLink-backend/CarrerLink_backend-0.0.1-SNAPSHOT.jar
