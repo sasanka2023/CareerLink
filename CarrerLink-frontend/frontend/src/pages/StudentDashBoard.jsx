@@ -58,6 +58,8 @@ const StudentDashBoard = () => {
         const response = await getStudentByUsername(username);
         if (isMounted && response?.success) {
           setStudent(response.data); // Directly store the student data
+          console.log(student);
+          console.log(student.technologies);
         }
       } catch (error) {
         console.error('Error fetching student data:', error);
