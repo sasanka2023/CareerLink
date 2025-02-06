@@ -32,13 +32,23 @@ const allJobFields = [
 ];
 
 const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
-  const [name, setName] = useState(student.name);
-  const [email, setEmail] = useState(student.email);
-  const [profilePicture, setProfilePicture] = useState(student.profilePicture || '/placeholder.svg');
-  const [technologies, setTechnologies] = useState(student.technologies);
-  const [appliedJobFields, setAppliedJobFields] = useState(student.appliedJobFields);
-  const [address, setAddress] = useState(student.address);
+  const [name, setName] = useState(student.firstName || "");
+  const [email, setEmail] = useState(student.email || "");
+  const [profilePicture, setProfilePicture] = useState('/placeholder.svg');
+  const [technologies, setTechnologies] = useState(student.technologies || []);
+  const [appliedJobFields, setAppliedJobFields] = useState(student.jobsFields || []);
+  const [address, setAddress] = useState(student.address || "");
+  const [formdata,setFormdata] = useState({
+    StudentId:'',
+    firstName:'',
+    lastName:'',
+    email:'',
+    address:'',
+    userName:'',
+    jobsFields:[],
+    technologies:[]
 
+  })
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
@@ -64,7 +74,12 @@ const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
 
   const addTechnology = (tech) => {
     if (!technologies.includes(tech)) {
-      setTechnologies([...technologies, tech]);
+      const updatedTechnologies = [...technologies, tech];
+      setTechnologies(updatedTechnologies);
+      setFormdata((prev) =>({
+          ...prev,
+          technologies:updatedTechnologies
+      }));
     }
   };
 
@@ -74,8 +89,13 @@ const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
 
   const addJobField = (field) => {
     if (!appliedJobFields.includes(field)) {
-      setAppliedJobFields([...appliedJobFields, field]);
-    }
+      const updatedJobFields = [...appliedJobFields, field];
+      setAppliedJobFields(updatedJobFields);
+      setFormdata((prev) =>({
+        ...prev,
+        jobsFields:updatedJobFields
+    }));
+  }
   };
 
   const removeJobField = (field) => {
