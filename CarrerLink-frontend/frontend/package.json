@@ -12,7 +12,6 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.1.1",
     "react-scripts": "^5.0.1"
-    
   },
   "scripts": {
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
