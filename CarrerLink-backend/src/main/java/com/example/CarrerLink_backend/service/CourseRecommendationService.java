@@ -1,7 +1,9 @@
 package com.example.CarrerLink_backend.service;
 
+import com.example.CarrerLink_backend.dto.response.RecommendedCoursesDTO;
+
 import java.util.List;
 
 public interface CourseRecommendationService {
-    List<String> getRecommendedCourses(int studentId);
+    List<RecommendedCoursesDTO> getRecommendedCourses(int studentId);
 }

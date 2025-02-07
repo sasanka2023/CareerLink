@@ -1,54 +1,66 @@
 package com.example.CarrerLink_backend.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GeminiResponse {
     private List<Candidate> candidates;
 
-    public List<String> extractCourseList() {
-        if (candidates == null || candidates.isEmpty()) {
-            return List.of("No courses found.");
-        }
+    public List<RecommendedCoursesDTO> extractCourseList() {
+        List<RecommendedCoursesDTO> courses = new ArrayList<>();
+        if (candidates == null) return courses;
 
-        // Extract text from first candidate's content parts
-        return candidates.stream()
-                .flatMap(candidate -> candidate.getContent().getParts().stream())
-                .map(Part::getText)
-                .flatMap(text -> List.of(text.split("\n")).stream()) // Split into list
-                .map(String::trim)
-                .filter(line -> !line.isEmpty())
-                .collect(Collectors.toList());
+        for (Candidate candidate : candidates) {
+            for (Part part : candidate.getContent().getParts()) {
+                String text = part.getText();
+                if (text != null) {
+                    courses.addAll(parseCourses(text));
+                }
+            }
+        }
+        return courses;
+    }
+
+    private List<RecommendedCoursesDTO> parseCourses(String responseText) {
+        List<RecommendedCoursesDTO> courses = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(.+?)\\s+-\\s+(https?://\\S+)"); // Regex to match "Name - URL"
+
+        for (String line : responseText.split("\n")) {
+            Matcher matcher = pattern.matcher(line.trim());
+            if (matcher.matches()) {
+                courses.add(new RecommendedCoursesDTO(
+                        matcher.group(1).trim(),
+                        matcher.group(2).trim()
+                ));
+            }
+        }
+        return courses;
     }
 }
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 class Candidate {
     private Content content;
 }
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 class Content {
     private List<Part> parts;
 }
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 class Part {

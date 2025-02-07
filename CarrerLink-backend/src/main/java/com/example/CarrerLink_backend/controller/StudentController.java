@@ -5,6 +5,7 @@ import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
+import com.example.CarrerLink_backend.dto.response.RecommendedCoursesDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
@@ -128,7 +129,7 @@ public class StudentController {
     })
     @GetMapping("/recommend-courses")
     public ResponseEntity<StandardResponse> getRecommendedCourses(@RequestParam int studentId) {
-        List<String> recommendedCourses = courseRecommendationService.getRecommendedCourses(studentId);
+        List<RecommendedCoursesDTO> recommendedCourses = courseRecommendationService.getRecommendedCourses(studentId);
 
         if (recommendedCourses.isEmpty()) {
             return ResponseEntity.status(404).body(new StandardResponse(false, "No recommendations found.", recommendedCourses));
