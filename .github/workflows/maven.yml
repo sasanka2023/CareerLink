@@ -86,7 +86,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: carrerlink-taskdefinition.json
+          task-definition: CarrerLink-backend/carrerlink-taskdefinition.json
           container-name: carrerlink-project
           image: ${{ steps.build-image.outputs.image }}
 
