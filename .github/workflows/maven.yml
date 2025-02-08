@@ -14,7 +14,7 @@ on:
       - develop
     paths:
       - CarrerLink-backend/**
-      - .github/workflows/maven.ym
+      - .github/workflows/maven.yml
 
   schedule:
     - cron: "0 0 * * 0"
