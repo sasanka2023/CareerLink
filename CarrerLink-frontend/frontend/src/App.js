@@ -2,7 +2,6 @@ import React from 'react';
 import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import Header from './components/Headers/Header';
 import Footer from './components/Footer/Footer';
-import HeroSection from './pages/HeroSection';
 import CompanyAuth from './pages/CompanyAuth';
 import CompanyRegister from './pages/CompanyRegister';
 import StudentAuth from './pages/StudentAuth';
