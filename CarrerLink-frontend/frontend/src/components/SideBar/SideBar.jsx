@@ -35,7 +35,7 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/student-auth'); // Redirect to login page
+    navigate('/home'); // Redirect to login page
   };
 
   return (
