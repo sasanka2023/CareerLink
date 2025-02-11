@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Briefcase } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -43,20 +43,7 @@ function Header() {
                                 </Link>
                             ))}
                         </div>
-                        <div className="flex items-center space-x-4">
-                            <Link
-                                to="/signin"
-                                className="text-gray-900 hover:text-gray-700 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                                Sign In
-                            </Link>
-                            <Link
-                                to="/register"
-                                className="bg-indigo-600 text-white px-4 py-2 text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-                            >
-                                Register
-                            </Link>
-                        </div>
+
                     </div>
 
                     {/* Mobile menu button */}
