@@ -1,6 +1,6 @@
 // App.js
 import React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import Header from './components/Headers/Header';
 import Footer from './components/Footer/Footer';
 import HeroSection from './pages/HeroSection';
@@ -13,42 +13,53 @@ import Jobs from './pages/Jobs';
 import Employer from './pages/Employer';
 import Courses from './pages/Courses';
 import Contact from './pages/Contact';
-
 import CompanyDashboardPage from "./pages/CompanyDashboard";
-
 import StudentDashBoard from './pages/StudentDashBoard';
-
 import { AuthProvider } from './api/AuthProvider';
 
-// Define routes.
+// Layout component for routes with Header & Footer
+const Layout = () => {
+  return (
+    <>
+      <Header />
+      <main>
+        <Outlet /> {/* This renders the child route's component */}
+      </main>
+      <Footer />
+    </>
+  );
+};
 
+// Define routes
 const router = createBrowserRouter([
-  { path: '/', element: <HeroSection /> },
-  { path: '/company-auth', element: <CompanyAuth /> },
-  { path: '/company-register', element: <CompanyRegister /> },
-    { path: '/company-dashboard', element: <CompanyDashboardPage /> },
-  { path: '/student-auth', element: <StudentAuth /> },
-  { path: '/student-register', element: <StudentRegister /> },
-  { path: '/home', element: <Home /> },
-  { path: '/jobs', element: <Jobs /> },
-  { path: '/employer', element: <Employer /> },
-  { path: '/courses', element: <Courses /> },
-  { path: '/contact', element: <Contact /> },
-  { path: '/student', element: <StudentDashBoard /> },
+  {
+    element: <Layout />, // Applies Header/Footer to all child routes
+    children: [
+      { path: '/', element: <HeroSection /> },
+      { path: '/company-auth', element: <CompanyAuth /> },
+      { path: '/company-register', element: <CompanyRegister /> },
+      { path: '/company-dashboard', element: <CompanyDashboardPage /> },
+      { path: '/student-auth', element: <StudentAuth /> },
+      { path: '/student-register', element: <StudentRegister /> },
+      { path: '/home', element: <Home /> },
+      { path: '/jobs', element: <Jobs /> },
+      { path: '/employer', element: <Employer /> },
+      { path: '/courses', element: <Courses /> },
+      { path: '/contact', element: <Contact /> },
+    ],
+  },
+  { 
+    path: '/student', 
+    element: <StudentDashBoard /> // No Header/Footer for this route
+  },
 ]);
 
 function App() {
   return (
     <AuthProvider>
-      <>
-        <Header />
-        <main>
-          <RouterProvider router={router} />
-        </main>
-        <Footer />
-      </>
+      <RouterProvider router={router} />
     </AuthProvider>
   );
 }
 
-export default App;
+export default App;
