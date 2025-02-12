@@ -4,10 +4,7 @@ import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
-import com.example.CarrerLink_backend.entity.Client;
-import com.example.CarrerLink_backend.entity.Company;
-import com.example.CarrerLink_backend.entity.Products;
-import com.example.CarrerLink_backend.entity.Technology;
+import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.exception.DuplicateResourceException;
 import com.example.CarrerLink_backend.exception.InvalidInputException;
 import com.example.CarrerLink_backend.exception.OperationFailedException;
@@ -152,5 +149,17 @@ public class CompanyServiceImpl implements CompanyService {
         } catch (Exception e) {
             throw new OperationFailedException("Failed to delete company with ID " + id + ": " + e.getMessage());
         }
+    }
+
+   // @Override
+//    public CompanygetResponseDTO getCompanyById(Long id) {
+//        Company company = companyRepository.findById(id).orElseThrow(()->new RuntimeException("Company not found"));
+//        return modelMapper.map(company, CompanygetResponseDTO.class);
+//    }
+
+    @Override
+    public CompanygetResponseDTO getCompanyByName(String username) {
+        Company company = companyRepository.findByName(username).orElseThrow(()->new RuntimeException("Company not found"));
+        return modelMapper.map(company, CompanygetResponseDTO.class);
     }
 }
