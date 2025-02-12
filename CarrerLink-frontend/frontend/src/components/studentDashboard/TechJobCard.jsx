@@ -1,9 +1,11 @@
 import React from "react";
 
-export default function CombinedCard() {
-  const technologies = ["React", "Node.js", "Python", "Docker", "AWS"];
-  const jobFields = ["Software Development", "Data Science", "Cloud Engineering", "Cybersecurity", "Project Management"];
-
+export default function CombinedCard({student}) {
+  console.log(student);
+  const technologies = student.technologies  || ["Java", "Spring Boot", "React", "Node.js"];
+  const jobFields = student.jobsFields ||  ["Software Development", "Data Science", "Cloud Engineering", "Cybersecurity", "Project Management"];
+  console.log(student.technologies)
+  
   return (
     <div className="bg-white shadow-md rounded-lg p-4 w-full max-w-sm">
       {/* Technology Section */}
@@ -15,7 +17,7 @@ export default function CombinedCard() {
               key={index}
               className="bg-purple-100 text-purple-700 text-xs font-medium rounded-md py-1 px-2"
             >
-              {tech}
+              {tech.techName}
             </span>
           ))}
         </div>
@@ -30,7 +32,7 @@ export default function CombinedCard() {
               key={index}
               className="bg-blue-100 text-blue-700 text-xs font-medium rounded-md py-1 px-2"
             >
-              {field}
+              {field.jobField}
             </span>
           ))}
         </div>

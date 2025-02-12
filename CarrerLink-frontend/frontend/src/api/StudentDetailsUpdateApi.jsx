@@ -1,21 +1,19 @@
-import React from 'react'
+import axiosInstance from './AxiosInstance';
 
-const UpdateStudent = async (username) => {
-    try {
-      const response = await axiosInstance.post(`/students/username/`,{
-        
-      });
-      if (!response.data?.success || !response.data?.data) {
-        throw new Error('Invalid API response structure');
-      }
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching student data:', {
-        status: error.response?.status,
-        message: error.response?.data?.message || error.message
-      });
-      return { success: false };
+const UpdateStudent = async (formdata) => {
+  try {
+    const response = await axiosInstance.put('/students',formdata);
+    if (!response.data?.success || !response.data?.data) {
+      throw new Error('Invalid API response structure');
     }
-  };
+    return response.data;
+  } catch (error) {
+    console.error('Error updating student data:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    });
+    return { success: false };
+  }
+};
 
-export default StudentDetailsUpdateApi
+export default UpdateStudent;

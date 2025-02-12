@@ -47,11 +47,11 @@ public class StudentController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PutMapping
+    @PutMapping()
     public ResponseEntity<StandardResponse> updateStudent(@RequestBody StudentUpdateRequestDTO studentUpdateRequestDTO){
         String message = studentService.updateStudent(studentUpdateRequestDTO);
 
-        return ResponseEntity.ok(new StandardResponse(true, "Company updated successfully", message));
+        return ResponseEntity.ok(new StandardResponse(true, "Student updated successfully", message));
     }
 
 

@@ -57,7 +57,8 @@ const StudentDashBoard = () => {
 
         const response = await getStudentByUsername(username);
         if (isMounted && response?.success) {
-          setStudent(response.data); // Directly store the student data
+          setStudent(response.data);
+          console.log(response.data) // Directly store the student data
           console.log(student);
           console.log(student.technologies);
         }
@@ -78,12 +79,12 @@ const StudentDashBoard = () => {
 
 
   const handleSubmit = (updatedStudent) => {
-    setStudent(updatedStudent);
+    setStudent({...student,...updatedStudent});
     setIsModalOpen(false);
   };
 
   return (
-    <div className={`flex h-[630px]`}>
+    <div className={`flex h-screen bg-zinc-600`}>
       <Sidebar />
       <div className={`bg-orange-400 w-full px-2`}>
         <div className='w-full h-16 py-2 flex justify-between items-center'>
@@ -102,8 +103,8 @@ const StudentDashBoard = () => {
           <RegisteredTestsCard />
         </div>
         <div className='mt-8 flex space-x-6'>
-          <SkillProgress />
-          <CombinedCard />
+          <SkillProgress student={student} />
+          <CombinedCard student={student}/>
         </div>
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
