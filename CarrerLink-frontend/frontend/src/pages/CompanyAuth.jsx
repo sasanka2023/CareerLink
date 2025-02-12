@@ -37,7 +37,7 @@ const CompanyAuth = () => {
             
             if (response.token) {
                 setToken(response.token);
-                navigate("/company"); // Redirect to Dashboard on success
+                navigate("/company-dashboard"); // Redirect to Dashboard on success
             } else {
                 setError(response.message || "Invalid credentials. Please try again.");
             }
@@ -57,18 +57,18 @@ const CompanyAuth = () => {
     };
 
     // Handle form submission
-    const handleLogin = (e) => {
-        e.preventDefault(); // Prevent default form submission
-
-        // Check credentials
-        if (username === validCredentials.username && password === validCredentials.password) {
-            // Redirect to CompanyDashboardPage if credentials are correct
-            navigate("/company-dashboard");
-        } else {
-            // Show an alert for invalid credentials
-            alert("Invalid username or password!");
-        }
-    };
+    // const handleLogin = (e) => {
+    //     e.preventDefault(); // Prevent default form submission
+    //
+    //     // Check credentials
+    //     if (username === validCredentials.username && password === validCredentials.password) {
+    //         // Redirect to CompanyDashboardPage if credentials are correct
+    //         navigate("/company-dashboard");
+    //     } else {
+    //         // Show an alert for invalid credentials
+    //         alert("Invalid username or password!");
+    //     }
+    // };
 
     return (
         <div

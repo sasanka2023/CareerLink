@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CompanyProfile from "../components/Dashboard/CompanyDashboard/CompanyProfile";
 import AboutUs from "../components/Dashboard/CompanyDashboard/AboutUs";
 import JobCard from "../components/Cards/JobCard";
-import { FaEnvelope, FaGlobe, FaPhone } from "react-icons/fa";
+//import { FaEnvelope, FaGlobe, FaPhone } from "react-icons/fa";
 import "../styles/CompanyDashboard.css";
 import Modal from "../components/Dashboard/CompanyDashboard/AddJobVacancy";
 import AddJobVacancy from "../components/Dashboard/CompanyDashboard/AddJobVacancy";
 import "../styles/Modal.css";
 import UpdateCompanyDetailsModal from "../components/Dashboard/CompanyDashboard/UpdateCompany";
+import { AuthContext } from "../api/AuthProvider";
+import { getCompanyDetailsByUsername } from "../api/CompanyDetailsApi";
 
 const CompanyDashboardPage = () => {
     // State to manage company data
@@ -18,42 +20,14 @@ const CompanyDashboardPage = () => {
         technologies: ["React", "Node.js", "MongoDB"],
         products: ["Product 1", "Product 2", "Product 3"],
         clients: ["Client 1", "Client 2"],
-        jobVacancies: [
-            {
-                title: "Frontend Developer",
-                type: "Full-time",
-                description: "Build modern user interfaces with React.",
-                requirements: ["2+ years of React experience", "Team player"],
-                techStack: ["React", "JavaScript"],
-                skills: ["Communication", "Problem-solving"],
-            },
-            {
-                title: "Backend Developer",
-                type: "Part-time",
-                description: "Develop robust backend systems using Node.js.",
-                requirements: ["2+ years of Node.js experience", "Database management"],
-                techStack: ["Node.js", "MongoDB"],
-                skills: ["Critical thinking", "API design"],
-            },
-        ],
-        applicants: [
-            {
-                name: "John Doe",
-                position: "Frontend Developer",
-                interviewDate: "2025-01-25",
-            },
-        ],
-        reviews: [
-            { reviewer: "Alice", review: "Great company!", rating: 5 },
-            { reviewer: "Bob", review: "Amazing support and services.", rating: 4 },
-            { reviewer: "Charlie", review: "Could improve the delivery time.", rating: 3 },
-            { reviewer: "Max", review: "Great company!", rating: 5 },
-        ],
-        contact: {
-            phone: "+1234567890",
-            website: "https://techcorp.com",
-            email: "info@techcorp.com",
-        },
+        jobVacancies: [], // Initialize as empty array
+        applicants: [], // Initialize as empty array
+        reviews: [], // Initialize as empty array
+        // contact: {
+        //     phone: "+1234567890",
+        //     website: "https://techcorp.com",
+        //     email: "info@techcorp.com",
+        // },
     });
 
     // State for handling reviews pagination
@@ -61,7 +35,7 @@ const CompanyDashboardPage = () => {
     const reviewsPerPage = 3;
 
     // Functions to handle various actions
-    const handleAddJobClick = () => alert("Redirecting to Add Job Vacancy form...");
+    // const handleAddJobClick = () => alert("Redirecting to Add Job Vacancy form...");
     const handleDateChange = (index, date) => {
         const updatedApplicants = [...companyData.applicants];
         updatedApplicants[index].interviewDate = date;
@@ -105,6 +79,58 @@ const CompanyDashboardPage = () => {
         setIsUpdateModalOpen(false);
     };
 
+    const { token } = useContext(AuthContext);
+    const [loading, setLoading] = useState(true);
+
+    const extractUsernameFromToken = (token) => {
+        try {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            return decodedToken.sub;
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const fetchCompanyData = async () => {
+            try {
+                if (!token) {
+                    // No token available - abort fetch
+                    if (isMounted) setLoading(false);
+                    return;
+                }
+
+                const username = extractUsernameFromToken(token);
+                if (!username) return;
+
+                const response = await getCompanyDetailsByUsername(username);
+                if (isMounted && response?.success) {
+                    // Ensure arrays are initialized if not present in the response
+                    const data = {
+                        ...response.data,
+                        jobVacancies: response.data.jobVacancies || [],
+                        applicants: response.data.applicants || [],
+                        reviews: response.data.reviews || [],
+                    };
+                    setCompanyData(data);
+                }
+            } catch (error) {
+                console.error('Error fetching company data:', error);
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        };
+
+        fetchCompanyData();
+        return () => { isMounted = false };
+    }, [token]);
+
+    if (loading) return <div>Loading ...</div>;
+    if (!companyData) return <div>Company not found</div>;
+
     return (
         <div className="company-dashboard">
             {/* Company Profile Section */}
@@ -136,7 +162,7 @@ const CompanyDashboardPage = () => {
                     </button>
                 </div>
                 <div className="job-cards-container">
-                    {companyData.jobVacancies.map((job, index) => (
+                    {companyData.jobVacancies && companyData.jobVacancies.map((job, index) => (
                         <JobCard key={index} jobId={job} />
                     ))}
                 </div>
@@ -156,7 +182,7 @@ const CompanyDashboardPage = () => {
                 <div className="cv-list-container">
                     <h3 className="cv-list-title">Applicants</h3>
                     <div className="applicants-container">
-                        {companyData.applicants.map((applicant, index) => (
+                        {companyData.applicants && companyData.applicants.map((applicant, index) => (
                             <div key={index} className="applicant-card">
                                 <p className="applicant-name">
                                     <strong>{applicant.name}</strong>
@@ -194,7 +220,7 @@ const CompanyDashboardPage = () => {
                         &#8249;
                     </button>
                     <div className="reviews-container">
-                        {currentReviews.map((review, index) => (
+                        {currentReviews && currentReviews.map((review, index) => (
                             <div className="review-card" key={index}>
                                 <div className="reviewer-name-rating">
                                     <p className="reviewer-name">{review.reviewer}</p>
@@ -220,18 +246,18 @@ const CompanyDashboardPage = () => {
                     <h2 className="section-title">Contact Us</h2>
                 </div>
                 <div className="contact-details-container">
-                    <div className="contact-detail-item">
-                        <FaPhone className="contact-icon"/>
-                        <span className="contact-text">{companyData.contact.phone}</span>
-                    </div>
-                    <div className="contact-detail-item">
-                        <FaEnvelope className="contact-icon"/>
-                        <span className="contact-text">{companyData.contact.email}</span>
-                    </div>
-                    <div className="contact-detail-item">
-                        <FaGlobe className="contact-icon"/>
-                        <span className="contact-text">{companyData.contact.website}</span>
-                    </div>
+                    {/*<div className="contact-detail-item">*/}
+                    {/*    <FaPhone className="contact-icon" />*/}
+                    {/*    <span className="contact-text">{companyData.contact.phone}</span>*/}
+                    {/*</div>*/}
+                    {/*<div className="contact-detail-item">*/}
+                    {/*    <FaEnvelope className="contact-icon" />*/}
+                    {/*    <span className="contact-text">{companyData.contact.email}</span>*/}
+                    {/*</div>*/}
+                    {/*<div className="contact-detail-item">*/}
+                    {/*    <FaGlobe className="contact-icon" />*/}
+                    {/*    <span className="contact-text">{companyData.contact.website}</span>*/}
+                    {/*</div>*/}
                 </div>
                 <button className="update-details-button" onClick={handleOpenUpdateModal}>Update Details</button>
             </section>

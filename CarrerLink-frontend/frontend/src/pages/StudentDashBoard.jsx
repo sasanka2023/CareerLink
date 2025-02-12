@@ -11,6 +11,7 @@ import UpdateDetailsForm from '../components/studentDashboard/UpdateDetails';
 import ProfileCard from '../components/studentDashboard/ProfileCard';
 import { AuthContext } from '../api/AuthProvider';
 import getStudentByUsername from '../api/StudentDetailsApi';
+
 const StudentDashBoard = () => {
   const initialData = {
     firstName: 'sasanka',

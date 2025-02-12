@@ -4,6 +4,7 @@ import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 
+
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -107,6 +108,19 @@ public class CompanyController {
     public ResponseEntity<StandardResponse> deleteCompany(@PathVariable Long id) {
         companyService.deleteCompany(id);
         return ResponseEntity.ok(new StandardResponse(true, "Company deleted successfully", null));
+    }
+
+
+    @Operation(summary = "Get company by username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/username/{username}")
+    public ResponseEntity<StandardResponse> getCompanyByName(@PathVariable String username){
+        CompanygetResponseDTO company = companyService.getCompanyByName(username);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", company));
     }
 }
 
