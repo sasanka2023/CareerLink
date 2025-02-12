@@ -61,7 +61,15 @@ jobs:
 
   deploy:
     needs: build
-    runs-on:
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull the image Docker hub
+        run: docker pull CarrerLink/CarrerLink-backend:latest
+
+      - name: Delete Old Container
+        run: docker rm -f CarrerLink-backend-container
+      - name: Run docker container
+        run: docker run -d -p 8091:8091 --name CarrerLink-backend-container CarrerLink/CarrerLink-backend
 
 
 
