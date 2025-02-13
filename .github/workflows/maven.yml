@@ -51,17 +51,66 @@ jobs:
         working-directory: CarrerLink-backend
 
       - name: Login to docker hub
-        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p {{secrets.DOCKER_PASSWORD}}
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
       - name: Build docker image
-        run: docker build -t CarrerLink/CarrerLink-backend .
-
+        run: docker build -t zibra2001/carrerlink ./CarrerLink-backend
+      
       - name: Publish image to docker hub
-        run: docker push CarrerLink/CarrerLink-backend:latest
+        run: docker push zibra2001/carrerlink:latest
 
   deploy:
     needs: build
-    runs-on:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Set up SSH
+      - name: Set up SSH key for EC2
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.TEST }}
+      - name: Pull the image Docker hub
+        run: docker pull zibra2001/carrerlink:latest
+
+      - name: SSH to EC2 and install Docker
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            # Update the system
+            sudo yum update -y
+      
+            # Install Docker
+            sudo yum install -y docker
+      
+            # Start Docker service
+            sudo systemctl start docker
+      
+            # Enable Docker to start on boot
+            sudo systemctl enable docker
+      
+            # Add the ec2-user to the Docker group
+            sudo usermod -a -G docker ec2-user
+          EOF
+        # Step 2: Pull the Docker image on EC2
+      - name: SSH to EC2 and pull Docker image
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            docker pull zibra2001/carrerlink:latest
+          EOF
+
+      # Step 3: Delete Old Docker Container
+      - name: SSH to EC2 and remove old container
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            docker rm -f carrerlink-container
+          EOF
+
+      # Step 4: Run the new Docker container
+      - name: SSH to EC2 and start new container
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            docker run -d -p 8091:8091 --name carrerlink-container zibra2001/carrerlink
+          EOF
 
 
 
