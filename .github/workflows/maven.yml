@@ -56,22 +56,22 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
       - name: Build docker image
-        run: docker build -t CarrerLink/CarrerLink-backend .
-
+        run: docker build -t carrerlink/carrerlink-backend .
+      
       - name: Publish image to docker hub
-        run: docker push CarrerLink/CarrerLink-backend:latest
+        run: docker push carrerlink/carrerlink-backend:latest
 
   deploy:
     needs: build
     runs-on: [aws-ec2]
     steps:
       - name: Pull the image Docker hub
-        run: docker pull CarrerLink/CarrerLink-backend:latest
+        run: docker pull carrerlink/carrerlink-backend:latest
 
       - name: Delete Old Container
-        run: docker rm -f CarrerLink-backend-container
+        run: docker rm -f carrerlink/carrerlink-backend
       - name: Run docker container
-        run: docker run -d -p 8091:8091 --name CarrerLink-backend-container CarrerLink/CarrerLink-backend
+        run: docker run -d -p 8091:8091 --name carrerlink/carrerlink-backend carrerlink/carrerlink-backend
 
 
 
