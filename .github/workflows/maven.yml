@@ -56,7 +56,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
       - name: Build docker image
-        run: docker build -t carrerlink/carrerlink-backend .
+        run: docker build -t carrerlink/carrerlink-backend ./CarrerLink-backend
       
       - name: Publish image to docker hub
         run: docker push carrerlink/carrerlink-backend:latest
