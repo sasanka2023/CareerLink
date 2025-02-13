@@ -73,28 +73,24 @@ jobs:
       - name: Pull the image Docker hub
         run: docker pull zibra2001/carrerlink:latest
 
-      - name: SSH to EC2 and install Docker if not installed
+      - name: SSH to EC2 and install Docker
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
             # Update the system
             sudo yum update -y
       
             # Install Docker
-            sudo amazon-linux-extras install docker -y
+            sudo yum install -y docker
       
             # Start Docker service
-            sudo service docker start
-      
-            # Add the ec2-user to the Docker group
-            sudo usermod -a -G docker ec2-user
+            sudo systemctl start docker
       
             # Enable Docker to start on boot
             sudo systemctl enable docker
-          EOF
-
-
       
-
+            # Add the ec2-user to the Docker group
+            sudo usermod -a -G docker ec2-user
+          EOF
         # Step 2: Pull the Docker image on EC2
       - name: SSH to EC2 and pull Docker image
         run: |
