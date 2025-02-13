@@ -2,11 +2,11 @@
 import React from "react";
 import { useState } from "react";
 import { useContext } from "react";
-import { useNavigate,useLocation } from "react-router-dom"; // Import useNavigate
+import {useNavigate, useLocation, Link} from "react-router-dom"; // Import useNavigate
 
-import backgroundImage from "../assets/HeroSection/students-recognize-the-importance-of-gaining-internship-experience-xlarge.png"; // Import the image
 import LoginApi from "../api/LoginApi";
 import { AuthContext } from "../api/AuthProvider";
+import {Lock, User} from "lucide-react";
 
 const CompanyAuth = () => {
     const { setToken } = useContext(AuthContext);
@@ -47,14 +47,14 @@ const CompanyAuth = () => {
     };
 
     // State for username and password
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-
-    // Mock credentials for authentication (replace this with API logic)
-    const validCredentials = {
-        username: "123",
-        password: "123",
-    };
+    // const [username, setUsername] = useState("");
+    // const [password, setPassword] = useState("");
+    //
+    // // Mock credentials for authentication (replace this with API logic)
+    // const validCredentials = {
+    //     username: "123",
+    //     password: "123",
+    // };
 
     // Handle form submission
     // const handleLogin = (e) => {
@@ -71,67 +71,94 @@ const CompanyAuth = () => {
     // };
 
     return (
-        <div
-            className="h-screen flex justify-center items-center bg-cover bg-center"
-            style={{
-                backgroundImage: `url(${backgroundImage})`, // Use the imported image variable
-            }}
-        >
-            <div className="bg-white p-6 rounded-lg shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-4 text-center">
-                    Company Authentication
-                </h2>
-                <div className="flex justify-center mb-4">
-                    <button className="px-4 py-2 border-b-2 border-black">
-                        Login
-                    </button>
-                    <button
-                        className="px-4 py-2 ml-4 text-gray-500"
-                        onClick={() => navigate("/company-register")} // Use navigate here
-                    >
-                        Register
-                    </button>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full">
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900">Company Sign In</h2>
+                    <p className="mt-2 text-gray-600">Welcome back to CareerLink</p>
                 </div>
 
-                {location.state?.message && (
-                    <p className="text-green-500 text-center mb-4">
-                        {location.state.message}
-                    </p>
-                )}
-                <form onSubmit={handleSubmit}>
+                <div className="bg-white rounded-xl shadow-sm p-8">
+                    {location.state?.message && (
+                        <p className="text-green-500 text-center mb-4">{location.state.message}</p>
+                    )}
+                    <form className="space-y-6" onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                                Username
+                            </label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400"/>
+                                <input
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Enter your username"
+                                />
+                            </div>
+                        </div>
 
-                    <label className="block mb-2 font-semibold">Username</label>
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="Enter username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="w-full p-2 border rounded mb-4"
-                        value={formData.username} // Bind the value to the username state
-                        onChange={handleChange}
-                        required
-                    />
-                    <label className="block mb-2 font-semibold">Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full p-2 border rounded mb-4"
-                        value={formData.password} // Bind the value to the password state
-                        onChange={handleChange}
-                        required
-                    />
-                    <button
-                        type="submit"
-                        className="w-full bg-black text-white py-2 rounded"
-                    >
-                        Login
-                    </button>
-                </form>
-                {error && <p>{error}</p>}
+                        <div>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400"/>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Enter your password"
+                                />
+                            </div>
+                        </div>
+
+                        {error && <p className="text-red-500 text-center">{error}</p>}
+
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                <input
+                                    id="remember-me"
+                                    type="checkbox"
+                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                                    Remember me
+                                </label>
+                            </div>
+
+                            <div className="text-sm">
+                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                    Forgot your password?
+                                </a>
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                        >
+                            Sign in
+                        </button>
+                    </form>
+
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-gray-600">
+                            Don't have an account?{" "}
+                            <Link to="/company-register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                Register now
+                            </Link>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     );
