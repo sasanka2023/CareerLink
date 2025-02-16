@@ -11,7 +11,7 @@ function Header() {
     const navLinks = [
         { path: '/', label: 'Home' },
         { path: '/jobs', label: 'Jobs' },
-        { path: '/employers', label: 'Employers' },
+        { path: '/employees', label: 'Employers' },
         { path: '/courses', label: 'Courses' },
         { path: '/contact', label: 'Contact' },
     ];
