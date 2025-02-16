@@ -14,6 +14,9 @@ import Contact from './pages/Contact';
 import CompanyDashboardPage from "./pages/CompanyDashboard";
 import StudentDashBoard from './pages/StudentDashBoard';
 import { AuthProvider } from './api/AuthProvider';
+import CvTemplate7 from './components/studentDashboard/BlueModernForm';
+import TestPlatform from './components/studentDashboard/TestPlatform';
+import Companies from './pages/Companies';
 
 const Layout = () => {
     return (
@@ -43,13 +46,22 @@ const router = createBrowserRouter([
             { path: '/employer', element: <Employer /> },
             { path: '/courses', element: <Courses /> },
             { path: '/contact', element: <Contact /> },
+            { path: '/employees', element: <Companies /> },
         ],
     },
     {
         path: '/student',
         element: <StudentDashBoard /> // No Header/Footer for this route
-     }
-    // {
+     },
+    {
+        path: '/bluetemplate',
+        element:<CvTemplate7/>    
+    } ,{
+        path: '/testplatform',
+        element:<TestPlatform/> 
+    } 
+   
+   // {
     //     path: '/test',
     //     element: <Dashboard /> // No Header/Footer for this route
     // }

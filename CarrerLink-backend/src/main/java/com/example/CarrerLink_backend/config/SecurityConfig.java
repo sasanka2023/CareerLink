@@ -49,7 +49,13 @@ public class SecurityConfig {
                     .authorizeHttpRequests(r->r.
                              requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student")
                             .permitAll()
-                            .requestMatchers("/api/companies/**").hasRole("COMPANY") // Accessible by Student role
+                            // Public access to GET requests for companies
+                            .requestMatchers("GET", "/api/companies/**").permitAll()
+
+                            // Restricted access to modify company data
+                            .requestMatchers("POST", "/api/companies/**").hasRole("COMPANY")
+                            .requestMatchers("PUT", "/api/companies/**").hasRole("COMPANY")
+                            .requestMatchers("DELETE", "/api/companies/**").hasRole("COMPANY")
                             .requestMatchers("/api/students/**").hasRole("STUDENT") // Accessible by Company role
                             .requestMatchers("/api/cv/**", "/api/jobs/**","/api/v1/requiredCourses/**").authenticated()
                              // Any other endpoints require authentication

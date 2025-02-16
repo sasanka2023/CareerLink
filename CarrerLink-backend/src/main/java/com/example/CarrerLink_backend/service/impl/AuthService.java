@@ -124,4 +124,7 @@ public class AuthService {
 
     }
 
+    public RolesEntity createRoles(RolesEntity rolesEntity) {
+        return roleRepo.save(rolesEntity);
+    }
 }
