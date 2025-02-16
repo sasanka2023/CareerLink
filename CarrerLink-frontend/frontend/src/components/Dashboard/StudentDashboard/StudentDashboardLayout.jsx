@@ -15,7 +15,7 @@ function StudentDashboardLayout({ children }: DashboardLayoutProps) {
 
 
     const navigationItems = [
-        { path: '/student-dashboard', icon: Home, label: 'Home' },
+        { path: '/student', icon: Home, label: 'Home' },
         { path: '/student-dashboard/courses', icon: BookOpen, label: 'Courses' },
         { path: '/student-dashboard/jobs', icon: Briefcase, label: 'Jobs' },
         { path: '/student-dashboard/tests', icon: FileText, label: 'Tests' },
@@ -32,7 +32,7 @@ function StudentDashboardLayout({ children }: DashboardLayoutProps) {
                 <div className="h-full flex flex-col">
                     {/* Logo */}
                     <div className="h-16 flex items-center px-6 border-b border-gray-200">
-                        <Link to="/student-dashboard" className="flex items-center space-x-2">
+                        <Link to="/student" className="flex items-center space-x-2">
 
                             <span className="text-xl text-indigo-600 font-bold">CareerLink</span>
                         </Link>
