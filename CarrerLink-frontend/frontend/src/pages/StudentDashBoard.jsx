@@ -5,6 +5,7 @@ import getStudentByUsername from '../api/StudentDetailsApi';
 import SkillProgress from "../components/studentDashboard/SkillProgress";
 import TechJobCard from "../components/studentDashboard/TechJobCard";
 
+
 const StudentDashboard = () => {
   const [studentInfo, setStudentInfo] = useState(null);
   const [skills, setSkills] = useState([]);
@@ -94,7 +95,7 @@ const StudentDashboard = () => {
             {/*    ))}*/}
             {/*  </div>*/}
             {/*</div>*/}
-            <SkillProgress/>
+            <SkillProgress student={studentInfo}/>
           </div>
           <div className="lg:col-span-2 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -122,7 +123,7 @@ const StudentDashboard = () => {
             {/*    ))}*/}
             {/*  </div>*/}
             {/*</div>*/}
-            <TechJobCard/>
+            <TechJobCard student={studentInfo}/>
           </div>
         </div>
       </DashboardLayout>
