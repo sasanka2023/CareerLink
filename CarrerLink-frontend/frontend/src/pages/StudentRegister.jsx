@@ -312,7 +312,12 @@ const StudentRegister = () => {
                                 >
                                     <option value="">Select course</option>
                                     <option value="OOP">OOP</option>
-                                    <option value="Course B">Course B</option>
+                                    <option value="Programming Techniques">Programming Techniques</option>
+                                    <option value="Software Engneering">Software Engneering</option>
+                                    <option value="Project Management">Project Management</option>
+                                    <option value="Statistics">Statistics</option>
+                                    <option value="Data mining">Data Mining</option>
+                                    
                                 </select>
                                 <select
                                     className="p-2 border rounded mr-2 w-24"

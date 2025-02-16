@@ -17,6 +17,7 @@ import { AuthProvider } from './api/AuthProvider';
 import CvTemplate7 from './components/studentDashboard/BlueModernForm';
 import TestPlatform from './components/studentDashboard/TestPlatform';
 import Companies from './pages/Companies';
+import EditProfile from './components/studentDashboard/EditProfile';
 
 const Layout = () => {
     return (
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
             { path: '/courses', element: <Courses /> },
             { path: '/contact', element: <Contact /> },
             { path: '/employees', element: <Companies /> },
+            
         ],
     },
     {
@@ -59,7 +61,8 @@ const router = createBrowserRouter([
     } ,{
         path: '/testplatform',
         element:<TestPlatform/> 
-    } 
+    } ,
+    { path: '/editprofile',element:<EditProfile/>}
    
    // {
     //     path: '/test',

@@ -1,7 +1,8 @@
+// StudentDashboardLayout.tsx
 import React, { useContext } from "react";
-import { Link, useLocation,useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, BookOpen, Briefcase, FileText, FileSpreadsheet, Bell, Settings, LogOut } from 'lucide-react';
-import {AuthContext} from "../../../api/AuthProvider";
+import { AuthContext } from "../../../api/AuthProvider";
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -13,27 +14,27 @@ function StudentDashboardLayout({ children }: DashboardLayoutProps) {
     const navigate = useNavigate();
     const { logout } = useContext(AuthContext);
 
-
     const navigationItems = [
         { path: '/student', icon: Home, label: 'Home' },
         { path: '/student-dashboard/courses', icon: BookOpen, label: 'Courses' },
         { path: '/student-dashboard/jobs', icon: Briefcase, label: 'Jobs' },
-        { path: '/student-dashboard/tests', icon: FileText, label: 'Tests' },
+        { path: '/testplatform', icon: FileText, label: 'Tests' },
         { path: '/student-dashboard/cv', icon: FileSpreadsheet, label: 'CV' },
     ];
+
     const handleLogout = () => {
         logout();
-        navigate('/home'); // Redirect to login page
+        navigate('/home');
     };
+
     return (
         <div className="min-h-screen bg-gray-50 flex">
-            {/* Sidebar */}
-            <div className="w-64 bg-white border-r border-gray-200">
+            {/* Fixed Sidebar */}
+            <div className="w-64 bg-white border-r border-gray-200 fixed h-full">
                 <div className="h-full flex flex-col">
                     {/* Logo */}
                     <div className="h-16 flex items-center px-6 border-b border-gray-200">
                         <Link to="/student" className="flex items-center space-x-2">
-
                             <span className="text-xl text-indigo-600 font-bold">CareerLink</span>
                         </Link>
                     </div>
@@ -80,10 +81,10 @@ function StudentDashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1">
-                {/* Header */}
-                <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
+            {/* Scrollable Main Content */}
+            <div className="flex-1 ml-64"> {/* Add left margin equal to sidebar width */}
+                {/* Fixed Header */}
+                <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10">
                     <h1 className="text-xl font-semibold text-gray-800">Student Dashboard</h1>
                     <div className="flex items-center space-x-4">
                         <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full relative">
@@ -91,11 +92,11 @@ function StudentDashboardLayout({ children }: DashboardLayoutProps) {
                             <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
                         </button>
                         <Link
-                            to="/student-dashboard/profile"
+                            to="/editprofile"
                             className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                             <img
-                                //src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=32&q=80"
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=32&q=80"
                                 alt="Profile"
                                 className="w-8 h-8 rounded-full"
                             />
@@ -104,8 +105,8 @@ function StudentDashboardLayout({ children }: DashboardLayoutProps) {
                     </div>
                 </header>
 
-                {/* Page Content */}
-                <main className="p-8">
+                {/* Scrollable Content Area */}
+                <main className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 4rem)' }}>
                     {children}
                 </main>
             </div>
