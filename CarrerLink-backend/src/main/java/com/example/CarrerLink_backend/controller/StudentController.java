@@ -6,6 +6,7 @@ import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
+import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
@@ -32,9 +33,9 @@ public class StudentController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<StandardResponse> saveStudent(@RequestBody StudentSaveRequestDTO studentSaveRequestDTO){
+    public ResponseEntity<StandardResponse> saveStudent(@RequestBody StudentSaveRequestDTO studentSaveRequestDTO, UserEntity user){
 
-        String message = studentService.saveStudent(studentSaveRequestDTO);
+        String message = studentService.saveStudent(studentSaveRequestDTO,user);
 
         return ResponseEntity.status(201)
                 .body(new StandardResponse(true, "Company saved successfully", message));
@@ -146,9 +147,9 @@ public class StudentController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/username/{userName}")
-    public ResponseEntity<StandardResponse> getStudentByUserName(@PathVariable String userName){
-        StudentgetResponseDTO students = studentService.getStudentByUserName(userName);
+    @GetMapping("/userId/{userId}")
+    public ResponseEntity<StandardResponse> getStudentByUserID(@PathVariable int userId){
+        StudentgetResponseDTO students = studentService.getStudentByUserId(userId);
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 

@@ -74,7 +74,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public String saveCompany(CompanySaveRequestDTO companySaveRequestDTO) {
+    public String saveCompany(CompanySaveRequestDTO companySaveRequestDTO,UserEntity user) {
         if (companySaveRequestDTO.getName() == null || companySaveRequestDTO.getLocation() == null) {
             throw new InvalidInputException("Company name and location are required.");
         }
@@ -82,6 +82,7 @@ public class CompanyServiceImpl implements CompanyService {
             throw new DuplicateResourceException("Company with the name " + companySaveRequestDTO.getName() + " already exists.");
         }
         Company company = modelMapper.map(companySaveRequestDTO, Company.class);
+        company.setUser(user);
         companyRepository.save(company);
         return "Company saved successfully";
     }
@@ -151,15 +152,16 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
-   // @Override
-//    public CompanygetResponseDTO getCompanyById(Long id) {
-//        Company company = companyRepository.findById(id).orElseThrow(()->new RuntimeException("Company not found"));
-//        return modelMapper.map(company, CompanygetResponseDTO.class);
-//    }
 
     @Override
     public CompanygetResponseDTO getCompanyByName(String username) {
         Company company = companyRepository.findByName(username).orElseThrow(()->new RuntimeException("Company not found"));
+        return modelMapper.map(company, CompanygetResponseDTO.class);
+    }
+
+    @Override
+    public CompanygetResponseDTO getCompanyByUserId(int userId) {
+        Company company = companyRepository.findByUser_Id(userId).orElseThrow(()->new RuntimeException("Company not found"));
         return modelMapper.map(company, CompanygetResponseDTO.class);
     }
 }

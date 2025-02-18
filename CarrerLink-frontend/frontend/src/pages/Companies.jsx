@@ -3,43 +3,14 @@ import { useContext } from 'react';
 import { useEffect } from 'react';
 import { Search, Building2, MapPin, Users2, Globe2, ArrowUpRight } from 'lucide-react';
 import {getAllCompanies} from '../api/CompanyDetailsGetApi'
+import {getAllCompaniesusingFilters} from '../api/CompanyDetailsGetApi'
 import { AuthContext } from '../api/AuthProvider';
+import { getCompanyByName } from '../api/CompanyDetailsGetApi';
 // Sample company data
-const companies = [
-  {
-    id: 1,
-    name: 'TechCorp Solutions',
-    industry: 'Software Development',
-    location: 'San Francisco, CA',
-    size: '500-1000 employees',
-    specialties: ['Cloud Computing', 'AI/ML', 'Enterprise Software'],
-    status: 'Actively Hiring',
-    logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&h=150&q=80'
-  },
-  {
-    id: 2,
-    name: 'DesignHub Creative',
-    industry: 'Design & Creative',
-    location: 'New York, NY',
-    size: '100-250 employees',
-    specialties: ['UX/UI Design', 'Brand Strategy', 'Digital Marketing'],
-    status: 'Open to Talent',
-    logo: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&h=150&q=80'
-  },
-  {
-    id: 3,
-    name: 'InnovateLabs',
-    industry: 'Research & Development',
-    location: 'Remote',
-    size: '250-500 employees',
-    specialties: ['Biotechnology', 'Data Science', 'Research'],
-    status: 'Actively Hiring',
-    logo: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&h=150&q=80'
-  },
-];
+
 
 function Companies() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
@@ -53,56 +24,68 @@ function Companies() {
   const locations = ['all', 'Srilanka', 'New York', 'San Francisco', 'London','Berlin'];
   const statusOptions = ['all', 'Actively Hiring', 'Open to Talent', 'Not Hiring'];
 
-  const handleSearch = () => {
-    setSearchQuery(searchTerm);
+  const handleSearch = async () => {
+     const searchval = searchTerm === '' ? null : searchTerm;
+      try{
+        
+        if(searchval === null){
+        const industryParam = selectedIndustry === 'all' ? null : selectedIndustry;
+        const locationParam = selectedLocation === 'all' ? null : selectedLocation;
+        const response = await getAllCompaniesusingFilters(locationParam,industryParam)
+        setCompanies(response.data);
+        console.log(response);
+        }
+        else{
+          
+          const response = await getCompanyByName(searchTerm);
+          setCompanies(response.data);
+          console.log(response);
+
+        }
+      }
+      catch (error) {
+        console.error('Error fetching student data:', error);
+
+      }
+    
+    
   };
 
   useEffect(() => {
     let isMounted = true;
-
-    const fetchCompnies = async () => {
-      
-      try{
-      if (!token) {
-        // No token available - abort fetch
-        if (isMounted) setLoading(false);
-        return;
-      
-      }
-
+  
+    const fetchCompanies = async () => {
+      try {
+        setLoading(true);
         const response = await getAllCompanies();
         if (isMounted && response?.success) {
           setCompanies(response.data);
-          console.log(response.data) // Directly store the student data
-          
-      
         }
       } catch (error) {
-        console.error('Error fetching student data:', error);
+        console.error('Error fetching companies:', error);
       } finally {
         if (isMounted) setLoading(false);
       }
     };
-
-    fetchCompnies();
+  
+    fetchCompanies();
     return () => { isMounted = false };
-  }, [token]);
-
+  }, []); 
   console.log(companyes);
   
   if(loading) return <div>Loading ...</div>
   if(!companyes) return <div>Student not found</div>
 
-  const filteredCompanies = companies.filter(company => {
-    const matchesSearch = 
-      company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      company.specialties.some(specialty => specialty.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesIndustry = selectedIndustry === 'all' || company.industry === selectedIndustry;
-    const matchesLocation = selectedLocation === 'all' || company.location === selectedLocation;
-    const matchesStatus = selectedStatus === 'all' || company.status === selectedStatus;
+  // const filteredCompanies = companies.filter(company => {
+  //   const matchesSearch = 
+  //     company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     company.specialties.some(specialty => specialty.toLowerCase().includes(searchQuery.toLowerCase()));
+  //   const matchesIndustry = selectedIndustry === 'all' || company.industry === selectedIndustry;
+  //   const matchesLocation = selectedLocation === 'all' || company.location === selectedLocation;
+  //   const matchesStatus = selectedStatus === 'all' || company.status === selectedStatus;
     
-    return matchesSearch && matchesIndustry && matchesLocation && matchesStatus;
-  });
+  //   return matchesSearch && matchesIndustry && matchesLocation && matchesStatus;
+  // });
 
 
 
@@ -217,12 +200,12 @@ function Companies() {
                 <div className="mt-4">
                   <p className="text-sm font-medium text-gray-700">Specialties:</p>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {company.technologies.map((specialty, index) => (
+                    {company.technologies.map((tech) => (
                       <span
-                        key={index}
+                        key={tech.techId}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
                       >
-                        {specialty}
+                        {tech.techName}
                       </span>
                     ))}
                   </div>

@@ -1,8 +1,8 @@
 import axiosInstance from './AxiosInstance';
 
-const getAllCompaniesusingFilters = async (location, category) => {
+const getAllJobsusingFilters = async (location, category) => {
   try {
-    const response = await axiosInstance.get('companies/filter', {
+    const response = await axiosInstance.get('jobs/filter', {
       params: { location, category } // Pass query parameters properly
     });
 
@@ -20,29 +20,11 @@ const getAllCompaniesusingFilters = async (location, category) => {
   }
 };
 
-const getCompanyByName = async (name) => {
-  try {
-    const response = await axiosInstance.get('companies/search', {
-      params: { name } // Pass query parameters properly
-    });
 
-    if (!response.data?.success || !response.data?.data) {
-      throw new Error('Invalid API response structure');
-    }
 
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching companies data:', {
-      status: error.response?.status,
-      message: error.response?.data?.message || error.message
-    });
-    return { success: false };
-  }
-};
-
-const getAllCompanies = async () => {
+const getAllJobs = async () => {
     try {
-      const response = await axiosInstance.get('companies');
+      const response = await axiosInstance.get('jobs');
   
       if (!response.data?.success || !response.data?.data) {
         throw new Error('Invalid API response structure');
@@ -57,7 +39,27 @@ const getAllCompanies = async () => {
       return { success: false };
     }
   };
+
+
+  const getCompanyByJoId = async () => {
+    try {
+        const response = await axiosInstance.get('jobs/getcompany');
+    
+        if (!response.data?.success || !response.data?.data) {
+          throw new Error('Invalid API response structure');
+        }
+    
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching companies data:', {
+          status: error.response?.status,
+          message: error.response?.data?.message || error.message
+        });
+        return { success: false };
+      }
+
+  }
   
 
 
-  export { getAllCompanies,getCompanyByName, getAllCompaniesusingFilters };
+  export { getAllJobs, getAllJobsusingFilters };

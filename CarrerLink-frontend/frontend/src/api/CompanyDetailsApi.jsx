@@ -19,9 +19,9 @@ import axiosInstance from './AxiosInstance';
 //     }
 // };
 
-const getCompanyDetailsByUsername = async (username) => {
+const getCompanyDetailsByUsername = async (userId) => {
     try {
-        const response = await axiosInstance.get(`/companies/username/${username}`);
+        const response = await axiosInstance.get(`/companies/userId/${userId}`);
 
         // Validate the response structure
         if (!response.data?.success || !response.data?.data) {
