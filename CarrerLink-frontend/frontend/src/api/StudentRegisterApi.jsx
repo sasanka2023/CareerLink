@@ -7,13 +7,16 @@ const StudentRegisterApi = async (formData) => {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
-      userName: formData.userName,
-      password: formData.password,
       address: formData.address,
       university: formData.university,
       department: formData.department,
       degree: formData.degree,
-      acedemicResults:formData.academicStatus
+      acedemicResults:formData.academicStatus,
+      userSaveRequestDTO: {
+        username: formData.userName,
+        password: formData.password,
+        // Optionally include email or profilePic here if needed
+      }
 
     });
     console.log(response);

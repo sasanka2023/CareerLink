@@ -42,9 +42,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
-    public String saveStudent(StudentSaveRequestDTO studentSaveRequestDTO) {
+    public String saveStudent(StudentSaveRequestDTO studentSaveRequestDTO,UserEntity user) {
 
         Student student = modelMapper.map(studentSaveRequestDTO,Student.class);
+        student.setUser(user);
         CV cv = new CV();
         cv.setStudent(student);
         student.setCv(cv);
@@ -67,7 +68,6 @@ public class StudentServiceImpl implements StudentService {
             existingStudent.setLastName(studentUpdateRequestDTO.getLastName());
             existingStudent.setEmail(studentUpdateRequestDTO.getEmail());
             existingStudent.setAddress(studentUpdateRequestDTO.getAddress());
-            existingStudent.setUserName(studentUpdateRequestDTO.getUserName());
             updateJobFields(studentUpdateRequestDTO,existingStudent);
             updateTechnologies(studentUpdateRequestDTO,existingStudent);
             studentRepo.save(existingStudent);
@@ -184,6 +184,13 @@ public class StudentServiceImpl implements StudentService {
     public StudentgetResponseDTO getStudentByUserName(String userName) {
         Student student = studentRepo.findByUserName(userName).orElseThrow(()-> new RuntimeException("Student not found"));
         return modelMapper.map(student,StudentgetResponseDTO.class);
+    }
+
+    @Override
+    public StudentgetResponseDTO getStudentByUserId(int userId) {
+        Student student = studentRepo.findByUser_Id(userId).orElseThrow(()-> new RuntimeException("Student not found"));
+        return modelMapper.map(student,StudentgetResponseDTO.class);
+
     }
 
 }

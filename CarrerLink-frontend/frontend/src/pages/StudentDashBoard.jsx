@@ -17,7 +17,7 @@ const StudentDashboard = () => {
   const extractUsernameFromToken = (token) => {
     try {
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      return decodedToken.sub;
+      return decodedToken.userId;
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;

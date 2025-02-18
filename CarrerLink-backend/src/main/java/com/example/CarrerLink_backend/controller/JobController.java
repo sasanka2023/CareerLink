@@ -2,6 +2,7 @@ package com.example.CarrerLink_backend.controller;
 
 
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
+import com.example.CarrerLink_backend.entity.Company;
 import com.example.CarrerLink_backend.service.JobService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -101,6 +102,17 @@ private final JobService jobService;
     public ResponseEntity<StandardResponse> deleteJob(@RequestParam int jobId){
         String msg = jobService.deleteJob(jobId);
         return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+
+    @ApiResponses(value ={
+            @ApiResponse(responseCode = "200",description = "Successfully deleted job"),
+            @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500",description = "Internal server error")
+    })
+    @GetMapping(path="/getcompany")
+    public ResponseEntity<StandardResponse> getCompanyByJob(@RequestParam int jobId){
+        Company company = jobService.getCompanyByJobId(jobId);
+        return ResponseEntity.ok(new StandardResponse(true,"Jobs fetched successfully",company));
     }
 
 

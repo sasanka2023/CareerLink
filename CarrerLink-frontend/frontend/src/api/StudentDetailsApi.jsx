@@ -1,8 +1,8 @@
 import axiosInstance from './AxiosInstance';
 
-const getStudentByUsername = async (username) => {
+const getStudentByUsername = async (userId) => {
   try {
-    const response = await axiosInstance.get(`/students/username/${username}`);
+    const response = await axiosInstance.get(`/students/userId/${userId}`);
     if (!response.data?.success || !response.data?.data) {
       throw new Error('Invalid API response structure');
     }

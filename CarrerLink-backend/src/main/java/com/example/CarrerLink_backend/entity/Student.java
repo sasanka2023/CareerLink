@@ -21,9 +21,9 @@ public class Student {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
+
     private String address;
-    private String userName;
+
 
 
     @ManyToMany
@@ -78,8 +78,9 @@ public class Student {
         job.getStudents().add(this);
     }
 
-    public String toString(){
-        return "Student{" +"cvId" +(cv != null ? cv.getId() : "null") + '}';
-    }
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
 
 }

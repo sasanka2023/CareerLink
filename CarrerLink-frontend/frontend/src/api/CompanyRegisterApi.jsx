@@ -4,11 +4,16 @@ const CompanyRegisterApi = async (formdata) => {
    try{
       const response =  await axios.post('http://localhost:8091/api/auth/register/company',{
         name:formdata.name,
-        username:formdata.username,
+        
         email:formdata.email,
-        password:formdata.password,
+        
         website:formdata.website,
-        location:formdata.location
+        location:formdata.location,
+        userSaveRequestDTO: {
+          username: formdata.username,
+          password: formdata.password,
+          // Optionally include email or profilePic here if needed
+        }
   
       });
       return response.data.message;

@@ -50,7 +50,10 @@ public class SecurityConfig {
                              requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student")
                             .permitAll()
                             // Public access to GET requests for companies
-                            .requestMatchers("GET", "/api/companies/**").permitAll()
+                            .requestMatchers("GET", "/api/companies/**")
+                            .permitAll()
+                            .requestMatchers("GET","/api/jobs/**")
+                            .permitAll()
 
                             // Restricted access to modify company data
                             .requestMatchers("POST", "/api/companies/**").hasRole("COMPANY")

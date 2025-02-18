@@ -126,7 +126,7 @@ class StudentServiceImplTest {
         when(studentRepo.save(student)).thenReturn(student);
 
         // Act
-        String result = studentService.saveStudent(studentSaveRequestDTO);
+        String result = studentService.saveStudent(studentSaveRequestDTO,new UserEntity());
 
         // Assert
         assertNotNull(result);
@@ -173,7 +173,7 @@ class StudentServiceImplTest {
         existingStudent.setFirstName("sasanka");
         existingStudent.setLastName("gayathra");
         existingStudent.setEmail("sasanka@gmail.com");
-        existingStudent.setUserName("zibra");
+
         existingStudent.setJobsFields(null);
         existingStudent.setTechnologies(null);
 
@@ -189,7 +189,7 @@ class StudentServiceImplTest {
         assertEquals("sasa", existingStudent.getFirstName());
         assertEquals("gayathra", existingStudent.getLastName());
         assertEquals("sasa@gmail.com", existingStudent.getEmail());
-        assertEquals("sasa1", existingStudent.getUserName());
+
 
         // Verify interactions
         verify(studentRepo, times(1)).findById(existingStudent.getStudentId());
