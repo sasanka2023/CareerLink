@@ -1,0 +1,98 @@
+/* Global Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fc;
+  margin: 0;
+  padding: 0;
+}
+
+/* Job Page Container */
+.job-page {
+  max-width: 900px;
+  margin: 50px auto;
+  background: #ecebf2;
+  padding: 30px;
+  border-radius: 10px;
+  
+}
+
+/* Header Section */
+.job-header {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.job-title {
+  color:#040497;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.job-meta {
+  color: #080808;
+  font-size: 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.job-container {
+  position: relative; /* Ensures the button aligns correctly */
+  background-color: #eaeaf5;
+  padding: 20px;
+  border-radius: 40px;
+}
+
+/* Apply Button */
+.apply-button {
+ 
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #040497;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  
+}
+
+.apply-button:hover {
+  background-color: #040497;
+}
+
+/* Job Content Box */
+.job-content {
+  background: #eaeaf5;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.job-content h3 {
+  color: #040497;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.job-content p {
+  color:#080808;
+  line-height: 1.6;
+}
+
+.job-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.job-content li {
+  background: #eaeaf5;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 5px;
+  color: #333;
+}

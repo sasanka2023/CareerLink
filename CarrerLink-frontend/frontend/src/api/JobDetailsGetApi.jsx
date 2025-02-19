@@ -1,9 +1,9 @@
 import axiosInstance from './AxiosInstance';
 
-const getAllJobsusingFilters = async (location, category) => {
+const getAllJobsusingFilters = async (jobType, company) => {
   try {
     const response = await axiosInstance.get('jobs/filter', {
-      params: { location, category } // Pass query parameters properly
+      params: { jobType, company } // Pass query parameters properly
     });
 
     if (!response.data?.success || !response.data?.data) {

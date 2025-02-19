@@ -18,6 +18,7 @@ import CvTemplate7 from './components/studentDashboard/BlueModernForm';
 import TestPlatform from './components/studentDashboard/TestPlatform';
 import Companies from './pages/Companies';
 import EditProfile from './components/studentDashboard/EditProfile';
+import JobPage from './pages/JobPage'; // Import the JobPage component
 
 const Layout = () => {
     return (
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
             { path: '/courses', element: <Courses /> },
             { path: '/contact', element: <Contact /> },
             { path: '/employees', element: <Companies /> },
-            
+            { path: '/job/:jobId', element: <JobPage /> }, // Add this route for JobPage
         ],
     },
     {
@@ -63,11 +64,6 @@ const router = createBrowserRouter([
         element:<TestPlatform/> 
     } ,
     { path: '/editprofile',element:<EditProfile/>}
-   
-   // {
-    //     path: '/test',
-    //     element: <Dashboard /> // No Header/Footer for this route
-    // }
 ]);
 
 function App() {
