@@ -124,7 +124,7 @@ public class CompanyController {
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", company));
     }
 
-    @Operation(summary = "Get company by username")
+    @Operation(summary = "Get company by userid")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
