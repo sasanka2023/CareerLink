@@ -1,16 +1,11 @@
-// StudentDashboardLayout.tsx
 import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, BookOpen, Briefcase, FileText, FileSpreadsheet, Bell, Settings, LogOut } from 'lucide-react';
 import { AuthContext } from "../../../api/AuthProvider";
 
-interface DashboardLayoutProps {
-    children: React.ReactNode;
-}
-
-function StudentDashboardLayout({ children }: DashboardLayoutProps) {
+function StudentDashboardLayout({ children }) {
     const location = useLocation();
-    const isActive = (path: string) => location.pathname === path;
+    const isActive = (path) => location.pathname === path;
     const navigate = useNavigate();
     const { logout } = useContext(AuthContext);
 
