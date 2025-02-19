@@ -1,7 +1,7 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, ArrowUpRight } from 'lucide-react';
 import { getAllJobs } from '../api/JobDetailsGetApi';
-
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function Jobs() {
   const [selectedJobType, setSelectedJobType] = useState('all');
@@ -9,7 +9,7 @@ function Jobs() {
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const jobTypes = ['all', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'];
   const jobTitles = [
@@ -23,7 +23,6 @@ function Jobs() {
     "Full Stack JavaScript Developer",
     "Cloud Engineer",
     "Microservices Developer"
-    
   ];
   const companies = [
     'all',
@@ -35,7 +34,6 @@ function Jobs() {
     'NEXTGENAI',
     'Sysco Labs',
     'WSO2'
-
   ];
 
   useEffect(() => {
@@ -139,7 +137,10 @@ function Jobs() {
                   </span>
                 </div>
                 
-                <button className="mt-4 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+                <button 
+                  className="mt-4 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+                  onClick={() => navigate(`/job/${job.jobId}`)} // Navigate to JobPage
+                >
                   More Info
                   <ArrowUpRight className="h-4 w-4 ml-2" />
                 </button>
