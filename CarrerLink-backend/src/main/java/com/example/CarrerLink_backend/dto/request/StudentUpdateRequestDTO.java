@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class StudentUpdateRequestDTO {
-    private int StudentId;
+    private int studentId;
     private String firstName;
     private String lastName;
     private String email;

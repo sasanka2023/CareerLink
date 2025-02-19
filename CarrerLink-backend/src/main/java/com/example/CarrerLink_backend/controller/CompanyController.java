@@ -4,6 +4,8 @@ import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 
+
+import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,8 +78,8 @@ public class CompanyController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<StandardResponse> saveCompany(@RequestBody CompanySaveRequestDTO companySaveRequestDTO) {
-        String savedCompany = companyService.saveCompany(companySaveRequestDTO);
+    public ResponseEntity<StandardResponse> saveCompany(@RequestBody CompanySaveRequestDTO companySaveRequestDTO, UserEntity user) {
+        String savedCompany = companyService.saveCompany(companySaveRequestDTO,user);
         return ResponseEntity.status(201)
                 .body(new StandardResponse(true, "Company saved successfully", savedCompany));
     }
@@ -107,6 +109,31 @@ public class CompanyController {
     public ResponseEntity<StandardResponse> deleteCompany(@PathVariable Long id) {
         companyService.deleteCompany(id);
         return ResponseEntity.ok(new StandardResponse(true, "Company deleted successfully", null));
+    }
+
+
+    @Operation(summary = "Get company by username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/username/{username}")
+    public ResponseEntity<StandardResponse> getCompanyByName(@PathVariable String username){
+        CompanygetResponseDTO company = companyService.getCompanyByName(username);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", company));
+    }
+
+    @Operation(summary = "Get company by username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/userId/{userId}")
+    public ResponseEntity<StandardResponse> getCompanyById(@PathVariable int userId){
+        CompanygetResponseDTO company = companyService.getCompanyByUserId(userId);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", company));
     }
 }
 

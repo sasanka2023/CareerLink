@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class StudentgetResponseDTO {
-    private int StudentId;
+    private int studentId;
     private String firstName;
     private String lastName;
     private String email;
@@ -26,5 +26,6 @@ public class StudentgetResponseDTO {
     private String department;
     private String degree;
     private List<ReviewDTO> reviews;
+    private List<ProjectsDTO> projects;
 
 }

@@ -19,6 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -38,12 +43,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                     .csrf(c->c.disable())
+                    .cors(Customizer.withDefaults())
                     .sessionManagement(s->s.
                         sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(r->r.
                              requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student")
                             .permitAll()
-                            .requestMatchers("/api/companies/**").hasRole("COMPANY") // Accessible by Student role
+                            // Public access to GET requests for companies
+                            .requestMatchers("GET", "/api/companies/**")
+                            .permitAll()
+                            .requestMatchers("GET","/api/jobs/**")
+                            .permitAll()
+
+                            // Restricted access to modify company data
+                            .requestMatchers("POST", "/api/companies/**").hasRole("COMPANY")
+                            .requestMatchers("PUT", "/api/companies/**").hasRole("COMPANY")
+                            .requestMatchers("DELETE", "/api/companies/**").hasRole("COMPANY")
                             .requestMatchers("/api/students/**").hasRole("STUDENT") // Accessible by Company role
                             .requestMatchers("/api/cv/**", "/api/jobs/**","/api/v1/requiredCourses/**").authenticated()
                              // Any other endpoints require authentication
@@ -72,6 +87,19 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }

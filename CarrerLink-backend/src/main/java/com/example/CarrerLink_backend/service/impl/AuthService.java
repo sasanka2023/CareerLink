@@ -55,64 +55,65 @@ public class AuthService {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(),loginRequestDTO.getPassword()));
         }catch(Exception e){
-            return new LoginResponseDTO(null,null,"user not found","error");
+            return new LoginResponseDTO(null,null,"user not found","error",null);
 
         }
 
         UserEntity user = userRepo.findByUsername(loginRequestDTO.getUsername());
-        if(user == null) return new LoginResponseDTO(null,null,"user not found","error");
+
 
         Map<String,Object> claims = new HashMap<String,Object>();
         claims.put("role",user.getRole());
         claims.put("email",user.getEmail());
+        claims.put("userId",user.getId());
         String token = jwtService.getJWTToken(loginRequestDTO.getUsername(),claims);
 
         System.out.println(jwtService.getFieldFromToken(token,"role"));
-        return new LoginResponseDTO(token, LocalDateTime.now(),null,"token generate success");
+        return new LoginResponseDTO(token, LocalDateTime.now(),null,"token generate success",user.getUsername());
 
     }
-    @Transactional
-    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO){
-        if(isUserEnable(registerRequestDTO.getUsername())) return new RegisterResponseDTO(null,"user allready exists in the System");
-        UserEntity userData = this.createUser(registerRequestDTO);
-        if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
-        return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
-    }
+//    @Transactional
+//    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO){
+//        if(isUserEnable(registerRequestDTO.getUsername())) return new RegisterResponseDTO(null,"user allready exists in the System");
+//        UserEntity userData = this.createUser(registerRequestDTO);
+//        if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
+//        return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
+//    }
     @Transactional
     public RegisterResponseDTO registerStudent(StudentSaveRequestDTO studentSaveRequestDTO) throws IllegalAccessException {
-        if(Boolean.TRUE.equals(isUserEnable(studentSaveRequestDTO.getUserName()))) {
+        if(Boolean.TRUE.equals(isUserEnable(studentSaveRequestDTO.getUserSaveRequestDTO().getUsername()))) {
             throw new IllegalAccessException("User already exists in the System");
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setName(studentSaveRequestDTO.getFirstName()+" "+studentSaveRequestDTO.getLastName());
         userEntity.setEmail(studentSaveRequestDTO.getEmail());
-        userEntity.setUsername(studentSaveRequestDTO.getUserName());
-        userEntity.setPassword(passwordEncoder.encode(studentSaveRequestDTO.getPassword()));
+        userEntity.setUsername(studentSaveRequestDTO.getUserSaveRequestDTO().getUsername());
+        userEntity.setPassword(passwordEncoder.encode(studentSaveRequestDTO.getUserSaveRequestDTO().getPassword()));
         RolesEntity studentRole = roleRepo.findByName("ROLE_STUDENT").orElseThrow(() ->new RuntimeException("Role not found"));
         userEntity.setRole(studentRole.getName());
-
-        studentService.saveStudent(studentSaveRequestDTO);
-
         UserEntity userData = userRepo.save(userEntity);
+        studentService.saveStudent(studentSaveRequestDTO,userData);
+
+
         if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
         return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
     }
     @Transactional
     public RegisterResponseDTO registerCompany(CompanySaveRequestDTO companySaveRequestDTO) throws IllegalAccessException {
-        if(Boolean.TRUE.equals(isUserEnable(companySaveRequestDTO.getUsername()))) {
+        if(Boolean.TRUE.equals(isUserEnable(companySaveRequestDTO.getUserSaveRequestDTO().getUsername()))) {
             throw new IllegalAccessException("User already exists in the System");
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setName(companySaveRequestDTO.getName());
         userEntity.setEmail(companySaveRequestDTO.getEmail());
-        userEntity.setUsername(companySaveRequestDTO.getUsername());
-        userEntity.setPassword(passwordEncoder.encode(companySaveRequestDTO.getPassword()));
+        userEntity.setUsername(companySaveRequestDTO.getUserSaveRequestDTO().getUsername());
+        userEntity.setPassword(passwordEncoder.encode(companySaveRequestDTO.getUserSaveRequestDTO().getPassword()));
         RolesEntity companyRole = roleRepo.findByName("ROLE_COMPANY").orElseThrow(()->new RuntimeException("Role not found"));
         userEntity.setRole(companyRole.getName());
-
-        companyService.saveCompany(companySaveRequestDTO);
-
         UserEntity userData = userRepo.save(userEntity);
+        companyService.saveCompany(companySaveRequestDTO,userData);
+
+
         if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
         return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
     }
@@ -124,4 +125,7 @@ public class AuthService {
 
     }
 
+    public RolesEntity createRoles(RolesEntity rolesEntity) {
+        return roleRepo.save(rolesEntity);
+    }
 }

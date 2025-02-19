@@ -1,9 +1,7 @@
-
 import React from 'react';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';  // For React Router v7
+import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import Header from './components/Headers/Header';
 import Footer from './components/Footer/Footer';
-import HeroSection from './pages/HeroSection';
 import CompanyAuth from './pages/CompanyAuth';
 import CompanyRegister from './pages/CompanyRegister';
 import StudentAuth from './pages/StudentAuth';
@@ -13,34 +11,71 @@ import Jobs from './pages/Jobs';
 import Employer from './pages/Employer';
 import Courses from './pages/Courses';
 import Contact from './pages/Contact';
-import JobApplicationForm from './pages/JobApplicationForm';
+import CompanyDashboardPage from "./pages/CompanyDashboard";
+import StudentDashBoard from './pages/StudentDashBoard';
+import { AuthProvider } from './api/AuthProvider';
+import CvTemplate7 from './components/studentDashboard/BlueModernForm';
+import TestPlatform from './components/studentDashboard/TestPlatform';
+import Companies from './pages/Companies';
+import EditProfile from './components/studentDashboard/EditProfile';
 
-// Define the routes for v7
+const Layout = () => {
+    return (
+        <>
+            <Header />
+            <main>
+                <Outlet /> {/* This renders the child route's component */}
+            </main>
+            <Footer />
+        </>
+    );
+};
+
+// Define routes
 const router = createBrowserRouter([
-  { path: '/', element: <HeroSection /> },
-  { path: '/company-auth', element: <CompanyAuth /> },
-  { path: '/company-register', element: <CompanyRegister /> },
-  { path: '/student-auth', element: <StudentAuth /> },
-  { path: '/student-register', element: <StudentRegister /> },
-  { path: '/home', element: <Home /> },
-  { path: '/jobs', element: <Jobs /> },
-  { path: '/employer', element: <Employer /> },
-  { path: '/courses', element: <Courses /> },
-  { path: '/contact', element: <Contact /> },
-  {path: '/job-application-form', element: <JobApplicationForm />},
+    {
+        element: <Layout />, // Applies Header/Footer to all child routes
+        children: [
+            { path: '/', element: <Home /> },
+            { path: '/company-auth', element: <CompanyAuth /> },
+            { path: '/company-register', element: <CompanyRegister /> },
+            { path: '/company-dashboard', element: <CompanyDashboardPage /> },
+            { path: '/student-auth', element: <StudentAuth /> },
+            { path: '/student-register', element: <StudentRegister /> },
+            { path: '/home', element: <Home /> },
+            { path: '/jobs', element: <Jobs /> },
+            { path: '/employer', element: <Employer /> },
+            { path: '/courses', element: <Courses /> },
+            { path: '/contact', element: <Contact /> },
+            { path: '/employees', element: <Companies /> },
+            
+        ],
+    },
+    {
+        path: '/student',
+        element: <StudentDashBoard /> // No Header/Footer for this route
+     },
+    {
+        path: '/bluetemplate',
+        element:<CvTemplate7/>    
+    } ,{
+        path: '/testplatform',
+        element:<TestPlatform/> 
+    } ,
+    { path: '/editprofile',element:<EditProfile/>}
+   
+   // {
+    //     path: '/test',
+    //     element: <Dashboard /> // No Header/Footer for this route
+    // }
 ]);
 
 function App() {
-  return (
-    <>
-      <Header />
-      <main>
-        <RouterProvider router={router} /> {/* Use RouterProvider for v7 */}
-      </main>
-      <Footer />
-    </>
-
-  );
+    return (
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+    );
 }
 
 export default App;

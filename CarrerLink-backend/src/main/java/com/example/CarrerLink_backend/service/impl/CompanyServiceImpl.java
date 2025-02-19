@@ -4,10 +4,7 @@ import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
-import com.example.CarrerLink_backend.entity.Client;
-import com.example.CarrerLink_backend.entity.Company;
-import com.example.CarrerLink_backend.entity.Products;
-import com.example.CarrerLink_backend.entity.Technology;
+import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.exception.DuplicateResourceException;
 import com.example.CarrerLink_backend.exception.InvalidInputException;
 import com.example.CarrerLink_backend.exception.OperationFailedException;
@@ -77,7 +74,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public String saveCompany(CompanySaveRequestDTO companySaveRequestDTO) {
+    public String saveCompany(CompanySaveRequestDTO companySaveRequestDTO,UserEntity user) {
         if (companySaveRequestDTO.getName() == null || companySaveRequestDTO.getLocation() == null) {
             throw new InvalidInputException("Company name and location are required.");
         }
@@ -85,6 +82,7 @@ public class CompanyServiceImpl implements CompanyService {
             throw new DuplicateResourceException("Company with the name " + companySaveRequestDTO.getName() + " already exists.");
         }
         Company company = modelMapper.map(companySaveRequestDTO, Company.class);
+        company.setUser(user);
         companyRepository.save(company);
         return "Company saved successfully";
     }
@@ -152,5 +150,18 @@ public class CompanyServiceImpl implements CompanyService {
         } catch (Exception e) {
             throw new OperationFailedException("Failed to delete company with ID " + id + ": " + e.getMessage());
         }
+    }
+
+
+    @Override
+    public CompanygetResponseDTO getCompanyByName(String username) {
+        Company company = companyRepository.findByName(username).orElseThrow(()->new RuntimeException("Company not found"));
+        return modelMapper.map(company, CompanygetResponseDTO.class);
+    }
+
+    @Override
+    public CompanygetResponseDTO getCompanyByUserId(int userId) {
+        Company company = companyRepository.findByUser_Id(userId).orElseThrow(()->new RuntimeException("Company not found"));
+        return modelMapper.map(company, CompanygetResponseDTO.class);
     }
 }

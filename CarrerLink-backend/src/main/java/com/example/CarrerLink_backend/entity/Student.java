@@ -16,14 +16,14 @@ import java.util.List;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int StudentId;
+    private int studentId;
 
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
+
     private String address;
-    private String userName;
+
 
 
     @ManyToMany
@@ -35,7 +35,7 @@ public class Student {
     private List<JobField> jobsFields;
 
 
-    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
     private List<SkillSet> skills;
 
     @ManyToMany
@@ -61,6 +61,10 @@ public class Student {
     @JoinColumn(name = "cv_id")
     private CV cv;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<Projects> projects;
+
+
     @ManyToMany
     @JoinTable(
             name = "student_job", // This is the table name
@@ -74,8 +78,9 @@ public class Student {
         job.getStudents().add(this);
     }
 
-    public String toString(){
-        return "Student{" +"cvId" +(cv != null ? cv.getId() : "null") + '}';
-    }
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.service;
 
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
+import com.example.CarrerLink_backend.entity.Company;
 
 import java.util.List;
 
@@ -12,4 +13,6 @@ public interface JobService {
     String updateJob(JobgetResponseDTO jobgetResponseDTO);
 
     String deleteJob(int jobId);
+
+    Company getCompanyByJobId(int jobId);
 }

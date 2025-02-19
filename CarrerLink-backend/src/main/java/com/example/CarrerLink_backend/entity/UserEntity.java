@@ -22,5 +22,11 @@ public class UserEntity {
     private String password;
     private String role;
     private Boolean isEnabled = true;
+    private String profilepic;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Student student;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Company company;
 
 }
