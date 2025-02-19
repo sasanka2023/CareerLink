@@ -15,4 +15,5 @@ public class LoginResponseDTO {
     private LocalDateTime time;
     private String error;
     private String message;
+    private String username;
 }

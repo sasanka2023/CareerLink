@@ -114,12 +114,13 @@ public class StudentController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping()
+    @GetMapping("{stId}")
 
-    public ResponseEntity<StandardResponse> getStudentById(@RequestParam int stId){
+    public ResponseEntity<StandardResponse> getStudentById(@PathVariable int stId){
         StudentgetResponseDTO students = studentService.getStudentById(stId);
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
+
 
     @Operation(summary = "Get recommended courses for a student")
     @ApiResponses(value = {
@@ -136,6 +137,20 @@ public class StudentController {
         }
 
         return ResponseEntity.ok(new StandardResponse(true, "Recommended courses fetched successfully", recommendedCourses));
+    }
+
+
+
+    @Operation(summary = "Get student by username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/username/{userName}")
+    public ResponseEntity<StandardResponse> getStudentByUserName(@PathVariable String userName){
+        StudentgetResponseDTO students = studentService.getStudentByUserName(userName);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 
 
