@@ -49,7 +49,8 @@ public class StudentServiceImpl implements StudentService {
         CV cv = new CV();
         cv.setStudent(student);
         student.setCv(cv);
-
+        saveJobFields(studentSaveRequestDTO,student);
+        saveTechnologies(studentSaveRequestDTO,student);
         saveAcedemicResults(studentSaveRequestDTO,student);
         Student savedStudent = studentRepo.save(student);
 
@@ -57,6 +58,28 @@ public class StudentServiceImpl implements StudentService {
         return "Student saved successfully with ID: " + savedStudent.getStudentId();
     }
 
+    public void saveJobFields(StudentSaveRequestDTO dto, Student student) {
+        if (dto.getJobFields() != null) {
+            List<JobField> newJobFields = new ArrayList<>();
+            for (JobFieldDTO jobFieldDto : dto.getJobFields()) {
+                JobField jobField = jobFieldRepo.findByJobField(jobFieldDto.getJobField())
+                        .orElseThrow(() -> new RuntimeException("JobField not found: " + jobFieldDto.getJobField()));
+                newJobFields.add(jobField);
+            }
+            student.setJobsFields(newJobFields); // Replace the entire list
+        }
+    }
+    public void saveTechnologies(StudentSaveRequestDTO dto, Student student) {
+        if (dto.getTechnologies() != null) {
+            List<Technology> newTechnologies = new ArrayList<>();
+            for (TechnologyDTO techDto : dto.getTechnologies()) {
+                Technology tech = technologyRepo.findByTechName(techDto.getTechName())
+                        .orElseThrow(() -> new RuntimeException("Technology not found: " + techDto.getTechName()));
+                newTechnologies.add(tech);
+            }
+            student.setTechnologies(newTechnologies); // Replace the entire list
+        }
+    }
     @Override
     public String updateStudent(StudentUpdateRequestDTO studentUpdateRequestDTO) {
             Student existingStudent = studentRepo.findById(studentUpdateRequestDTO.getStudentId())
