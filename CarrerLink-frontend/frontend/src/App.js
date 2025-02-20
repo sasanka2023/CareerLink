@@ -23,7 +23,8 @@ import CV4 from './components/Dashboard/StudentDashboard/CV1';
 import TestPlatform from './components/studentDashboard/TestPlatform';
 import Companies from './pages/Companies';
 import EditProfile from './components/studentDashboard/EditProfile';
-import JobPage from './pages/JobPage'; // Import the JobPage component
+import JobPage from './pages/JobPage';
+import AdminDashboard from "./components/Dashboard/AdminDashboard/AdminDashboard"; // Import the JobPage component
 
 const Layout = () => {
     return (
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
         path: '/student',
         element: <StudentDashBoard /> // No Header/Footer for this route
      },
+    {
+        path: '/admin',
+        element: <AdminDashboard/> // No Header/Footer for this route
+    },
      {
         path: '/cv/template1',
         element: <CV1 />
