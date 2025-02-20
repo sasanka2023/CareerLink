@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, BookOpen, Briefcase, FileText, FileSpreadsheet, Bell, Settings, LogOut } from 'lucide-react';
 import { AuthContext } from "../../../api/AuthProvider";
 
-function StudentDashboardLayout({ children }) {
+function StudentDashboardLayout({ children,StudentName }) {
     const location = useLocation();
     const isActive = (path) => location.pathname === path;
     const navigate = useNavigate();
@@ -95,7 +95,7 @@ function StudentDashboardLayout({ children }) {
                                 alt="Profile"
                                 className="w-8 h-8 rounded-full"
                             />
-                            <span className="font-medium">Kushan Sandul</span>
+                            <span className="font-medium">{StudentName}</span>
                         </Link>
                     </div>
                 </header>
