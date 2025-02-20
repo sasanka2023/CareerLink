@@ -148,6 +148,30 @@ const StudentRegister = () => {
         return (step / 3) * 100;
     };
 
+    //////////////////////////////////
+    const addCourse = () => {
+        if (!newCourse.course || !newCourse.result) {
+            setErrors((prev) => ({
+                ...prev,
+                academicStatus: "Both course and result are required"
+            }));
+            return;
+        }
+
+        const updatedAcademicStatus = [...academicStatus, newCourse];
+        setAcademicStatus(updatedAcademicStatus);
+        setFormData((prev) => ({
+            ...prev,
+            academicStatus: updatedAcademicStatus
+        }));
+        setNewCourse({ course: "", result: "" });
+        setErrors((prev) => ({
+            ...prev,
+            academicStatus: undefined
+        }));
+    };
+    ////////////////////////////////////////////////
+
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl w-full">
@@ -412,7 +436,7 @@ const StudentRegister = () => {
                                     <label className="block text-sm font-medium text-gray-700 mb-4">
                                         Exam Results
                                     </label>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    {/* <div className="grid grid-cols-2 gap-4">
                                         {Object.entries({
                                             oop: 'OOP',
                                             se: 'SE',
@@ -432,19 +456,68 @@ const StudentRegister = () => {
                                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                                 >
                                                     <option value="">Select Grade</option>
-                                                    <option value="A+">A+</option>
+                                                  
                                                     <option value="A">A</option>
-                                                    <option value="A-">A-</option>
-                                                    <option value="B+">B+</option>
+                                                 
                                                     <option value="B">B</option>
-                                                    <option value="B-">B-</option>
-                                                    <option value="C+">C+</option>
+                                                    
+                                                    
                                                     <option value="C">C</option>
-                                                    <option value="C-">C-</option>
+                                                    
                                                 </select>
                                             </div>
                                         ))}
-                                    </div>
+                                    </div> */}
+                                            <div className="mb-4">
+                                                <h3 className="font-semibold mb-2">Academic Status</h3>
+                                                <div className="flex items-center mb-2">
+                                                    <select
+                                                        className="p-2 border rounded mr-2 flex-1"
+                                                        value={newCourse.course}
+                                                        onChange={(e) => setNewCourse(prev => ({...prev, course: e.target.value}))}
+
+                                                    >
+                                                        <option value="">Select course</option>
+                                                        <option value="OOP">OOP</option>
+                                                        <option value="Programming Techniques">Programming Techniques</option>
+                                                        <option value="Software Engneering">Software Engneering</option>
+                                                        <option value="Project Management">Project Management</option>
+                                                        <option value="Statistics">Statistics</option>
+                                                        <option value="Data mining">Data Mining</option>
+                                                        
+                                                    </select>
+                                                    <select
+                                                        className="p-2 border rounded mr-2 w-24"
+                                                        value={newCourse.result}
+                                                        onChange={(e) => setNewCourse(prev => ({...prev, result: e.target.value}))}
+                                                    >
+                                                        <option value="">Result</option>
+                                                        <option value="A">A</option>
+                                                        <option value="B">B</option>
+                                                        <option value="F">F</option>
+                                                    </select>
+                                                    <button
+                                                        type="button"
+                                                        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                                                        onClick={addCourse}
+                                                    >
+                                                        Add
+                                                    </button>
+                                                </div>
+                                                {errors.academicStatus && (
+                                                    <p className="text-red-500 text-xs mt-1">{errors.academicStatus}</p>
+                                                )}
+                                                {academicStatus.length > 0 && (
+                                                    <ul className="mt-2 border rounded-lg divide-y">
+                                                        {academicStatus.map((status, index) => (
+                                                            <li key={index} className="flex justify-between p-2">
+                                                                <span>{status.course}</span>
+                                                                <span>{status.result}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
                                 </div>
                             </div>
                         )}

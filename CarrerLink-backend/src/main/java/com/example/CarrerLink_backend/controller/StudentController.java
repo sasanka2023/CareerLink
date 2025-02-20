@@ -65,7 +65,7 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<StandardResponse> deleteStudent(@PathVariable int id) {
         studentService.deleteStudent(id);
-        return ResponseEntity.ok(new StandardResponse(true, "Company deleted successfully", null));
+        return ResponseEntity.ok(new StandardResponse(true, "Student deleted successfully", null));
     }
 
     @Operation(summary = "Apply for a job")
