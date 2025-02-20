@@ -100,6 +100,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public void deleteStudent(int id) {
         if(!studentRepo.existsById(id)){
             throw new RuntimeException("student with ID " + id + ACTION_1);
