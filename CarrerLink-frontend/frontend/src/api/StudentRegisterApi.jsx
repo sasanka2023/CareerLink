@@ -12,6 +12,12 @@ const StudentRegisterApi = async (formData) => {
       department: formData.department,
       degree: formData.degree,
       acedemicResults:formData.academicStatus,
+      JobFieldDTO: {
+        jobField : formData.jobField,
+      },
+      TechnologyDTO: {
+        techName : formData.techName,
+      },
       userSaveRequestDTO: {
         username: formData.userName,
         password: formData.password,
