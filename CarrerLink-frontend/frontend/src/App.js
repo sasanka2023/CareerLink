@@ -15,6 +15,11 @@ import CompanyDashboardPage from "./pages/CompanyDashboard";
 import StudentDashBoard from './pages/StudentDashBoard';
 import { AuthProvider } from './api/AuthProvider';
 import CvTemplate7 from './components/studentDashboard/BlueModernForm';
+import StudentCV from './components/Dashboard/StudentDashboard/StudentCV';
+import CV1 from './components/Dashboard/StudentDashboard/CV1';
+import CV2 from './components/Dashboard/StudentDashboard/CV2';
+import CV3 from './components/Dashboard/StudentDashboard/CV3';
+import CV4 from './components/Dashboard/StudentDashboard/CV1';
 import TestPlatform from './components/studentDashboard/TestPlatform';
 import Companies from './pages/Companies';
 import EditProfile from './components/studentDashboard/EditProfile';
@@ -56,6 +61,22 @@ const router = createBrowserRouter([
         path: '/student',
         element: <StudentDashBoard /> // No Header/Footer for this route
      },
+     {
+        path: '/cv/template1',
+        element: <CV1 />
+    },
+    {
+        path: '/cv/template2',
+        element: <CV2 />
+    },
+    {
+        path: '/cv/template3',
+        element: <CV3 />
+    },
+    {
+        path: '/cv/template4',
+        element: <CV4 />
+    },
     {
         path: '/bluetemplate',
         element:<CvTemplate7/>    
@@ -64,6 +85,8 @@ const router = createBrowserRouter([
         element:<TestPlatform/> 
     } ,
     { path: '/editprofile',element:<EditProfile/>}
+    ,
+    { path: 'student-dashboard/cv', element: <StudentCV /> }
 ]);
 
 function App() {
