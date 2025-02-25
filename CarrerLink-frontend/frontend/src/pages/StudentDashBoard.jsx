@@ -57,7 +57,7 @@ const StudentDashboard = () => {
   if (!studentInfo) return <div>Student not found</div>;
 
   return (
-      <DashboardLayout>
+      <DashboardLayout StudentName={studentInfo.firstName}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="space-y-8">
             <div className="bg-white rounded-xl shadow-sm p-6">

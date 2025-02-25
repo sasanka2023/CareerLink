@@ -13,7 +13,9 @@ import {
 } from "lucide-react";
 import { AuthContext } from "../../../api/AuthProvider";
 
-function StudentDashboardLayout({ children, StudentName }) {
+
+function StudentDashboardLayout({ children,StudentName }) {
+
     const location = useLocation();
     const isActive = (path) => location.pathname === path;
     const navigate = useNavigate();
