@@ -48,10 +48,28 @@ const StudentRegister = () => {
             webDevelopment: "",
             php: ""
         },
-        technologies: [], // Updated to store objects with techName
-        jobsFields: [], // Updated to store objects with jobField
+        technologies: [],
+        jobsFields: [],
         agreeToTerms: false
     });
+
+    // Validation functions
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const validatePassword = (password) => {
+        return password.length >= 8;
+    };
+
+    const validateConfirmPassword = (password, confirmPassword) => {
+        return password === confirmPassword;
+    };
+
+    const validateRequired = (value) => {
+        return value.trim() !== "";
+    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -113,7 +131,67 @@ const StudentRegister = () => {
     };
 
     const nextStep = () => {
-        setStep(prev => prev + 1);
+        let newErrors = {};
+
+        if (step === 1) {
+            // Validate Step 1: Personal Information
+            if (!validateRequired(formData.firstName)) {
+                newErrors.firstName = "First name is required";
+            }
+            if (!validateRequired(formData.lastName)) {
+                newErrors.lastName = "Last name is required";
+            }
+            if (!validateRequired(formData.userName)) {
+                newErrors.userName = "Username is required";
+            }
+            if (!validateEmail(formData.email)) {
+                newErrors.email = "Invalid email address";
+            }
+            if (!validatePassword(formData.password)) {
+                newErrors.password = "Password must be at least 8 characters";
+            }
+            if (!validateConfirmPassword(formData.password, formData.confirmPassword)) {
+                newErrors.confirmPassword = "Passwords do not match";
+            }
+            if (!validateRequired(formData.address)) {
+                newErrors.address = "Address is required";
+            }
+        } else if (step === 2) {
+            // Validate Step 2: Education Information
+            if (!validateRequired(formData.university)) {
+                newErrors.university = "University is required";
+            }
+            if (!validateRequired(formData.department)) {
+                newErrors.department = "Department is required";
+            }
+            if (!validateRequired(formData.degree)) {
+                newErrors.degree = "Degree is required";
+            }
+            if (!validateRequired(formData.gpa)) {
+                newErrors.gpa = "GPA is required";
+            }
+            if (academicStatus.length === 0) {
+                newErrors.academicStatus = "At least one course result is required";
+            }
+        } else if (step === 3) {
+            // Validate Step 3: Technologies and Job Fields
+            if (formData.technologies.length === 0) {
+                newErrors.technologies = "At least one technology is required";
+            }
+            if (formData.jobsFields.length === 0) {
+                newErrors.jobsFields = "At least one job field is required";
+            }
+            if (!formData.agreeToTerms) {
+                newErrors.agreeToTerms = "You must agree to the terms and conditions";
+            }
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+        } else {
+            setErrors({});
+            setStep(prev => prev + 1);
+        }
     };
 
     const prevStep = () => {
@@ -122,19 +200,73 @@ const StudentRegister = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(formData);
+
+        let newErrors = {};
+
+        // Validate all steps
+        if (!validateRequired(formData.firstName)) {
+            newErrors.firstName = "First name is required";
+        }
+        if (!validateRequired(formData.lastName)) {
+            newErrors.lastName = "Last name is required";
+        }
+        if (!validateRequired(formData.userName)) {
+            newErrors.userName = "Username is required";
+        }
+        if (!validateEmail(formData.email)) {
+            newErrors.email = "Invalid email address";
+        }
+        if (!validatePassword(formData.password)) {
+            newErrors.password = "Password must be at least 8 characters";
+        }
+        if (!validateConfirmPassword(formData.password, formData.confirmPassword)) {
+            newErrors.confirmPassword = "Passwords do not match";
+        }
+        if (!validateRequired(formData.address)) {
+            newErrors.address = "Address is required";
+        }
+        if (!validateRequired(formData.university)) {
+            newErrors.university = "University is required";
+        }
+        if (!validateRequired(formData.department)) {
+            newErrors.department = "Department is required";
+        }
+        if (!validateRequired(formData.degree)) {
+            newErrors.degree = "Degree is required";
+        }
+        if (!validateRequired(formData.gpa)) {
+            newErrors.gpa = "GPA is required";
+        }
+        if (academicStatus.length === 0) {
+            newErrors.academicStatus = "At least one course result is required";
+        }
+        if (formData.technologies.length === 0) {
+            newErrors.technologies = "At least one technology is required";
+        }
+        if (formData.jobsFields.length === 0) {
+            newErrors.jobsFields = "At least one job field is required";
+        }
+        if (!formData.agreeToTerms) {
+            newErrors.agreeToTerms = "You must agree to the terms and conditions";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
         try {
             const response = await StudentRegisterApi(formData);
             console.log('Response:', response);
             navigate("/student-auth", {
                 state: { message: "Successfully registered!" },
             });
-
         } catch (error) {
             console.error('Error during registration:', error);
             alert('Registration failed. Please try again.');
         }
     };
+
     const handleExamResultChange = (exam, value) => {
         setFormData(prev => ({
             ...prev,
@@ -144,11 +276,11 @@ const StudentRegister = () => {
             }
         }));
     };
+
     const getStepProgress = () => {
         return (step / 3) * 100;
     };
 
-    //////////////////////////////////
     const addCourse = () => {
         if (!newCourse.course || !newCourse.result) {
             setErrors((prev) => ({
@@ -170,7 +302,6 @@ const StudentRegister = () => {
             academicStatus: undefined
         }));
     };
-    ////////////////////////////////////////////////
 
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -233,6 +364,7 @@ const StudentRegister = () => {
                                                 placeholder="First name"
                                             />
                                         </div>
+                                        {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -250,6 +382,7 @@ const StudentRegister = () => {
                                                 placeholder="Last name"
                                             />
                                         </div>
+                                        {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
                                     </div>
                                 </div>
 
@@ -269,6 +402,7 @@ const StudentRegister = () => {
                                             placeholder="Username"
                                         />
                                     </div>
+                                    {errors.userName && <p className="text-red-500 text-xs mt-1">{errors.userName}</p>}
                                 </div>
 
                                 <div>
@@ -287,6 +421,7 @@ const StudentRegister = () => {
                                             placeholder="student@example.com"
                                         />
                                     </div>
+                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                                 </div>
 
                                 <div>
@@ -305,6 +440,7 @@ const StudentRegister = () => {
                                             placeholder="Create a password"
                                         />
                                     </div>
+                                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                                 </div>
 
                                 <div>
@@ -323,6 +459,7 @@ const StudentRegister = () => {
                                             placeholder="Confirm your password"
                                         />
                                     </div>
+                                    {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
                                 </div>
 
                                 <div>
@@ -341,6 +478,7 @@ const StudentRegister = () => {
                                             placeholder="Enter your address"
                                         />
                                     </div>
+                                    {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
                                 </div>
 
                                 <div>
@@ -380,6 +518,7 @@ const StudentRegister = () => {
                                             placeholder="Enter your university"
                                         />
                                     </div>
+                                    {errors.university && <p className="text-red-500 text-xs mt-1">{errors.university}</p>}
                                 </div>
 
                                 <div>
@@ -398,6 +537,7 @@ const StudentRegister = () => {
                                             placeholder="Enter your department"
                                         />
                                     </div>
+                                    {errors.department && <p className="text-red-500 text-xs mt-1">{errors.department}</p>}
                                 </div>
 
                                 <div>
@@ -416,6 +556,7 @@ const StudentRegister = () => {
                                             placeholder="e.g., Bachelor of Science"
                                         />
                                     </div>
+                                    {errors.degree && <p className="text-red-500 text-xs mt-1">{errors.degree}</p>}
                                 </div>
 
                                 <div>
@@ -430,94 +571,61 @@ const StudentRegister = () => {
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                         placeholder="e.g., 3.5"
                                     />
+                                    {errors.gpa && <p className="text-red-500 text-xs mt-1">{errors.gpa}</p>}
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-4">
                                         Exam Results
                                     </label>
-                                    {/* <div className="grid grid-cols-2 gap-4">
-                                        {Object.entries({
-                                            oop: 'OOP',
-                                            se: 'SE',
-                                            dsa: 'DSA',
-                                            dbms: 'DBMS',
-                                            network: 'Network',
-                                            pm: 'PM',
-                                            rad: 'RAD',
-                                            webDevelopment: 'Web Development',
-                                            php: 'PHP'
-                                        }).map(([key, label]) => (
-                                            <div key={key}>
-                                                <label className="block text-sm text-gray-600 mb-1">{label}</label>
-                                                <select
-                                                    value={formData.examResults[key]}
-                                                    onChange={(e) => handleExamResultChange(key, e.target.value)}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                                >
-                                                    <option value="">Select Grade</option>
-                                                  
-                                                    <option value="A">A</option>
-                                                 
-                                                    <option value="B">B</option>
-                                                    
-                                                    
-                                                    <option value="C">C</option>
-                                                    
-                                                </select>
-                                            </div>
-                                        ))}
-                                    </div> */}
-                                            <div className="mb-4">
-                                                <h3 className="font-semibold mb-2">Academic Status</h3>
-                                                <div className="flex items-center mb-2">
-                                                    <select
-                                                        className="p-2 border rounded mr-2 flex-1"
-                                                        value={newCourse.course}
-                                                        onChange={(e) => setNewCourse(prev => ({...prev, course: e.target.value}))}
-
-                                                    >
-                                                        <option value="">Select course</option>
-                                                        <option value="OOP">OOP</option>
-                                                        <option value="Programming Techniques">Programming Techniques</option>
-                                                        <option value="Software Engneering">Software Engneering</option>
-                                                        <option value="Project Management">Project Management</option>
-                                                        <option value="Statistics">Statistics</option>
-                                                        <option value="Data mining">Data Mining</option>
-                                                        
-                                                    </select>
-                                                    <select
-                                                        className="p-2 border rounded mr-2 w-24"
-                                                        value={newCourse.result}
-                                                        onChange={(e) => setNewCourse(prev => ({...prev, result: e.target.value}))}
-                                                    >
-                                                        <option value="">Result</option>
-                                                        <option value="A">A</option>
-                                                        <option value="B">B</option>
-                                                        <option value="F">F</option>
-                                                    </select>
-                                                    <button
-                                                        type="button"
-                                                        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-                                                        onClick={addCourse}
-                                                    >
-                                                        Add
-                                                    </button>
-                                                </div>
-                                                {errors.academicStatus && (
-                                                    <p className="text-red-500 text-xs mt-1">{errors.academicStatus}</p>
-                                                )}
-                                                {academicStatus.length > 0 && (
-                                                    <ul className="mt-2 border rounded-lg divide-y">
-                                                        {academicStatus.map((status, index) => (
-                                                            <li key={index} className="flex justify-between p-2">
-                                                                <span>{status.course}</span>
-                                                                <span>{status.result}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
-                                            </div>
+                                    <div className="mb-4">
+                                        <h3 className="font-semibold mb-2">Academic Status</h3>
+                                        <div className="flex items-center mb-2">
+                                            <select
+                                                className="p-2 border rounded mr-2 flex-1"
+                                                value={newCourse.course}
+                                                onChange={(e) => setNewCourse(prev => ({...prev, course: e.target.value}))}
+                                            >
+                                                <option value="">Select course</option>
+                                                <option value="OOP">OOP</option>
+                                                <option value="Programming Techniques">Programming Techniques</option>
+                                                <option value="Software Engneering">Software Engneering</option>
+                                                <option value="Project Management">Project Management</option>
+                                                <option value="Statistics">Statistics</option>
+                                                <option value="Data mining">Data Mining</option>
+                                            </select>
+                                            <select
+                                                className="p-2 border rounded mr-2 w-24"
+                                                value={newCourse.result}
+                                                onChange={(e) => setNewCourse(prev => ({...prev, result: e.target.value}))}
+                                            >
+                                                <option value="">Result</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="F">F</option>
+                                            </select>
+                                            <button
+                                                type="button"
+                                                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                                                onClick={addCourse}
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                        {errors.academicStatus && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.academicStatus}</p>
+                                        )}
+                                        {academicStatus.length > 0 && (
+                                            <ul className="mt-2 border rounded-lg divide-y">
+                                                {academicStatus.map((status, index) => (
+                                                    <li key={index} className="flex justify-between p-2">
+                                                        <span>{status.course}</span>
+                                                        <span>{status.result}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -555,6 +663,7 @@ const StudentRegister = () => {
                                                 </span>
                                             ))}
                                         </div>
+                                        {errors.technologies && <p className="text-red-500 text-xs mt-1">{errors.technologies}</p>}
                                     </div>
                                 </div>
 
@@ -588,6 +697,7 @@ const StudentRegister = () => {
                                                 </span>
                                             ))}
                                         </div>
+                                        {errors.jobsFields && <p className="text-red-500 text-xs mt-1">{errors.jobsFields}</p>}
                                     </div>
                                 </div>
 
@@ -611,10 +721,10 @@ const StudentRegister = () => {
                                             Privacy Policy
                                         </a>
                                     </label>
+                                    {errors.agreeToTerms && <p className="text-red-500 text-xs mt-1">{errors.agreeToTerms}</p>}
                                 </div>
                             </div>
                         )}
-
 
                         {/* Navigation Buttons */}
                         <div className="flex justify-between pt-6">
