@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="435516ea-e4fc-4abe-993e-0a4da58b449e" name="Changes" comment="" />
+    <list default="true" id="435516ea-e4fc-4abe-993e-0a4da58b449e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../CarrerLink-backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../CarrerLink-backend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,9 +13,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2rrQqFSk9sg7OOplS4xgvLqRGsi" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -21,9 +24,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/company-dashboard-ui",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/dockerize-the-app",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/nipun/Desktop/Final Project/CareerLink/CarrerLink-backend",
+    "last_opened_file_path": "C:/Users/Dell/Desktop/CarrerLink/CarrerLink-frontend",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -31,8 +36,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
-        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
       </set>
     </attachedChunks>
   </component>
@@ -45,6 +50,8 @@
       <option name="presentableId" value="Default" />
       <updated>1737314902913</updated>
       <workItem from="1737314904080" duration="35000" />
+      <workItem from="1740548874391" duration="23000" />
+      <workItem from="1740548926487" duration="21000" />
     </task>
     <servers />
   </component>
