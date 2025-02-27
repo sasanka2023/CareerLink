@@ -18,7 +18,7 @@ public interface StudentService {
 
     String applyJob(ApplyJobRequestDTO applyJobRequestDTO);
 
-    List<StudentgetResponseDTO> getAllApplicants(int jobId);
+
 
     List<ApplyJobResponseDTO> getJobByStudent(int studentId);
 

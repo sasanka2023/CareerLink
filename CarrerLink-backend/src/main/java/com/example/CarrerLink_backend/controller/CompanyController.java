@@ -5,6 +5,7 @@ import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 
 
+import com.example.CarrerLink_backend.dto.response.JobApproveResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
@@ -134,6 +135,23 @@ public class CompanyController {
     public ResponseEntity<StandardResponse> getCompanyById(@PathVariable int userId){
         CompanygetResponseDTO company = companyService.getCompanyByUserId(userId);
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", company));
+    }
+
+
+
+    @Operation(summary = "Aprove a job for student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PutMapping("/approve-job")
+    public ResponseEntity<StandardResponse> approveJob(
+            @RequestParam int studentId,
+            @RequestParam int jobid,
+            @RequestBody JobApproveResponseDTO jobApproveResponseDTO){
+        String message = companyService.approveJob(studentId,jobid,jobApproveResponseDTO);
+        return ResponseEntity.ok(new StandardResponse(true,"Job approved successfully",message));
     }
 }
 
