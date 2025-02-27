@@ -81,18 +81,7 @@ public class StudentController {
     }
 
 
-    @Operation(summary = "Get all applicants for a job")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @GetMapping("/get-all-applicants-for-job")
 
-    public ResponseEntity<StandardResponse> getAllApplicants(@RequestParam int jobId){
-        List<StudentgetResponseDTO> students = studentService.getAllApplicants(jobId);
-        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
-    }
 
     @Operation(summary = "Get all jobs applied by a student")
     @ApiResponses(value = {
