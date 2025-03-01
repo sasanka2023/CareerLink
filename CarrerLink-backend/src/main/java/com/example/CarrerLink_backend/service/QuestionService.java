@@ -1,17 +1,24 @@
 package com.example.CarrerLink_backend.service;
 
-import com.example.CarrerLink_backend.dto.response.QuestionResponseDTO;
+import com.example.CarrerLink_backend.entity.Question;
+import com.example.CarrerLink_backend.entity.Option;
 
 import java.util.List;
 
 public interface QuestionService {
-    String saveQuestion(QuestionResponseDTO questionResponseDTO, Integer testId);
+    Question createQuestion(Question question, Long skillTestId);
 
-    List<QuestionResponseDTO> getQuestionsByTest(Integer testId);
+    Question getQuestionById(Long id);
 
-    QuestionResponseDTO getQuestionById(Integer questionId);
+    List<Question> getQuestionsBySkillTest(Long skillTestId);
 
-    String updateQuestion(QuestionResponseDTO questionResponseDTO);
+    Question updateQuestion(Long id, Question question);
 
-    String deleteQuestion(Integer questionId);
+    void deleteQuestion(Long id);
+
+    Option addOption(Long questionId, Option option);
+
+    void removeOption(Long questionId, Long optionId);
+
+    List<Option> getOptionsByQuestion(Long questionId);
 }

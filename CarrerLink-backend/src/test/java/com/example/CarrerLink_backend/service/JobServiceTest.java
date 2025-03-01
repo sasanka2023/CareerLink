@@ -41,7 +41,7 @@ public class JobServiceTest {
         job.setJobId(1);
         job.setJobTitle("Software Engineer");
         job.setJobType("Full Time");
-        job.setCompanyName("Google");
+        //job.setCompanyName("Google");
         job.setDescription("Software Engineer");
         job.setLocation("Mountain View");
         job.setRate(100000);
@@ -60,10 +60,10 @@ public class JobServiceTest {
         // Creating a JobgetResponseDTO to simulate input to saveJob() method
         JobgetResponseDTO jobDTO = new JobgetResponseDTO();
 
-        jobDTO.setJobId(1);
+        //jobDTO.setJobId(1);
         jobDTO.setJobTitle("Software Engineer");
         jobDTO.setJobType("Full Time");
-        jobDTO.setCompanyName("Google");
+        //jobDTO.setCompanyName("Google");
         jobDTO.setDescription("Software Engineer");
         jobDTO.setLocation("Mountain View");
         jobDTO.setRate(100000);
@@ -71,8 +71,7 @@ public class JobServiceTest {
 
 
         // Calling the saveJob method, passing the Job DTO, and getting the result.
-        String result =jobService.saveJob(jobDTO);
-
+        String result = jobService.saveJob(jobDTO, 1L);
         // Asserting that the result matches the expected string.
         Assertions.assertEquals("Software Engineersaved",result);
 
@@ -93,7 +92,7 @@ public class JobServiceTest {
             job.setJobId(1);
             job.setJobTitle("Software Engineer");
             job.setJobType("Full Time");
-            job.setCompanyName("Google");
+            //job.setCompanyName("Google");
             job.setDescription("Software Engineer");
             job.setLocation("Mountain View");
             job.setRate(100000);
@@ -140,7 +139,7 @@ public class JobServiceTest {
             job.setJobId(1);
             job.setJobTitle("Software Engineer");
             job.setJobType("Full Time");
-            job.setCompanyName("Google");
+            //job.setCompanyName("Google");
             job.setDescription("Software Engineer");
             job.setLocation("Mountain View");
             job.setRate(100000);
@@ -181,7 +180,7 @@ public class JobServiceTest {
         existingJob.setJobId(1);
         existingJob.setJobTitle("Software Engineer");
         existingJob.setJobType("Full Time");
-        existingJob.setCompanyName("Google");
+        //existingJob.setCompanyName("Google");
         existingJob.setDescription("Software Engineer");
         existingJob.setLocation("Mountain View");
         existingJob.setRate(100000);
@@ -190,10 +189,10 @@ public class JobServiceTest {
 
         // Creating a Job DTO that simulates the input to update.
         JobgetResponseDTO updatedJobDto = new JobgetResponseDTO();
-        updatedJobDto.setJobId(1);
+        //updatedJobDto.setJobId(1);
         updatedJobDto.setJobTitle("Senior Software Engineer");
         updatedJobDto.setJobType("Full Time");
-        updatedJobDto.setCompanyName("Google");
+        //updatedJobDto.setCompanyName("Google");
         updatedJobDto.setDescription("Senior Software Engineer");
         updatedJobDto.setLocation("Mountain View");
         updatedJobDto.setRate(120000);
@@ -230,7 +229,7 @@ public class JobServiceTest {
         existingJob.setJobId(1);
         existingJob.setJobTitle("Software Engineer");
         existingJob.setJobType("Full Time");
-        existingJob.setCompanyName("Google");
+        //existingJob.setCompanyName("Google");
         existingJob.setDescription("Software Engineer");
         existingJob.setLocation("Mountain View");
         existingJob.setRate(100000);

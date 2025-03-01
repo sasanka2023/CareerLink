@@ -15,6 +15,7 @@ public class CompanygetResponseDTO {
 
     private Long id;
     private String name;
+    private String username;
     private String logo;
     private String description;
     private String category;
@@ -24,6 +25,7 @@ public class CompanygetResponseDTO {
     private String email;
     private String requirements;
     private String website;
+    private String size;
     private List<ClientDTO> clients;
     private List<JobgetResponseDTO> jobs;
     private List<TechnologyDTO> technologies;

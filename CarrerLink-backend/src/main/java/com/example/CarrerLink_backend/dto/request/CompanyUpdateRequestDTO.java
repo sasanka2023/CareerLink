@@ -24,6 +24,7 @@ public class CompanyUpdateRequestDTO {
     private String email;
     private String requirements;
     private String website;
+    private String size;
     private List<ClientDTO> clients;
     private List<TechnologyDTO> technologies;
     private List<ProductDTO> products;

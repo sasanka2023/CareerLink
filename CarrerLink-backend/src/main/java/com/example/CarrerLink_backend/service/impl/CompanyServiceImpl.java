@@ -4,17 +4,13 @@ import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
-import com.example.CarrerLink_backend.entity.Client;
-import com.example.CarrerLink_backend.entity.Company;
-import com.example.CarrerLink_backend.entity.Products;
-import com.example.CarrerLink_backend.entity.Technology;
+import com.example.CarrerLink_backend.dto.response.JobApproveResponseDTO;
+import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.exception.DuplicateResourceException;
 import com.example.CarrerLink_backend.exception.InvalidInputException;
 import com.example.CarrerLink_backend.exception.OperationFailedException;
 import com.example.CarrerLink_backend.exception.ResourceNotFoundException;
-import com.example.CarrerLink_backend.repo.ClientRepo;
-import com.example.CarrerLink_backend.repo.CompanyRepository;
-import com.example.CarrerLink_backend.repo.TechnologyRepo;
+import com.example.CarrerLink_backend.repo.*;
 import com.example.CarrerLink_backend.service.CompanyService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -35,6 +31,9 @@ public class CompanyServiceImpl implements CompanyService {
     private final TechnologyRepo technologyRepo;
     private final ClientRepo clientRepo;
     private static final String ACTION_1 = " not found. ";
+    private final StudentJobsRepo studentJobsRepo;
+    private final JobRepo jobRepo;
+    private final StudentRepo studentRepo;
 
     @Override
     public List<CompanygetResponseDTO> getCompanies(String location, String category) {
@@ -77,7 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public String saveCompany(CompanySaveRequestDTO companySaveRequestDTO) {
+    public String saveCompany(CompanySaveRequestDTO companySaveRequestDTO,UserEntity user) {
         if (companySaveRequestDTO.getName() == null || companySaveRequestDTO.getLocation() == null) {
             throw new InvalidInputException("Company name and location are required.");
         }
@@ -85,6 +84,7 @@ public class CompanyServiceImpl implements CompanyService {
             throw new DuplicateResourceException("Company with the name " + companySaveRequestDTO.getName() + " already exists.");
         }
         Company company = modelMapper.map(companySaveRequestDTO, Company.class);
+        company.setUser(user);
         companyRepository.save(company);
         return "Company saved successfully";
     }
@@ -152,5 +152,35 @@ public class CompanyServiceImpl implements CompanyService {
         } catch (Exception e) {
             throw new OperationFailedException("Failed to delete company with ID " + id + ": " + e.getMessage());
         }
+    }
+
+
+    @Override
+    public CompanygetResponseDTO getCompanyByName(String username) {
+        Company company = companyRepository.findByName(username).orElseThrow(()->new RuntimeException("Company not found"));
+        return modelMapper.map(company, CompanygetResponseDTO.class);
+    }
+
+    @Override
+    public CompanygetResponseDTO getCompanyByUserId(int userId) {
+        Company company = companyRepository.findByUser_Id(userId).orElseThrow(()->new RuntimeException("Company not found"));
+        return modelMapper.map(company, CompanygetResponseDTO.class);
+    }
+
+    @Override
+    public String approveJob(int studentId,int jobId,JobApproveResponseDTO jobApproveResponseDTO) {
+        if(jobRepo.existsById(jobId)){
+
+            Job job = jobRepo.findByJobId(jobId).orElseThrow(()->new RuntimeException("Job not found"));
+            Student student = studentRepo.findById(studentId).orElseThrow(()->new RuntimeException("Student not found"));
+            StudentJobs studentJobs = studentJobsRepo.findByStudentAndJob(student,job);
+            studentJobs.setInterviewDate(jobApproveResponseDTO.getInterviewDate());
+            studentJobs.setStatus(jobApproveResponseDTO.getStatus());
+            studentJobsRepo.save(studentJobs);
+        }
+        else{
+            throw new ResourceNotFoundException("Job not found");
+        }
+        return "approved successfully ";
     }
 }

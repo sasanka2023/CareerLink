@@ -1,50 +1,131 @@
 package com.example.CarrerLink_backend.controller;
 
-import com.example.CarrerLink_backend.dto.response.QuestionResponseDTO;
+import com.example.CarrerLink_backend.entity.Option;
+import com.example.CarrerLink_backend.entity.Question;
 import com.example.CarrerLink_backend.service.QuestionService;
-import com.example.CarrerLink_backend.utill.StandardResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("api/questions")
-@AllArgsConstructor
+@RequestMapping("/api/questions")
+@CrossOrigin(origins = "*")
 public class QuestionController {
 
     private final QuestionService questionService;
 
-    @Operation(summary = "Get questions by test", description = "Fetch all questions for a given test")
-    @GetMapping("/byTest")
-    public ResponseEntity<StandardResponse> getQuestionsByTest(@RequestParam Integer testId) {
-        List<QuestionResponseDTO> questions = questionService.getQuestionsByTest(testId);
-        return ResponseEntity.ok(new StandardResponse(true, "Questions fetched successfully", questions));
+    @Autowired
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
     }
 
-    @Operation(summary = "Save a question", description = "Save a new question under a test")
-    @PostMapping("/save")
-    public ResponseEntity<StandardResponse> saveQuestion(
-            @RequestBody QuestionResponseDTO questionResponseDTO, @RequestParam Integer testId) {
-        String msg = questionService.saveQuestion(questionResponseDTO, testId);
-        return ResponseEntity.ok(new StandardResponse(true, msg, null));
+    @PostMapping
+    public ResponseEntity<?> createQuestion(
+            @RequestBody Question question,
+            @RequestParam Long skillTestId) {
+        try {
+            Question createdQuestion = questionService.createQuestion(question, skillTestId);
+            return new ResponseEntity<>(createdQuestion, HttpStatus.CREATED);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @Operation(summary = "Update a question", description = "Update an existing question")
-    @PutMapping("/update")
-    public ResponseEntity<StandardResponse> updateQuestion(@RequestBody QuestionResponseDTO questionResponseDTO) {
-        String msg = questionService.updateQuestion(questionResponseDTO);
-        return ResponseEntity.ok(new StandardResponse(true, msg, null));
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getQuestionById(@PathVariable Long id) {
+        try {
+            Question question = questionService.getQuestionById(id);
+            return new ResponseEntity<>(question, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @Operation(summary = "Delete a question", description = "Delete a question by ID")
-    @DeleteMapping("/delete")
-    public ResponseEntity<StandardResponse> deleteQuestion(@RequestParam Integer questionId) {
-        String msg = questionService.deleteQuestion(questionId);
-        return ResponseEntity.ok(new StandardResponse(true, msg, null));
+    @GetMapping("/test/{skillTestId}")
+    public ResponseEntity<?> getQuestionsBySkillTest(@PathVariable Long skillTestId) {
+        try {
+            List<Question> questions = questionService.getQuestionsBySkillTest(skillTestId);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateQuestion(@PathVariable Long id, @RequestBody Question question) {
+        try {
+            Question updatedQuestion = questionService.updateQuestion(id, question);
+            return new ResponseEntity<>(updatedQuestion, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long id) {
+        try {
+            questionService.deleteQuestion(id);
+            return new ResponseEntity<>("Question deleted successfully", HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/{questionId}/options")
+    public ResponseEntity<?> addOption(@PathVariable Long questionId, @RequestBody Option option) {
+        try {
+            Option createdOption = questionService.addOption(questionId, option);
+            return new ResponseEntity<>(createdOption, HttpStatus.CREATED);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{questionId}/options/{optionId}")
+    public ResponseEntity<?> removeOption(@PathVariable Long questionId, @PathVariable Long optionId) {
+        try {
+            questionService.removeOption(questionId, optionId);
+            return new ResponseEntity<>("Option removed successfully", HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{questionId}/options")
+    public ResponseEntity<?> getOptionsByQuestion(@PathVariable Long questionId) {
+        try {
+            List<Option> options = questionService.getOptionsByQuestion(questionId);
+            return new ResponseEntity<>(options, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

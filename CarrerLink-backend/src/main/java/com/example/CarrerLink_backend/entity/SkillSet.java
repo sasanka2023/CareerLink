@@ -23,8 +23,8 @@ public class SkillSet {
     private String skillLevel;
 
     @ManyToOne
-    @JoinColumn(name = "studentId")
-    private Student students;
+    @JoinColumn(name = "student_Id")
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "cv_id")
@@ -32,5 +32,6 @@ public class SkillSet {
 
 
 
-
+//    @ManyToMany(mappedBy = "skills")
+//    private List<AcedemicResults> acedemicResults;
 }

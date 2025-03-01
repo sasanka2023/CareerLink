@@ -2,6 +2,8 @@ package com.example.CarrerLink_backend.controller;
 
 
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
+import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
+import com.example.CarrerLink_backend.entity.Company;
 import com.example.CarrerLink_backend.service.JobService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -67,8 +69,9 @@ private final JobService jobService;
     })
 
     @PostMapping(path = "/save")
-    public ResponseEntity<StandardResponse> saveJob(@RequestBody JobgetResponseDTO jobgetResponseDTO){
-        String msg = jobService.saveJob(jobgetResponseDTO);
+
+    public ResponseEntity<StandardResponse> saveJob(@RequestBody JobgetResponseDTO jobgetResponseDTO, @RequestParam Long companyId){
+        String msg = jobService.saveJob(jobgetResponseDTO,companyId);
         return  ResponseEntity.ok(new StandardResponse(true, msg, null));
     }
     @Operation(
@@ -100,6 +103,21 @@ private final JobService jobService;
     public ResponseEntity<StandardResponse> deleteJob(@RequestParam int jobId){
         String msg = jobService.deleteJob(jobId);
         return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+
+
+
+    @Operation(summary = "Get all applicants for a job")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/get-all-applicants-for-job")
+
+    public ResponseEntity<StandardResponse> getAllApplicants(@RequestParam int jobId){
+        List<StudentgetResponseDTO> students = jobService.getAllApplicants(jobId);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 
 
