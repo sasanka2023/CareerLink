@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.gradient-card-1 {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.gradient-card-2 {
+    background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+}
+
+.gradient-card-3 {
+    background: linear-gradient(135deg, #d946ef 0%, #ec4899 100%);
+}
+
+.gradient-card-4 {
+    background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+}

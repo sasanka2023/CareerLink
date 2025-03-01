@@ -1,6 +1,6 @@
 package com.example.CarrerLink_backend.service.impl;
 
-import com.example.CarrerLink_backend.dto.*;
+
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
@@ -12,14 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.ui.Model;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,162 +34,207 @@ class StudentServiceImplTest {
     private CVRepo cvRepo;
 
     @Mock
+    private TechnologyRepo technologyRepo;
+
+    @Mock
+    private JobFieldRepo jobFieldRepo;
+
+    @Mock
     private SkillAnalysisService skillAnalysisService;
 
     @InjectMocks
     private StudentServiceImpl studentService;
 
-
+    private Student student;
+    private StudentSaveRequestDTO studentSaveRequestDTO;
+    private StudentUpdateRequestDTO studentUpdateRequestDTO;
 
     @BeforeEach
-    void setUp(){
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        student = new Student();
+        student.setStudentId(1);
+        student.setFirstName("sasanka");
+        student.setLastName("gayathra");
+        student.setEmail("sasanka@gmail.com");
+        student.setAddress("Ahangama/Galle");
+
+
+        studentSaveRequestDTO = new StudentSaveRequestDTO();
+        studentSaveRequestDTO.setFirstName("sasanka");
+        studentSaveRequestDTO.setLastName("gayathra");
+        studentSaveRequestDTO.setEmail("sasanka@gmail.com");
+        studentSaveRequestDTO.setAddress("Ahangama/Galle");
+
+
+        studentUpdateRequestDTO = new StudentUpdateRequestDTO();
+        studentUpdateRequestDTO.setStudentId(1);
+        studentUpdateRequestDTO.setFirstName("sasa");
+        studentUpdateRequestDTO.setLastName("gayathra");
+        studentUpdateRequestDTO.setEmail("sasa@gmail.com");
+        studentUpdateRequestDTO.setAddress("Ahangama/Galle");
 
     }
 
     @Test
-    public void should_Map_Student_Dto_To_Student(){
-        ModelMapper modelMapper1 = new ModelMapper();
-
-        List<JobFieldDTO> jobFields = new ArrayList<>();
-        List<TechnologyDTO> technologies = new ArrayList<>();
-        List<SkillSetDTO> skillSets = new ArrayList<>();
-        List<AcedemicResultsDTO> acedemicResultsDTOS = new ArrayList<>();
-        List<ReviewDTO> reviewDTOS = new ArrayList<>();
-        List<ProjectsDTO> projectsDTOS = new ArrayList<>();
-        StudentgetResponseDTO studentgetResponseDTO = new StudentgetResponseDTO(
-                1,"sasanka","gayathra","sasa@gmail.com",
-                "sasa123","ahangama/galle","sasa",jobFields,skillSets,technologies,acedemicResultsDTOS,"Ruhuna","Computer Science","BCS",reviewDTOS,projectsDTOS
-        );
-
-        Student student = modelMapper1.map(studentgetResponseDTO,Student.class);
-        assertEquals(studentgetResponseDTO.getFirstName(),student.getFirstName());
-
-
-    }
-
-
-    @Test
-    public void should_successfully_save_a_student() {
-//        // Arrange
-//        List<AcedemicResultsDTO> acedemicResultsDTO = List.of(
-//                new AcedemicResultsDTO(1, "maths", "A"),
-//                new AcedemicResultsDTO(2, "science", "B")
-//        );
-//
-//        StudentSaveRequestDTO studentSaveRequestDTO = new StudentSaveRequestDTO(
-//                1,
-//                "sasanka",
-//                "gayathra",
-//                "sasankagayathra@gmail.com",
-//                "sasa123",
-//                "ahangama",
-//                "zibra",
-//                acedemicResultsDTO,
-//                "Ruhuna",
-//                "CS",
-//                "bcs"
-//        );
-//
-//        Student student = new Student();
-//        student.setStudentId(1);
-//        student.setFirstName("sasanka");
-//        student.setLastName("gayathra");
-//        student.setAcedemicResults(new ArrayList<>());
-//        student.setCv(new CV());
-//
-//
-//
-//        // Mock external calls
-//        when(modelMapper.map(studentSaveRequestDTO, Student.class)).thenReturn(student);
-//        when(studentRepo.save(student)).thenReturn(student);
-//        doNothing().when(skillAnalysisService).saveSkillsFromAcedemicResults(student);
-//        // Act
-//        String result = studentService.saveStudent(studentSaveRequestDTO);
-//
-//        // Assert
-//        assertEquals("Student saved successfully with ID: 1", result);
-//        verify(studentRepo, times(1)).save(student); // Ensure student was saved twice
+    void should_successfully_save_a_student() {
         // Arrange
-        Student student = new Student();
-        student.setStudentId(1); // Mock student id
-        CV cv = new CV();
-        cv.setStudent(student);
-        student.setCv(cv);
-        StudentSaveRequestDTO studentSaveRequestDTO = new StudentSaveRequestDTO();
-        // Mocking the behavior of dependencies
         when(modelMapper.map(studentSaveRequestDTO, Student.class)).thenReturn(student);
         when(studentRepo.save(student)).thenReturn(student);
 
         // Act
-        String result = studentService.saveStudent(studentSaveRequestDTO,new UserEntity());
+        String result = studentService.saveStudent(studentSaveRequestDTO, new UserEntity());
 
         // Assert
-        assertNotNull(result);
         assertEquals("Student saved successfully with ID: 1", result);
-
-        // Verify that save was called on the repository
         verify(studentRepo, times(1)).save(student);
-
-        // Verify that saveSkillsFromAcedemicResults was called
         verify(skillAnalysisService, times(1)).saveSkillsFromAcedemicResults(student);
-
-
     }
 
     @Test
     void should_throw_exception_when_student_not_found() {
         // Arrange
         int studentId = 99;
-        StudentUpdateRequestDTO updateRequest = new StudentUpdateRequestDTO();
-        updateRequest.setStudentId(studentId);
-
         when(studentRepo.findById(studentId)).thenReturn(Optional.empty());
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            studentService.updateStudent(updateRequest);
+            studentService.updateStudent(studentUpdateRequestDTO);
         });
 
         assertEquals("Student with ID 99 not found. ", exception.getMessage());
-
-        // Verify that save was never called
         verify(studentRepo, never()).save(any(Student.class));
     }
 
     @Test
     void should_successfully_update_a_student() {
-        // Arrange - Prepare test data
-        StudentUpdateRequestDTO studentupdateDTO = new StudentUpdateRequestDTO(
-                5, "sasa", "gayathra", "sasa@gmail.com", "Ahangama/Galle", "sasa1", null, null
-        );
-
-        Student existingStudent = new Student();
-        existingStudent.setStudentId(5);
-        existingStudent.setFirstName("sasanka");
-        existingStudent.setLastName("gayathra");
-        existingStudent.setEmail("sasanka@gmail.com");
-
-        existingStudent.setJobsFields(null);
-        existingStudent.setTechnologies(null);
-
-        // Mock dependencies
-        when(studentRepo.findById(studentupdateDTO.getStudentId())).thenReturn(Optional.of(existingStudent));
-        when(studentRepo.save(existingStudent)).thenReturn(existingStudent); // Save existing student
+        // Arrange
+        when(studentRepo.findById(studentUpdateRequestDTO.getStudentId())).thenReturn(Optional.of(student));
+        when(studentRepo.save(student)).thenReturn(student);
 
         // Act
-        String result = studentService.updateStudent(studentupdateDTO);
+        String result = studentService.updateStudent(studentUpdateRequestDTO);
 
         // Assert
         assertEquals("Updated student successfully", result);
-        assertEquals("sasa", existingStudent.getFirstName());
-        assertEquals("gayathra", existingStudent.getLastName());
-        assertEquals("sasa@gmail.com", existingStudent.getEmail());
-
-
-        // Verify interactions
-        verify(studentRepo, times(1)).findById(existingStudent.getStudentId());
-        verify(studentRepo, times(1)).save(existingStudent);
+        assertEquals("sasa", student.getFirstName());
+        assertEquals("gayathra", student.getLastName());
+        assertEquals("sasa@gmail.com", student.getEmail());
+        verify(studentRepo, times(1)).findById(student.getStudentId());
+        verify(studentRepo, times(1)).save(student);
     }
 
+    @Test
+    void should_delete_student_successfully() {
+        // Arrange
+        int studentId = 1;
+        when(studentRepo.existsById(studentId)).thenReturn(true);
+
+        // Act
+        studentService.deleteStudent(studentId);
+
+        // Assert
+        verify(studentRepo, times(1)).deleteById(studentId);
+    }
+
+    @Test
+    void should_throw_exception_when_deleting_non_existent_student() {
+        // Arrange
+        int studentId = 99;
+        when(studentRepo.existsById(studentId)).thenReturn(false);
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            studentService.deleteStudent(studentId);
+        });
+
+        assertEquals("student with ID 99 not found. ", exception.getMessage());
+        verify(studentRepo, never()).deleteById(studentId);
+    }
+
+    @Test
+    void should_get_student_by_id_successfully() {
+        // Arrange
+        int studentId = 1;
+        when(studentRepo.findById(studentId)).thenReturn(Optional.of(student));
+        when(modelMapper.map(student, StudentgetResponseDTO.class)).thenReturn(new StudentgetResponseDTO());
+
+        // Act
+        StudentgetResponseDTO result = studentService.getStudentById(studentId);
+
+        // Assert
+        assertNotNull(result);
+        verify(studentRepo, times(1)).findById(studentId);
+    }
+
+    @Test
+    void should_throw_exception_when_student_not_found_by_id() {
+        // Arrange
+        int studentId = 99;
+        when(studentRepo.findById(studentId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            studentService.getStudentById(studentId);
+        });
+
+        assertEquals("Student not found", exception.getMessage());
+    }
+
+    @Test
+    void should_get_student_by_user_name_successfully() {
+        // Arrange
+        String userName = "sasa1";
+        when(studentRepo.findByUserName(userName)).thenReturn(Optional.of(student));
+        when(modelMapper.map(student, StudentgetResponseDTO.class)).thenReturn(new StudentgetResponseDTO());
+
+        // Act
+        StudentgetResponseDTO result = studentService.getStudentByUserName(userName);
+
+        // Assert
+        assertNotNull(result);
+        verify(studentRepo, times(1)).findByUserName(userName);
+    }
+
+    @Test
+    void should_throw_exception_when_student_not_found_by_user_name() {
+        // Arrange
+        String userName = "unknown";
+        when(studentRepo.findByUserName(userName)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            studentService.getStudentByUserName(userName);
+        });
+
+        assertEquals("Student not found", exception.getMessage());
+    }
+
+    @Test
+    void should_get_student_by_user_id_successfully() {
+        // Arrange
+        int userId = 1;
+        when(studentRepo.findByUser_Id(userId)).thenReturn(Optional.of(student));
+        when(modelMapper.map(student, StudentgetResponseDTO.class)).thenReturn(new StudentgetResponseDTO());
+
+        // Act
+        StudentgetResponseDTO result = studentService.getStudentByUserId(userId);
+
+        // Assert
+        assertNotNull(result);
+        verify(studentRepo, times(1)).findByUser_Id(userId);
+    }
+
+    @Test
+    void should_throw_exception_when_student_not_found_by_user_id() {
+        // Arrange
+        int userId = 99;
+        when(studentRepo.findByUser_Id(userId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            studentService.getStudentByUserId(userId);
+        });
+
+        assertEquals("Student not found", exception.getMessage());
+    }
 }

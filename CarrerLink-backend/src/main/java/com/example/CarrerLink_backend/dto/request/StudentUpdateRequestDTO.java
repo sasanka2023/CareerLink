@@ -18,7 +18,7 @@ public class StudentUpdateRequestDTO {
     private String email;
 
     private String address;
-    private String userName;
+
     private List<JobFieldDTO> jobsFields;
     private List<TechnologyDTO> technologies;
 

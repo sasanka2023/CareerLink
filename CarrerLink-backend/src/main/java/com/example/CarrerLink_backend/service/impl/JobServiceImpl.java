@@ -4,12 +4,12 @@ package com.example.CarrerLink_backend.service.impl;
 
 import com.example.CarrerLink_backend.dto.TechnologyDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
-import com.example.CarrerLink_backend.entity.Company;
-import com.example.CarrerLink_backend.entity.Job;
-import com.example.CarrerLink_backend.entity.Technology;
+import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
+import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.exception.ResourceNotFoundException;
 import com.example.CarrerLink_backend.repo.CompanyRepository;
 import com.example.CarrerLink_backend.repo.JobRepo;
+import com.example.CarrerLink_backend.repo.StudentJobsRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.service.JobService;
 import lombok.AllArgsConstructor;
@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class JobServiceImpl implements JobService {
     private final JobRepo jobRepo;
     private final ModelMapper modelMapper;
     private final TechnologyRepo technologyRepo;
+    private final StudentJobsRepo studentJobsRepo;
     @Autowired
     private CompanyRepository companyRepository;
 
@@ -110,9 +112,23 @@ public class JobServiceImpl implements JobService {
         }
     }
 
+
+
+
     @Override
-    public Company getCompanyByJobId(int jobId) {
-        return jobRepo.findByJobId(jobId).orElseThrow(() -> new ResourceNotFoundException("no company found"));
+    public List<StudentgetResponseDTO> getAllApplicants(@RequestParam int jobId) {
+        Job job = jobRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        List<StudentJobs> studentJobs = studentJobsRepo.findByJob(job);
+        List<StudentgetResponseDTO> studentgetResponseDTOS = new ArrayList<>();
+        for(StudentJobs studentJobs1 : studentJobs){
+            Student student = studentJobs1.getStudent();
+            StudentgetResponseDTO studentgetResponseDTO = modelMapper.map(student,StudentgetResponseDTO.class);
+            studentgetResponseDTOS.add(studentgetResponseDTO);
+        }
+
+        return studentgetResponseDTOS;
 
     }
 }

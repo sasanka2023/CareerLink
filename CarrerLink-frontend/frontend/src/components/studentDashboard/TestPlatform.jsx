@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react"
 import ExamQuestion from "./ExamPage"
+import StudentDashboardLayout from "../Dashboard/StudentDashboard/StudentDashboardLayout";
 
 export default function TestPlatform() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -113,33 +114,10 @@ export default function TestPlatform() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="fixed top-0 left-0 right-0 h-14 bg-[#1a4d5c] text-white flex items-center px-4 z-10 shadow-md">
-        <button
-          className="text-white text-xl hover:bg-white hover:text-[#1a4d5c] p-2 rounded transition duration-300"
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          ☰
-        </button>
-        <div className="font-bold ml-4 text-lg">LOGO</div>
-      </header>
+      <StudentDashboardLayout>
+    <div className="min-h-screen ">
 
-      <aside
-        className={`fixed left-0 top-14 bottom-0 w-60 bg-[#1a4d5c] text-white transition-transform duration-200 ease-in-out shadow-lg ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        <nav className="p-4 space-y-2">
-          {["Dashboard", "Exams", "View Marks", "Check Answers"].map((item) => (
-            <button
-              key={item}
-              className="w-full text-left p-2 rounded-md hover:bg-white hover:text-[#1a4d5c] transition duration-300"
-            >
-              {item}
-            </button>
-          ))}
-        </nav>
-      </aside>
-
-      <main className={`pt-16 ${isSidebarOpen ? "ml-60" : "ml-0"} transition-all duration-300 ease-in-out p-6`}>
+      <main className={`pt-5  transition-all duration-300 ease-in-out p-6`}>
         {!selectedExam ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {exams.map((exam) => (
@@ -147,7 +125,7 @@ export default function TestPlatform() {
                 key={exam.id}
                 className="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition duration-300"
               >
-                <h2 className="text-2xl font-semibold mb-4 text-[#1a4d5c]">Upcoming Exams</h2>
+                <h2 className="text-2xl font-semibold mb-4 ">Upcoming Exams</h2>
                 <div className="border p-4 rounded-md bg-gray-50 hover:bg-gray-100 transition duration-300">
                   <div className="font-medium text-lg">{`Exam: ${exam.code} - ${exam.name}`}</div>
                   <div className="text-sm text-gray-600">Date: {exam.date}</div>
@@ -156,11 +134,11 @@ export default function TestPlatform() {
                 <div className="mt-4 flex justify-between">
                   <button
                     onClick={() => handleEnroll(exam)}
-                    className="bg-[#1a4d5c] text-white px-4 py-2 rounded-md hover:bg-[#134b58] transition duration-300"
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300"
                   >
                     Enroll
                   </button>
-                  <button className="bg-[#1a4d5c] text-white px-4 py-2 rounded-md hover:bg-[#134b58] transition duration-300">
+                  <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300">
                     View Result
                   </button>
                 </div>
@@ -230,6 +208,7 @@ export default function TestPlatform() {
         )}
       </main>
     </div>
+      </StudentDashboardLayout>
   )
 }
 

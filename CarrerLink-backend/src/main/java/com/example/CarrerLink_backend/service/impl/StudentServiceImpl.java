@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService {
     private final TechnologyRepo technologyRepo;
     private final JobRepo jobRepo;
     private final JobFieldRepo jobFieldRepo;
-
+    private final StudentJobsRepo studentJobsRepo;
     private final SkillAnalysisService skillAnalysisService;
 
     private static final String ACTION_1 = " not found. ";
@@ -49,7 +49,8 @@ public class StudentServiceImpl implements StudentService {
         CV cv = new CV();
         cv.setStudent(student);
         student.setCv(cv);
-
+        saveJobFields(studentSaveRequestDTO,student);
+        saveTechnologies(studentSaveRequestDTO,student);
         saveAcedemicResults(studentSaveRequestDTO,student);
         Student savedStudent = studentRepo.save(student);
 
@@ -57,6 +58,28 @@ public class StudentServiceImpl implements StudentService {
         return "Student saved successfully with ID: " + savedStudent.getStudentId();
     }
 
+    public void saveJobFields(StudentSaveRequestDTO dto, Student student) {
+        if (dto.getJobFields() != null) {
+            List<JobField> newJobFields = new ArrayList<>();
+            for (JobFieldDTO jobFieldDto : dto.getJobFields()) {
+                JobField jobField = jobFieldRepo.findByJobField(jobFieldDto.getJobField())
+                        .orElseThrow(() -> new RuntimeException("JobField not found: " + jobFieldDto.getJobField()));
+                newJobFields.add(jobField);
+            }
+            student.setJobsFields(newJobFields); // Replace the entire list
+        }
+    }
+    public void saveTechnologies(StudentSaveRequestDTO dto, Student student) {
+        if (dto.getTechnologies() != null) {
+            List<Technology> newTechnologies = new ArrayList<>();
+            for (TechnologyDTO techDto : dto.getTechnologies()) {
+                Technology tech = technologyRepo.findByTechName(techDto.getTechName())
+                        .orElseThrow(() -> new RuntimeException("Technology not found: " + techDto.getTechName()));
+                newTechnologies.add(tech);
+            }
+            student.setTechnologies(newTechnologies); // Replace the entire list
+        }
+    }
     @Override
     public String updateStudent(StudentUpdateRequestDTO studentUpdateRequestDTO) {
             Student existingStudent = studentRepo.findById(studentUpdateRequestDTO.getStudentId())
@@ -77,6 +100,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public void deleteStudent(int id) {
         if(!studentRepo.existsById(id)){
             throw new RuntimeException("student with ID " + id + ACTION_1);
@@ -133,45 +157,35 @@ public class StudentServiceImpl implements StudentService {
         Job job = jobRepo.findById(jobId)
                 .orElseThrow(() -> new RuntimeException("Job not found"));
 
-        student.getJobs().add(job);
-
-        studentRepo.save(student);
+        if(studentJobsRepo.existsByStudentAndJob(student,job)){
+            return "Student "+student.getStudentId()+" already applied for "+job.getJobTitle();
+        }
+        StudentJobs studentJobs = new StudentJobs();
+        studentJobs.setStudent(student);
+        studentJobs.setJob(job);
+        studentJobsRepo.save(studentJobs);
 
         return "Student with ID: " + studentId + " applied for job with ID: " + jobId;
     }
 
-    @Override
-    public List<StudentgetResponseDTO> getAllApplicants(@RequestParam int jobId) {
-        Job job = jobRepo.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found"));
 
-        List<Student> students = job.getStudents();
-
-        List<StudentgetResponseDTO> studentgetResponseDTOS = new ArrayList<>();
-
-        for (Student student : students) {
-            StudentgetResponseDTO studentgetResponseDTO = modelMapper.map(student, StudentgetResponseDTO.class);
-            studentgetResponseDTOS.add(studentgetResponseDTO);
-        }
-
-        return studentgetResponseDTOS;
-    }
 
     @Override
     public List<ApplyJobResponseDTO> getJobByStudent(@RequestParam int studentId) {
         Student student = studentRepo.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        List<Job> jobs = student.getJobs();
-
+        List<StudentJobs> studentJobs = studentJobsRepo.findByStudent(student);
         List<ApplyJobResponseDTO> applyJobResponseDTOS = new ArrayList<>();
-
-        for (Job job : jobs) {
-            ApplyJobResponseDTO applyJobResponseDTO = modelMapper.map(job, ApplyJobResponseDTO.class);
+        for(StudentJobs studentJobs1 : studentJobs){
+            ApplyJobResponseDTO applyJobResponseDTO = new ApplyJobResponseDTO();
+            applyJobResponseDTO.setJobId(studentJobs1.getJob().getJobId());
+            applyJobResponseDTO.setJobTitle(studentJobs1.getJob().getJobTitle());
             applyJobResponseDTOS.add(applyJobResponseDTO);
         }
 
         return applyJobResponseDTOS;
+
     }
 
     @Override

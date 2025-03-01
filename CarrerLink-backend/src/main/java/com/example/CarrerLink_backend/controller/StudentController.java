@@ -65,7 +65,7 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<StandardResponse> deleteStudent(@PathVariable int id) {
         studentService.deleteStudent(id);
-        return ResponseEntity.ok(new StandardResponse(true, "Company deleted successfully", null));
+        return ResponseEntity.ok(new StandardResponse(true, "Student deleted successfully", null));
     }
 
     @Operation(summary = "Apply for a job")
@@ -81,18 +81,7 @@ public class StudentController {
     }
 
 
-    @Operation(summary = "Get all applicants for a job")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @GetMapping("/get-all-applicants-for-job")
 
-    public ResponseEntity<StandardResponse> getAllApplicants(@RequestParam int jobId){
-        List<StudentgetResponseDTO> students = studentService.getAllApplicants(jobId);
-        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
-    }
 
     @Operation(summary = "Get all jobs applied by a student")
     @ApiResponses(value = {
