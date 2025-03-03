@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Long> {
-    // You can add custom query methods here if needed
+    // Add any custom query methods if needed
 }

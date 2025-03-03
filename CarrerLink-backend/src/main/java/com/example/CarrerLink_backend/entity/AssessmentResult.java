@@ -1,7 +1,8 @@
 package com.example.CarrerLink_backend.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import javax.persistence.*;
+
 
 @Entity
 @Data

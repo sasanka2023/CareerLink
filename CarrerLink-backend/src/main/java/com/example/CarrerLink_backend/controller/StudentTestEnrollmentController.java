@@ -3,6 +3,7 @@ package com.example.CarrerLink_backend.controller;
 import com.example.CarrerLink_backend.entity.StudentAnswer;
 import com.example.CarrerLink_backend.entity.StudentTestEnrollment;
 import com.example.CarrerLink_backend.service.StudentTestEnrollmentService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,10 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/enrollments")
 @CrossOrigin(origins = "*")
+@AllArgsConstructor
 public class StudentTestEnrollmentController {
-
     private final StudentTestEnrollmentService enrollmentService;
 
-    @Autowired
-    public StudentTestEnrollmentController(StudentTestEnrollmentService enrollmentService) {
-        this.enrollmentService = enrollmentService;
-    }
 
     @PostMapping("/enroll")
     public ResponseEntity<?> enrollStudent(

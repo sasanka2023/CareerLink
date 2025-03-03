@@ -6,24 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "admins")
+@Table(name = "admin")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Admin {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
-    // You can add more fields as needed
+    // Add any other fields that might be needed
+
+    @OneToMany(mappedBy = "createdBy")
+    private java.util.List<SkillTest> createdTests;
 }

@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "skills")
@@ -18,11 +19,10 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String name;
 
     private String description;
 
-    @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
-    private List<SkillTest> skillTests;
+    @OneToMany(mappedBy = "skill")
+    private Set<SkillAssessment> skillTests = new HashSet<>();
 }

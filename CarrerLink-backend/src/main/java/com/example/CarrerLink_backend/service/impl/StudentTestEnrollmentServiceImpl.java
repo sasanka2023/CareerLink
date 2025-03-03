@@ -3,7 +3,7 @@ package com.example.CarrerLink_backend.service.impl;
 import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.repo.*;
 import com.example.CarrerLink_backend.service.StudentTestEnrollmentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +12,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+/**
+ * Implementation of the StudentTestEnrollmentService interface.
+ */
 @Service
+@AllArgsConstructor
 public class StudentTestEnrollmentServiceImpl implements StudentTestEnrollmentService {
 
     private final StudentTestEnrollmentRepository enrollmentRepository;
@@ -20,20 +24,6 @@ public class StudentTestEnrollmentServiceImpl implements StudentTestEnrollmentSe
     private final SkillTestRepository skillTestRepository;
     private final StudentAnswerRepository studentAnswerRepository;
     private final QuestionRepository questionRepository;
-
-    @Autowired
-    public StudentTestEnrollmentServiceImpl(
-            StudentTestEnrollmentRepository enrollmentRepository,
-            StudentRepository studentRepository,
-            SkillTestRepository skillTestRepository,
-            StudentAnswerRepository studentAnswerRepository,
-            QuestionRepository questionRepository) {
-        this.enrollmentRepository = enrollmentRepository;
-        this.studentRepository = studentRepository;
-        this.skillTestRepository = skillTestRepository;
-        this.studentAnswerRepository = studentAnswerRepository;
-        this.questionRepository = questionRepository;
-    }
 
     @Override
     @Transactional
@@ -46,7 +36,7 @@ public class StudentTestEnrollmentServiceImpl implements StudentTestEnrollmentSe
 
         // Check if student is already enrolled
         Optional<StudentTestEnrollment> existingEnrollment =
-                enrollmentRepository.findByStudentIdAndSkillTestId(studentId, skillTestId);
+                enrollmentRepository.findByStudentStudentIdAndSkillTestId(studentId, skillTestId);
 
         if (existingEnrollment.isPresent()) {
             throw new IllegalStateException("Student is already enrolled in this test");
@@ -75,7 +65,7 @@ public class StudentTestEnrollmentServiceImpl implements StudentTestEnrollmentSe
 
     @Override
     public StudentTestEnrollment getEnrollmentByStudentAndTest(Long studentId, Long skillTestId) {
-        return enrollmentRepository.findByStudentIdAndSkillTestId(studentId, skillTestId)
+        return enrollmentRepository.findByStudentStudentIdAndSkillTestId(studentId, skillTestId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Enrollment not found for student id: " + studentId + " and test id: " + skillTestId));
     }
@@ -85,7 +75,7 @@ public class StudentTestEnrollmentServiceImpl implements StudentTestEnrollmentSe
         if (!studentRepository.existsById(studentId)) {
             throw new NoSuchElementException("Student not found with id: " + studentId);
         }
-        return enrollmentRepository.findByStudentId(studentId);
+        return enrollmentRepository.findByStudentStudentId(studentId);
     }
 
     @Override
@@ -102,7 +92,7 @@ public class StudentTestEnrollmentServiceImpl implements StudentTestEnrollmentSe
         if (!studentRepository.existsById(studentId)) {
             throw new NoSuchElementException("Student not found with id: " + studentId);
         }
-        return enrollmentRepository.findByStudentIdAndStatus(studentId, status);
+        return enrollmentRepository.findByStudentStudentIdAndStatus(studentId, status);
     }
 
     @Override
@@ -203,7 +193,6 @@ public class StudentTestEnrollmentServiceImpl implements StudentTestEnrollmentSe
         if (question.getQuestionType() == Question.QuestionType.MULTIPLE_CHOICE ||
                 question.getQuestionType() == Question.QuestionType.SINGLE_CHOICE ||
                 question.getQuestionType() == Question.QuestionType.TRUE_FALSE) {
-
             autoEvaluateAnswer(studentAnswer);
         }
 
