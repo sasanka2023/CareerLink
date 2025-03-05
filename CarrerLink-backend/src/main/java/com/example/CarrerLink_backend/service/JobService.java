@@ -1,5 +1,6 @@
 package com.example.CarrerLink_backend.service;
 
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.Company;
@@ -7,7 +8,7 @@ import com.example.CarrerLink_backend.entity.Company;
 import java.util.List;
 
 public interface JobService {
-    List<StudentgetResponseDTO> getAllApplicants(int jobId);
+    List<ApplicantDetailsgetResponseDTO> getAllApplicants(int jobId);
 
     String saveJob(JobgetResponseDTO jobgetResponseDTO, Long companyId);
     List<JobgetResponseDTO> getJobs(String jobType, String company);
@@ -18,4 +19,5 @@ public interface JobService {
     String deleteJob(int jobId);
 
 
+    List<JobgetResponseDTO> getAllJobByCompany(int companyId);
 }

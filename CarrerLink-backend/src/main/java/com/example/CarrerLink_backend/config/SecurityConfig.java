@@ -47,7 +47,7 @@ public class SecurityConfig {
                     .sessionManagement(s->s.
                         sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(r->r.
-                             requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student","/api/auth/CreateRoles")
+                             requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student","/api/auth/CreateRoles","/ws/**")
                             .permitAll()
                             // Public access to GET requests for companies
                             .requestMatchers("GET", "/api/companies/**")

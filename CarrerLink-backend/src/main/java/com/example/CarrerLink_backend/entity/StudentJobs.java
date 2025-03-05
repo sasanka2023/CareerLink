@@ -29,7 +29,7 @@ public class StudentJobs {
     @Column(name = "interview_date")
     private LocalDate interviewDate;  // Store interview date
 
-    @Column(name = "status")
-    private Boolean status;
+    @Column(name = "status",columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean status = false;
 
 }

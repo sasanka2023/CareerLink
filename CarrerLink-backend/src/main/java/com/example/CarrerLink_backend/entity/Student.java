@@ -65,19 +65,6 @@ public class Student {
     private List<Projects> projects;
 
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "student_job", // This is the table name
-//            joinColumns = @JoinColumn(name = "student_id"),
-//            inverseJoinColumns = @JoinColumn(name = "job_id")
-//    )
-//    private List<Job> jobs;
-
-//    public void addJob(Job job) {
-//        jobs.add(job);
-//        job.getStudents().add(this);
-//    }
-
     @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
     private List<StudentJobs> studentJobs;
 
@@ -86,6 +73,10 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
 
 
 }

@@ -6,6 +6,7 @@ import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 
 
 import com.example.CarrerLink_backend.dto.response.JobApproveResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
@@ -148,10 +149,13 @@ public class CompanyController {
     @PutMapping("/approve-job")
     public ResponseEntity<StandardResponse> approveJob(
             @RequestParam int studentId,
-            @RequestParam int jobid,
+            @RequestParam int jobId,
             @RequestBody JobApproveResponseDTO jobApproveResponseDTO){
-        String message = companyService.approveJob(studentId,jobid,jobApproveResponseDTO);
+        String message = companyService.approveJob(studentId,jobId,jobApproveResponseDTO);
         return ResponseEntity.ok(new StandardResponse(true,"Job approved successfully",message));
     }
+
+
+
 }
 
