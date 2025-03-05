@@ -34,6 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final StudentJobsRepo studentJobsRepo;
     private final JobRepo jobRepo;
     private final StudentRepo studentRepo;
+    private final NotificationService notificationService;
 
     @Override
     public List<CompanygetResponseDTO> getCompanies(String location, String category) {
@@ -161,6 +162,7 @@ public class CompanyServiceImpl implements CompanyService {
         return modelMapper.map(company, CompanygetResponseDTO.class);
     }
 
+
     @Override
     public CompanygetResponseDTO getCompanyByUserId(int userId) {
         Company company = companyRepository.findByUser_Id(userId).orElseThrow(()->new RuntimeException("Company not found"));
@@ -181,6 +183,15 @@ public class CompanyServiceImpl implements CompanyService {
         else{
             throw new ResourceNotFoundException("Job not found");
         }
+
+
+//        notificationService.sendNotification(String.valueOf(studentId),
+//                Notification.builder()
+//                        .message("Your job application has been approved")
+//                        .userId(Long.valueOf(studentId))
+//                        .isRead(false)
+//                        .createdAt(java.time.LocalDateTime.now())
+//                        .build());
         return "approved successfully ";
     }
 }

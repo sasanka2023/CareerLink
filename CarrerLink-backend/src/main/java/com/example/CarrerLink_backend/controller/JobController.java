@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.Company;
@@ -116,10 +117,22 @@ private final JobService jobService;
     @GetMapping("/get-all-applicants-for-job")
 
     public ResponseEntity<StandardResponse> getAllApplicants(@RequestParam int jobId){
-        List<StudentgetResponseDTO> students = jobService.getAllApplicants(jobId);
+        List<ApplicantDetailsgetResponseDTO> students = jobService.getAllApplicants(jobId);
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 
+    @Operation(summary = "get all the jobs")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all jobs"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/get-all-jobs-by-company")
+    public ResponseEntity<StandardResponse> getAllJobsByCompany(@RequestParam int companyId){
+        List<JobgetResponseDTO> jobs = jobService.getAllJobByCompany(companyId);
+        return ResponseEntity.ok(new StandardResponse(true,"Jobs fetched successfully",jobs));
+
+    }
 
 
 

@@ -22,4 +22,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Company> findByUser_Id(int userId);
 
+
+
 }
