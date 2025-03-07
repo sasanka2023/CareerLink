@@ -3,6 +3,7 @@ package com.example.CarrerLink_backend.service.impl;
 
 
 import com.example.CarrerLink_backend.dto.TechnologyDTO;
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.*;
@@ -112,23 +113,42 @@ public class JobServiceImpl implements JobService {
         }
     }
 
+    @Override
+    public List<JobgetResponseDTO> getAllJobByCompany(int companyId) {
+        Long company = (long) companyId;
+        if(companyRepository.existsById(company)){
+            Company company1 = companyRepository.findById(company).orElseThrow(()->new RuntimeException("Company not found"));
+            List<Job> jobs = jobRepo.findByCompany(company1);
+            return modelMapper.map(jobs,new TypeToken<List<JobgetResponseDTO>>() {}.getType());
+        }
+        else{
+            throw new ResourceNotFoundException("Company is not found");
+        }
 
+
+    }
 
 
     @Override
-    public List<StudentgetResponseDTO> getAllApplicants(@RequestParam int jobId) {
+    public List<ApplicantDetailsgetResponseDTO> getAllApplicants(@RequestParam int jobId) {
         Job job = jobRepo.findById(jobId)
                 .orElseThrow(() -> new RuntimeException("Job not found"));
 
         List<StudentJobs> studentJobs = studentJobsRepo.findByJob(job);
-        List<StudentgetResponseDTO> studentgetResponseDTOS = new ArrayList<>();
+        List<ApplicantDetailsgetResponseDTO> applicantgetResponseDTOS = new ArrayList<>();
         for(StudentJobs studentJobs1 : studentJobs){
+            ApplicantDetailsgetResponseDTO applicantDetailsgetResponseDTO = new ApplicantDetailsgetResponseDTO();
             Student student = studentJobs1.getStudent();
-            StudentgetResponseDTO studentgetResponseDTO = modelMapper.map(student,StudentgetResponseDTO.class);
-            studentgetResponseDTOS.add(studentgetResponseDTO);
+            applicantDetailsgetResponseDTO.setFirstName(student.getFirstName());
+            applicantDetailsgetResponseDTO.setLastName(student.getLastName());
+            applicantDetailsgetResponseDTO.setStudentId(student.getStudentId());
+            applicantDetailsgetResponseDTO.setStatus(studentJobs1.getStatus());
+            applicantDetailsgetResponseDTO.setUniversity(student.getUniversity());
+            applicantDetailsgetResponseDTO.setInterviewDate(studentJobs1.getInterviewDate());
+            applicantgetResponseDTOS.add(applicantDetailsgetResponseDTO);
         }
 
-        return studentgetResponseDTOS;
+        return applicantgetResponseDTOS;
 
     }
 }

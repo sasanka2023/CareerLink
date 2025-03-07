@@ -11,7 +11,7 @@ import Jobs from './pages/Jobs';
 import Employer from './pages/Employer';
 import Courses from './pages/Courses';
 import Contact from './pages/Contact';
-import CompanyDashboardPage from "./pages/CompanyDashboard";
+import CompanyDashboardPage from "./components/Dashboard/CompanyDashboard/CompanyDashboard";
 import StudentDashBoard from './pages/StudentDashBoard';
 import { AuthProvider } from './api/AuthProvider';
 import CvTemplate7 from './components/studentDashboard/BlueModernForm';

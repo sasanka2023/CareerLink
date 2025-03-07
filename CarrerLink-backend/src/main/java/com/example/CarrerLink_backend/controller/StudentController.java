@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.ProjectIdeaDTO;
 import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
@@ -8,6 +9,7 @@ import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
+import com.example.CarrerLink_backend.service.ProjectRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,6 +32,7 @@ import java.util.List;
 public class StudentController {
     private final StudentService studentService;
     private final CourseRecommendationService courseRecommendationService;
+    private final ProjectRecommendationService projectService;
 
     @Operation(summary = "Save a student")
     @ApiResponses(value = {
@@ -160,6 +163,19 @@ public class StudentController {
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 
+
+
+    @GetMapping("/recommend/{studentId}")
+    public ResponseEntity<List<ProjectIdeaDTO>> recommendProjects(@PathVariable int studentId) {
+        try {
+            List<ProjectIdeaDTO> projects = projectService.getProjectIdeas(studentId);
+            return ResponseEntity.ok(projects);
+        } catch (Exception e) {
+            // Log the error for debugging
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 
 
 }
