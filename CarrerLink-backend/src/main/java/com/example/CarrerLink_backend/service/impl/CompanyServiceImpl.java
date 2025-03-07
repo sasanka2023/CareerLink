@@ -3,6 +3,7 @@ package com.example.CarrerLink_backend.service.impl;
 import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.JobApproveResponseDTO;
 import com.example.CarrerLink_backend.entity.*;
@@ -18,6 +19,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,19 +181,45 @@ public class CompanyServiceImpl implements CompanyService {
             studentJobs.setInterviewDate(jobApproveResponseDTO.getInterviewDate());
             studentJobs.setStatus(jobApproveResponseDTO.getStatus());
             studentJobsRepo.save(studentJobs);
+//            Notification notification = Notification.builder()
+//                    .message("Your job application for " + job.getJobTitle() + " has been approved!")
+//                    .userId((long) studentId)
+//                    .isRead(false)
+//                    .createdAt(LocalDateTime.now())
+//                    .student(student)
+//                    .build();
+//            notificationService.sendNotification(String.valueOf(studentId), notification);
+            return "approved successfully ";
         }
         else{
             throw new ResourceNotFoundException("Job not found");
         }
 
 
-//        notificationService.sendNotification(String.valueOf(studentId),
-//                Notification.builder()
-//                        .message("Your job application has been approved")
-//                        .userId(Long.valueOf(studentId))
-//                        .isRead(false)
-//                        .createdAt(java.time.LocalDateTime.now())
-//                        .build());
-        return "approved successfully ";
+
     }
+
+    public List<ApplicantDetailsgetResponseDTO> getApprovedApplicants(int companyId){
+
+        List<Job> jobs = jobRepo.findByCompany_Id(Long.valueOf(companyId));
+//        List<StudentJobs> studentJobs = studentJobsRepo.findByStatusTrueAndJob_JobId()
+        List<StudentJobs> studentJobs = new ArrayList<>();
+        for(Job job : jobs){
+            List<StudentJobs> studentJobs1 = studentJobsRepo.findByStatusTrueAndJob_JobId(job.getJobId());
+            studentJobs.addAll(studentJobs1);
+        }
+        List<ApplicantDetailsgetResponseDTO> applicantDetailsgetResponseDTOList = new ArrayList<>();
+        for(StudentJobs studentJobs2:studentJobs){
+            ApplicantDetailsgetResponseDTO applicantDetailsgetResponseDTO = new ApplicantDetailsgetResponseDTO();
+            applicantDetailsgetResponseDTO.setFirstName(studentJobs2.getStudent().getFirstName());
+            applicantDetailsgetResponseDTO.setLastName(studentJobs2.getStudent().getLastName());
+            applicantDetailsgetResponseDTO.setUniversity(studentJobs2.getStudent().getUniversity());
+            applicantDetailsgetResponseDTO.setStatus(studentJobs2.getStatus());
+            applicantDetailsgetResponseDTO.setInterviewDate(studentJobs2.getInterviewDate());
+            applicantDetailsgetResponseDTOList.add(applicantDetailsgetResponseDTO);
+        }
+        return applicantDetailsgetResponseDTOList;
+        
+    }
+
 }

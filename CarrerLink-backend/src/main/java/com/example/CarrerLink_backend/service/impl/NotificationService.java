@@ -22,16 +22,17 @@ public class NotificationService {
     private final NotificationRepo notificationRepo;
     private final StudentRepo studentRepo;
 
-
-    public void sendNotification(String studentId,Notification notification){
-        Student student = studentRepo.findById(Integer.parseInt(studentId)).orElseThrow(() -> new RuntimeException("Student not found"));
+    public void sendNotification(String studentId, Notification notification) {
+        Student student = studentRepo.findById(Integer.parseInt(studentId))
+                .orElseThrow(() -> new RuntimeException("Student not found"));
         notification.setStudent(student);
         notification.setCreatedAt(LocalDateTime.now());
         Notification savedNotification = notificationRepo.save(notification);
 
+        // Send notification to the specific student
         simpMessagingTemplate.convertAndSendToUser(
                 studentId,
-                "queue/notifications",
+                "/queue/notifications",
                 savedNotification
         );
     }
