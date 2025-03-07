@@ -7,6 +7,7 @@ import FeaturesAndPartners from "./FeaturesAndPartners";
 import Applications from "./Applications";
 import { getCompanyDetailsByUsername} from "../../../api/CompanyDetailsApi";
 import {getApprovedApplicants} from "../../../api/CompanyDetailsGetApi";
+import JobVacancies from "./JobVacancies";
 import {
   Users,
   Briefcase,
@@ -28,41 +29,19 @@ import {
   X,
 } from "lucide-react";
 import CompanyHeader from "../../companyDashboard/CompanyHeader";
-import JobPostForm from "../../companyDashboard/JobPostForm";
-import JobCard from "../../companyDashboard/JobCard";
-
+import JobPostForm from "./JobPostForm";
+import JobCard from "./JobCard";
+import {getAllJobsByCompany} from "../../../api/JobDetailsGetApi";
 
 function CompanyDashboard() {
   const { token } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
-  const [showJobForm, setShowJobForm] = useState(false);
+
   const [selectedTab, setSelectedTab] = useState("dashboard");
   const [approvedapplicant, setApproved] = useState([{}]);
   const[company,setCompany] = useState({});
-  const [jobVacancies, setJobVacancies] = useState([
-    {
-      id: 1,
-      title: "Frontend Developer Intern",
-      department: "Engineering",
-      type: "Internship",
-      applications: 45,
-      status: "Active",
-      requirements: ["React", "JavaScript", "HTML/CSS"],
-      description:
-        "Looking for a passionate frontend developer intern to join our engineering team.",
-    },
-    {
-      id: 2,
-      title: "UX Design Associate",
-      department: "Design",
-      type: "Full-time",
-      applications: 32,
-      status: "Active",
-      requirements: ["Figma", "UI/UX", "Prototyping"],
-      description:
-        "Seeking a creative UX designer to help shape our product experience.",
-    },
-  ]);
+  const [companyJobs,setCompanyJobs] = useState([]);
+
   const applicants = [
     {
       id: 1,
@@ -149,12 +128,15 @@ function CompanyDashboard() {
     }
   };
 
-  const fetchApprovedApplicants = async () => {
+
+
+  const fetchCompanyJobs = async () => {
     try {
       if (company?.id) { // Ensure company ID is available
-        const approvedResponse = await getApprovedApplicants(company.id);
+        const approvedResponse = await getAllJobsByCompany(company.id);
         if (approvedResponse?.success) {
-          setApproved(approvedResponse.data);
+          setCompanyJobs(approvedResponse.data);
+          console.log(approvedResponse)
         }
       }
     } catch (error) {
@@ -205,29 +187,9 @@ function CompanyDashboard() {
   // if (!studentInfo) return <div>Student not found</div>;
 
 //---------------------------------------------------------------------------------------------------------------
-  const handlePostJob = (jobData: any) => {
-    setJobVacancies((prev) => [
-      ...prev,
-      {
-        id: prev.length + 1,
-        ...jobData,
-        applications: 0,
-        status: "Active",
-      },
-    ]);
-    setShowJobForm(false);
-  };
 
-  const handleEditJob = (id: number) => {
-    // Implement edit functionality
-    console.log("Edit job:", id);
-  };
 
-  const handleCloseJob = (id: number) => {
-    setJobVacancies((prev) =>
-      prev.map((job) => (job.id === id ? { ...job, status: "Closed" } : job))
-    );
-  };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -350,29 +312,11 @@ function CompanyDashboard() {
             </div>
           </div>
         )}
+        {/*//--------------------------Job vacancy section ----------------------------------*/}
         {selectedTab === "jobs" && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Job Vacancies</h2>
-              <button
-                onClick={() => setShowJobForm(true)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                Post New Job
-              </button>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {jobVacancies.map((job) => (
-                <JobCard
-                  key={job.id}
-                  job={job}
-                  onEdit={handleEditJob}
-                  onClose={handleCloseJob}
-                />
-              ))}
-            </div>
-          </div>
+          <JobVacancies company={company}/>
+
         )}
         {selectedTab === "applicants" && (
           <div className="space-y-6">
@@ -435,12 +379,7 @@ function CompanyDashboard() {
         )}
       </main>
 
-      {showJobForm && (
-        <JobPostForm
-          onClose={() => setShowJobForm(false)}
-          onSubmit={handlePostJob}
-        />
-      )}
+
     </div>
   );
 }
