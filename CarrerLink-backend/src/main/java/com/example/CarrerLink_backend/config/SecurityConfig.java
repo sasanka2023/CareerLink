@@ -54,6 +54,8 @@ public class SecurityConfig {
                             .permitAll()
                             .requestMatchers("GET","/api/jobs/**")
                             .permitAll()
+                            .requestMatchers("PUT", "/api/students/**").permitAll()
+
 
                             // Restricted access to modify company data
                             .requestMatchers("POST", "/api/companies/**").hasRole("COMPANY")

@@ -20,6 +20,7 @@ const StudentRegisterApi = async (formData) => {
         // Optionally include email or profilePic here if needed
       }
 
+
     });
     console.log(formData);
     console.log(response);

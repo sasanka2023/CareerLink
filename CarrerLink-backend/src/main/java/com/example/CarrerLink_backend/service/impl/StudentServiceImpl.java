@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.service.impl;
 
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
@@ -16,18 +17,27 @@ import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.service.SkillAnalysisService;
 import com.example.CarrerLink_backend.service.StudentService;
+import com.example.CarrerLink_backend.utill.CommonFileSaveBinaryDataDto;
+import com.example.CarrerLink_backend.utill.FileExtractor;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
+
+    @Value("${aws.s3.bucket-name}")
+    private String bucketName;
     private final ModelMapper modelMapper;
     private final StudentRepo studentRepo;
     private final TechnologyRepo technologyRepo;
@@ -35,10 +45,15 @@ public class StudentServiceImpl implements StudentService {
     private final JobFieldRepo jobFieldRepo;
     private final StudentJobsRepo studentJobsRepo;
     private final SkillAnalysisService skillAnalysisService;
-
+private final AmazonS3 amazonS3;
     private static final String ACTION_1 = " not found. ";
     private final AcademicCourseRepo academicCourseRepo;
     private final CVRepo cvRepo;
+    private final FileExtractor fileExtractor;
+
+
+    private final FileServiceImpl fileService;
+    private final ProfileImageRepo profileImageRepo;
 
     @Override
     @Transactional
@@ -81,23 +96,84 @@ public class StudentServiceImpl implements StudentService {
         }
     }
     @Override
-    public String updateStudent(StudentUpdateRequestDTO studentUpdateRequestDTO) {
+    public String updateStudent(StudentUpdateRequestDTO studentUpdateRequestDTO, MultipartFile imageFile) {
+        try {
+            // Fetch the student entity using student ID
             Student existingStudent = studentRepo.findById(studentUpdateRequestDTO.getStudentId())
-                .orElseThrow(() -> new RuntimeException("Student with ID " + studentUpdateRequestDTO.getStudentId() + ACTION_1));
+                    .orElseThrow(() -> new RuntimeException("Student with ID " + studentUpdateRequestDTO.getStudentId() + " not found"));
 
-        // Update only allowed fields
-            //modelMapper.map(studentUpdateRequestDTO, existingStudent);
+            // Retrieve the User ID associated with this Student
+            int userId = existingStudent.getUser().getId();
+
+            // Update student details
             existingStudent.setFirstName(studentUpdateRequestDTO.getFirstName());
             existingStudent.setLastName(studentUpdateRequestDTO.getLastName());
             existingStudent.setEmail(studentUpdateRequestDTO.getEmail());
             existingStudent.setAddress(studentUpdateRequestDTO.getAddress());
-            updateJobFields(studentUpdateRequestDTO,existingStudent);
-            updateTechnologies(studentUpdateRequestDTO,existingStudent);
+
+            updateJobFields(studentUpdateRequestDTO, existingStudent);
+            updateTechnologies(studentUpdateRequestDTO, existingStudent);
+
+            // If an image file is provided, save it using the mapped User ID
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String profilePicUrl = saveImgFile(userId, imageFile); // Save image and get the URL
+
+                // Update profilePicUrl in Student table
+                existingStudent.setProfilePicUrl(profilePicUrl);
+
+            }
+
             studentRepo.save(existingStudent);
-            return "Updated student successfully";
+            return existingStudent.getProfilePicUrl();
 
-
+        } catch (IOException e) {
+            throw new RuntimeException("Error updating student: " + e.getMessage(), e);
+        }
     }
+
+
+
+
+
+    public String saveImgFile(int id, MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("File is empty or null");
+        }
+
+        // Fetch student
+        Student student = studentRepo.findByUser_Id(id)
+                .orElseThrow(() -> new RuntimeException("Student not found for ID: " + id));
+
+        // Fetch existing profile image if available
+        ProfileImage profileImage = profileImageRepo.findByUserId(student.getUser().getId())
+                .orElse(null);
+
+        // Delete existing image from S3 if it exists
+        if (profileImage != null && profileImage.getUrl() != null) {
+            String oldImageKey = profileImage.getUrl().substring(profileImage.getUrl().lastIndexOf("/") + 1);
+            amazonS3.deleteObject(bucketName, "profile_image/" + oldImageKey);
+        }
+
+        // Upload new image to S3
+        CommonFileSaveBinaryDataDto resource = fileService.createResource(file, "profile_image/", bucketName);
+
+        // Update profile image record
+        if (profileImage == null) {
+            profileImage = new ProfileImage();
+            profileImage.setId(UUID.randomUUID().toString());
+        }
+
+        profileImage.setUrl(resource.getUrl()); // Store only the new URL
+        profileImage.setFileName(file.getOriginalFilename());
+        profileImage.setUser(student.getUser());
+
+        profileImageRepo.save(profileImage);
+
+        return profileImage.getUrl();
+    }
+
+
+
 
     @Override
     @Transactional
@@ -202,9 +278,25 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentgetResponseDTO getStudentByUserId(int userId) {
-        Student student = studentRepo.findByUser_Id(userId).orElseThrow(()-> new RuntimeException("Student not found"));
-        return modelMapper.map(student,StudentgetResponseDTO.class);
+        // Fetch student by user ID
+        Student student = studentRepo.findByUser_Id(userId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
 
+        // Map the student entity to the response DTO
+        StudentgetResponseDTO responseDTO = modelMapper.map(student, StudentgetResponseDTO.class);
+
+        Optional<String> profileImageUrl = getUrlByUserId(userId);
+
+        // Set the profile image URL in the response DTO (fallback to default if not found)
+        responseDTO.setProfileImageUrl(profileImageUrl.orElse("default-image-url")); // R
+
+        return responseDTO;
     }
+
+    public Optional<String> getUrlByUserId(int userId){
+        return profileImageRepo.findUrlByUserId(userId);
+    }
+
+
 
 }

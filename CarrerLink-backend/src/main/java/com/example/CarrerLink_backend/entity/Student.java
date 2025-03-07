@@ -81,6 +81,8 @@ public class Student {
     @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
     private List<StudentJobs> studentJobs;
 
+    @Column(name = "profile_pic_url")
+    private String profilePicUrl;
 
 
     @OneToOne

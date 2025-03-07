@@ -10,12 +10,17 @@ import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,18 +47,31 @@ public class StudentController {
 
     }
 
+    @PutMapping(consumes = {"multipart/form-data"})
     @Operation(summary = "Update student")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "student updated successfully"),
+            @ApiResponse(responseCode = "201", description = "Student updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PutMapping()
-    public ResponseEntity<StandardResponse> updateStudent(@RequestBody StudentUpdateRequestDTO studentUpdateRequestDTO){
-        String message = studentService.updateStudent(studentUpdateRequestDTO);
+    public ResponseEntity<StandardResponse> updateStudent(
+            @RequestPart("student") String studentJson,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
 
+        // Convert studentJson (String) to StudentUpdateRequestDTO
+        ObjectMapper objectMapper = new ObjectMapper();
+        StudentUpdateRequestDTO studentUpdateRequestDTO;
+        try {
+            studentUpdateRequestDTO = objectMapper.readValue(studentJson, StudentUpdateRequestDTO.class);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body(new StandardResponse(false, "Invalid JSON format", null));
+        }
+
+        String message = studentService.updateStudent(studentUpdateRequestDTO, imageFile);
         return ResponseEntity.ok(new StandardResponse(true, "Student updated successfully", message));
     }
+
+
 
 
     @Operation(summary = "Delete student")

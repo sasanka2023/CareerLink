@@ -14,7 +14,7 @@ import {
 import { AuthContext } from "../../../api/AuthProvider";
 
 
-function StudentDashboardLayout({ children,StudentName }) {
+function StudentDashboardLayout({ children,StudentName,profileImage }) {
 
     const location = useLocation();
     const isActive = (path) => location.pathname === path;
@@ -158,7 +158,7 @@ function StudentDashboardLayout({ children,StudentName }) {
                             className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                             <img
-                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=32&q=80"
+                                src={profileImage}
                                 alt="Profile"
                                 className="w-8 h-8 rounded-full"
                             />
