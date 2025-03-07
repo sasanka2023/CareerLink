@@ -5,7 +5,8 @@ import { useContext } from "react";
 import ContactEmployee from "./ContactEmployee";
 import FeaturesAndPartners from "./FeaturesAndPartners";
 import Applications from "./Applications";
-import { getCompanyDetailsByUsername } from "../../../api/CompanyDetailsApi";
+import { getCompanyDetailsByUsername} from "../../../api/CompanyDetailsApi";
+import {getApprovedApplicants} from "../../../api/CompanyDetailsGetApi";
 import {
   Users,
   Briefcase,
@@ -36,7 +37,8 @@ function CompanyDashboard() {
   const [loading, setLoading] = useState(true);
   const [showJobForm, setShowJobForm] = useState(false);
   const [selectedTab, setSelectedTab] = useState("dashboard");
-  const[company,setcompany] = useState({});
+  const [approvedapplicant, setApproved] = useState([{}]);
+  const[company,setCompany] = useState({});
   const [jobVacancies, setJobVacancies] = useState([
     {
       id: 1,
@@ -146,6 +148,20 @@ function CompanyDashboard() {
       return null;
     }
   };
+
+  const fetchApprovedApplicants = async () => {
+    try {
+      if (company?.id) { // Ensure company ID is available
+        const approvedResponse = await getApprovedApplicants(company.id);
+        if (approvedResponse?.success) {
+          setApproved(approvedResponse.data);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching approved applicants:', error);
+    }
+  };
+  //-----------------------useEffect
   useEffect(() => {
     let isMounted = true;
 
@@ -157,21 +173,31 @@ function CompanyDashboard() {
       try {
         const username = extractUsernameFromToken(token);
         if (!username) return;
-        const response = await getCompanyDetailsByUsername(username);
-        if (isMounted && response?.success) {
-          setcompany(response.data);
-            console.log(response.data);
+
+        // Fetch company details
+        const companyResponse = await getCompanyDetailsByUsername(username);
+        if (isMounted && companyResponse?.success) {
+          setCompany(companyResponse.data);
+
+          // Fetch approved applicants only if company ID is available
+          if (companyResponse.data?.id) {
+            const approvedResponse = await getApprovedApplicants(companyResponse.data.id);
+            if (isMounted && approvedResponse?.success) {
+              setApproved(approvedResponse.data);
+            }
+          }
         }
       } catch (error) {
-        console.error('Error fetching student data:', error);
+        console.error('Error fetching data:', error);
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
     fetchCompanyData();
+
     return () => { isMounted = false; };
-  }, [token]);
+  }, [token]); // Dependency array remains the same
 
   if (loading) return <div>Loading...</div>;
 
@@ -278,33 +304,33 @@ function CompanyDashboard() {
               </div>
             </div>
 
-            {/* Recent Activity */}
+            {/* Statistics and Approved List */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-lg font-semibold mb-4">
                   Recent Applications
                 </h2>
-                <div className="space-y-4">
-                  {applicants.slice(0, 3).map((applicant) => (
+                <div className="space-y-4 max-h-60 overflow-y-auto">
+                  {approvedapplicant.map((applicant) => (
                     <div
-                      key={applicant.id}
+                      key={applicant.studentId}
                       className="flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
                         <img
                           src={applicant.image}
-                          alt={applicant.name}
+                          alt={applicant.firstName}
                           className="w-10 h-10 rounded-full"
                         />
                         <div>
-                          <p className="font-medium">{applicant.name}</p>
+                          <p className="font-medium">{applicant.firstName}</p>
                           <p className="text-sm text-gray-600">
-                            {applicant.position}
+                            {applicant.university}
                           </p>
                         </div>
                       </div>
                       <span className="px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-sm">
-                        {applicant.status}
+                        Interview sheduled
                       </span>
                     </div>
                   ))}

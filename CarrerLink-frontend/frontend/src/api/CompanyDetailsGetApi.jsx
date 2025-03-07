@@ -78,7 +78,25 @@ const ApproveJob = async (studentId,jobId,requestBody) => {
     return { success: false };
   }
 };
+
+const getApprovedApplicants = async (companyId) => {
+  try {
+    const response = await axiosInstance.get(`companies/all-the-approved-applicants/${companyId}`);
+
+    if (!response.data?.success || !response.data?.data) {
+      throw new Error('Invalid API response structure');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching companies data:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    });
+    return { success: false };
+  }
+};
   
 
 
-  export { getAllCompanies,getCompanyByName, getAllCompaniesusingFilters,ApproveJob };
+  export { getAllCompanies,getCompanyByName, getAllCompaniesusingFilters,ApproveJob,getApprovedApplicants };

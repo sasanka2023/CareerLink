@@ -22,4 +22,6 @@ public interface StudentJobsRepo extends JpaRepository<StudentJobs,Integer> {
 
     StudentJobs findByStudentAndJob(Student student, Job job);
 
+    List<StudentJobs> findByStatusTrueAndJob_JobId( int jobJobId);
+
 }

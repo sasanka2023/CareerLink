@@ -80,6 +80,14 @@ function Applications({ applicants, company }) {
       console.log(jobId);
       console.log(requestBody);
       if (response?.success) {
+        // Update the students state to reflect the approval
+        setStudents(prevStudents =>
+            prevStudents.map(student =>
+                student.studentId === studentId
+                    ? { ...student, status: true }
+                    : student
+            )
+        );
 
         Swal.fire({
           icon: "success",
