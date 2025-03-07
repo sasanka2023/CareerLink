@@ -26,4 +26,5 @@ public class StudentSaveRequestDTO {
     private String department;
     private String degree;
     private UserSaveRequestDTO userSaveRequestDTO;
+    private String profilePicUrl;
 }

@@ -50,7 +50,8 @@ const StudentRegister = () => {
         },
         technologies: [],
         jobsFields: [],
-        agreeToTerms: false
+        agreeToTerms: false,
+
     });
 
     // Validation functions

@@ -6,13 +6,18 @@ import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface StudentService {
     String saveStudent(StudentSaveRequestDTO studentSaveRequestDTO, UserEntity user);
 
-    String updateStudent(StudentUpdateRequestDTO studentUpdateRequestDTO);
+
+
+    String updateStudent(StudentUpdateRequestDTO studentUpdateRequestDTO, MultipartFile imageFile);
+
+
 
     void deleteStudent(int id);
 
