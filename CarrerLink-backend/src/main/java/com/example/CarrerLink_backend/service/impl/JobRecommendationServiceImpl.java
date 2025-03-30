@@ -1,7 +1,9 @@
 package com.example.CarrerLink_backend.service.impl;
 
+
 import com.example.CarrerLink_backend.dto.JobRecommendationDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
+import com.example.CarrerLink_backend.entity.AcedemicResults;
 import com.example.CarrerLink_backend.entity.Job;
 import com.example.CarrerLink_backend.entity.Student;
 import com.example.CarrerLink_backend.entity.Technology;
@@ -10,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
@@ -22,6 +21,7 @@ public class JobRecommendationServiceImpl {
 
     private final JobRepo jobRepository;
     private final ModelMapper modelMapper;
+
     public List<JobRecommendationDTO> getRecommendedJobsWithScores(Student student) {
         // Extract student's technology names in lowercase
         Set<String> studentTechNames = student.getTechnologies().stream()
@@ -50,12 +50,26 @@ public class JobRecommendationServiceImpl {
                     double score = jobTechs.isEmpty() ? 0 : (double) matchCount / jobTechs.size();
 
                     JobgetResponseDTO jobResponse = modelMapper.map(job, JobgetResponseDTO.class);
-                    return new JobRecommendationDTO(jobResponse, score);
+
+                    return new JobRecommendationDTO(jobResponse, score,checkeligible(student));
                 })
                 .sorted(Comparator.comparingDouble(JobRecommendationDTO::getScore).reversed())
                 .collect(Collectors.toList());
     }
 
+    public String checkeligible(Student student) {
+        List<AcedemicResults> results = student.getAcedemicResults();
+
+        List<String> subjectsToSkillUp = results.stream()
+                .filter(result -> "C".equals(result.getResult()) || "F".equals(result.getResult()))
+                .map(AcedemicResults::getCourse)
+                .collect(Collectors.toList());
+
+        return subjectsToSkillUp.isEmpty() ? null :
+                "Please skill up these subjects: " + String.join(", ", subjectsToSkillUp) + " before applying for a job.";
+
+
+    }
 
 
 

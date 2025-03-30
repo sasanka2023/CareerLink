@@ -13,4 +13,5 @@ public class JobRecommendationDTO {
 
     private JobgetResponseDTO job;
     private double score;
+    private String message;
 }
