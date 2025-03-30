@@ -80,9 +80,62 @@ const getAllJobsByCompany = async (companyId) => {
 }
 }
 
+const saveJob = async (jobData, companyId) => {
+  try {
+    const response = await axiosInstance.post('jobs/save', jobData, {
+      params: { companyId }
+    });
 
- 
-  
+    if (!response.data?.success) {
+      throw new Error('Invalid API response structure');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Error saving job data:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    });
+    return { success: false };
+  }
+};
 
 
-  export { getAllJobs, getAllJobsusingFilters, getAllApplicants,getAllJobsByCompany };
+const updateJob = async (jobData) => {
+  try {
+    const response = await axiosInstance.put('jobs/update', jobData);
+
+    if (!response.data?.success) {
+      throw new Error('Invalid API response structure');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Error saving job data:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    });
+    return { success: false };
+  }
+};
+
+const closeJob = async (jobId) => {
+  try{
+    const id = parseInt(jobId, 10);
+    const response = await axiosInstance.put(`jobs/close/${id}`);
+    if (!response.data?.success) {
+      throw new Error('Invalid API response structure');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Error saving job data:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    });
+    return { success: false };
+  }
+}
+
+
+  export { getAllJobs, getAllJobsusingFilters, getAllApplicants,getAllJobsByCompany,saveJob,updateJob,closeJob };

@@ -31,7 +31,7 @@ import {
 import CompanyHeader from "../../companyDashboard/CompanyHeader";
 import JobPostForm from "./JobPostForm";
 import JobCard from "./JobCard";
-import {getAllJobsByCompany} from "../../../api/JobDetailsGetApi";
+import {getAllJobsByCompany} from "../../../api/JobDetailsApi";
 
 function CompanyDashboard() {
   const { token } = useContext(AuthContext);

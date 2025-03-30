@@ -94,9 +94,25 @@ public class JobServiceImpl implements JobService {
     @Override
     public String updateJob(JobgetResponseDTO jobgetResponseDTO) {
         if(jobRepo.existsById(jobgetResponseDTO.getJobId())){
-            Job job = modelMapper.map(jobgetResponseDTO,Job.class);
-            jobRepo.save(job);
-            return job.getJobTitle()+"updated";
+
+            Job existingJob = jobRepo.findByJobId(jobgetResponseDTO.getJobId()).orElseThrow(()->new RuntimeException("Job not found"));
+
+            existingJob.setJobTitle(jobgetResponseDTO.getJobTitle());
+            existingJob.setJobType(jobgetResponseDTO.getJobType());
+            existingJob.setDescription(jobgetResponseDTO.getDescription());
+            existingJob.setRequirements(jobgetResponseDTO.getRequirements());
+            existingJob.setRate(jobgetResponseDTO.getRate());
+            existingJob.setLocation(jobgetResponseDTO.getLocation());
+            existingJob.setStatus(jobgetResponseDTO.getStatus());
+            List<Technology> newTechs = new ArrayList<>();
+            for (TechnologyDTO techDTO : jobgetResponseDTO.getTechnologies()) {
+                Technology tech = technologyRepo.findByTechName(techDTO.getTechName())
+                        .orElseThrow(() -> new ResourceNotFoundException("Technology with name " + techDTO.getTechName() + "Not found"));
+                newTechs.add(tech);
+            }
+            existingJob.setTechnologies(newTechs);
+            jobRepo.save(existingJob);
+            return existingJob.getJobTitle()+"updated";
         }else{
             throw new RuntimeException("Job not found");
         }
@@ -128,6 +144,14 @@ public class JobServiceImpl implements JobService {
 
     }
 
+    public String closeJob(int jobId){
+        Job job = jobRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+        job.setStatus(JobStatus.CLOSED);
+        jobRepo.save(job);
+        return "Job closed";
+    }
+
 
     @Override
     public List<ApplicantDetailsgetResponseDTO> getAllApplicants(@RequestParam int jobId) {
@@ -151,4 +175,6 @@ public class JobServiceImpl implements JobService {
         return applicantgetResponseDTOS;
 
     }
+
+
 }

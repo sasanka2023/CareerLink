@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, ArrowUpRight, Filter } from 'lucide-react';
-import { getAllJobs } from '../api/JobDetailsGetApi';
+import { getAllJobs } from '../api/JobDetailsApi';
 
 function JobFilters({ onFilterChange, jobTypes, jobTitles, companies }) {
   return (

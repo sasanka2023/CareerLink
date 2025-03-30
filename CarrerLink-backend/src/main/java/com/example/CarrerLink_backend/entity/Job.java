@@ -26,7 +26,8 @@ public class Job {
     private int rate;
     private String location;
     @Enumerated(EnumType.STRING)
-    private JobStatus status;
+    private JobStatus status = JobStatus.ACTIVE;
+
 
 
     @ManyToMany

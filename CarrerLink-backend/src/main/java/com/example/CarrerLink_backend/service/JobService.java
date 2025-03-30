@@ -20,4 +20,6 @@ public interface JobService {
 
 
     List<JobgetResponseDTO> getAllJobByCompany(int companyId);
+
+    String closeJob(int jobId);
 }

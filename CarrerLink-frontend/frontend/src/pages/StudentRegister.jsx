@@ -598,11 +598,15 @@ const StudentRegister = () => {
                                             <select
                                                 className="p-2 border rounded mr-2 w-24"
                                                 value={newCourse.result}
-                                                onChange={(e) => setNewCourse(prev => ({...prev, result: e.target.value}))}
+                                                onChange={(e) => setNewCourse(prev => ({
+                                                    ...prev,
+                                                    result: e.target.value
+                                                }))}
                                             >
                                                 <option value="">Result</option>
                                                 <option value="A">A</option>
                                                 <option value="B">B</option>
+                                                <option value="B">C</option>
                                                 <option value="F">F</option>
                                             </select>
                                             <button

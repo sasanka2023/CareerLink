@@ -1,16 +1,21 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.JobRecommendationDTO;
 import com.example.CarrerLink_backend.dto.ProjectIdeaDTO;
 import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
+import com.example.CarrerLink_backend.entity.Student;
 import com.example.CarrerLink_backend.entity.UserEntity;
+import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import com.example.CarrerLink_backend.service.ProjectRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
+import com.example.CarrerLink_backend.service.impl.CourseRecommendationServiceImpl;
+import com.example.CarrerLink_backend.service.impl.JobRecommendationServiceImpl;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +38,9 @@ public class StudentController {
     private final StudentService studentService;
     private final CourseRecommendationService courseRecommendationService;
     private final ProjectRecommendationService projectService;
-
+    private final StudentRepo studentRepo;
+    private final CourseRecommendationServiceImpl courseRecommendationServiceImpl;
+    private final JobRecommendationServiceImpl recommendationService;
     @Operation(summary = "Save a student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "student created successfully"),
@@ -175,6 +182,13 @@ public class StudentController {
             System.err.println("An unexpected error occurred: " + e.getMessage());
             return ResponseEntity.status(500).body(null);
         }
+    }
+
+    @GetMapping("/jobrecommendations/{studentId}")
+    public List<JobRecommendationDTO> getRecommendations(@PathVariable int studentId) {
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        return recommendationService.getRecommendedJobsWithScores(student);
     }
 
 
