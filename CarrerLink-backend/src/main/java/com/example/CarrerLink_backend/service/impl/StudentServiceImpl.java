@@ -7,6 +7,7 @@ import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.repo.*;
@@ -54,6 +55,7 @@ private final AmazonS3 amazonS3;
 
     private final FileServiceImpl fileService;
     private final ProfileImageRepo profileImageRepo;
+    private final JobRecommendationServiceImpl jobRecommendationService;
 
     @Override
     @Transactional
@@ -296,6 +298,23 @@ private final AmazonS3 amazonS3;
     public Optional<String> getUrlByUserId(int userId){
         return profileImageRepo.findUrlByUserId(userId);
     }
+
+
+    public List<TechnologyDTO> getTechnologiesByStudentId(int studentId) {
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        List<Technology> technologies = student.getTechnologies();
+        List<TechnologyDTO> technologyDTOS = new ArrayList<>();
+        for (Technology technology : technologies) {
+            TechnologyDTO technologyDTO = modelMapper.map(technology, TechnologyDTO.class);
+            technologyDTOS.add(technologyDTO);
+        }
+
+        return technologyDTOS;
+    }
+
+
 
 
 

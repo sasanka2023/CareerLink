@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getAllJobsusingFilters } from "../api/JobDetailsGetApi";
+import { getAllJobsusingFilters } from "../api/JobDetailsApi";
 import { Briefcase, MapPin, Clock, DollarSign, Building2, GraduationCap, Code, GitBranch, Figma, MessageSquare } from 'lucide-react';
 
 function JobPage() {

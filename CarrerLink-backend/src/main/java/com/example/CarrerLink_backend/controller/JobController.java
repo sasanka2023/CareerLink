@@ -75,6 +75,24 @@ private final JobService jobService;
         String msg = jobService.saveJob(jobgetResponseDTO,companyId);
         return  ResponseEntity.ok(new StandardResponse(true, msg, null));
     }
+
+    @Operation(
+            summary = "close a job"
+
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "successfully closed job vacancy"),
+            @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500",description = "Internal server error")
+    })
+    @PutMapping( path="/close/{jobId}")
+    public ResponseEntity<StandardResponse> closeJob(@PathVariable int jobId){
+        String msg = jobService.closeJob(jobId);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+
+
+
     @Operation(
             summary = "update a job",
             description = "update job"

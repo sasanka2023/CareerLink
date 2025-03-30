@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Calendar } from "lucide-react";
 import Swal from "sweetalert2";
-import { getAllApplicants, getAllJobsByCompany } from "../../../api/JobDetailsGetApi";
+import { getAllApplicants, getAllJobsByCompany } from "../../../api/JobDetailsApi";
 import { ApproveJob } from "../../../api/CompanyDetailsGetApi";
 import { AuthContext } from "../../../api/AuthProvider";
 
