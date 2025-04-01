@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, ArrowUpRight, Filter } from 'lucide-react';
 import { getAllJobs } from '../api/JobDetailsGetApi';
+import { useNavigate } from "react-router-dom";
 
 function JobFilters({ onFilterChange, jobTypes, jobTitles, companies }) {
   return (
@@ -67,6 +68,7 @@ function JobFilters({ onFilterChange, jobTypes, jobTitles, companies }) {
 }
 
 function JobCard({ job }) {
+  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="p-6">
@@ -97,7 +99,10 @@ function JobCard({ job }) {
           </span>
         </div>
         
-        <button className="mt-4 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+        <button 
+        onClick={() => navigate(`/job/${job.jobType}/${job.company}`)}
+        
+        className="mt-4 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
           More Info
           <ArrowUpRight className="h-4 w-4 ml-2" />
         </button>

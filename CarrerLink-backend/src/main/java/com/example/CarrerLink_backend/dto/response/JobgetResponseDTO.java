@@ -15,7 +15,8 @@ public class JobgetResponseDTO {
 
     private int jobId;
 
-    private String requirements;
+    private List<String> requirements; // Change from String to List<String>
+
     private String jobTitle;
     private String jobType;
     private String description;
@@ -24,6 +25,7 @@ public class JobgetResponseDTO {
     private int rate;
     private String location;
     private List<TechnologyDTO> technologies;
+
 
 
 

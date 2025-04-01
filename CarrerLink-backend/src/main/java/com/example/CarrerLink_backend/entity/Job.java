@@ -18,7 +18,11 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int jobId;
 
-    private String requirements;
+    @ElementCollection
+    @CollectionTable(name = "job_requirements", joinColumns = @JoinColumn(name = "job_id"))
+    @Column(name = "requirement")
+    private List<String> requirements;
+
     private String jobTitle;
     private String jobType;
     private String description;
@@ -35,7 +39,7 @@ public class Job {
     private List<Technology> technologies;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     private Company company;
 

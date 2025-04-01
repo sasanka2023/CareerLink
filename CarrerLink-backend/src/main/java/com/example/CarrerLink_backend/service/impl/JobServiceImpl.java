@@ -60,19 +60,16 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<JobgetResponseDTO> getJobs(String jobType, String company) {
+        System.out.println("Job Type: " + jobType + ", Company: " + company);
         List<Job> jobs;
 
         if ((jobType == null || jobType.isEmpty()) && (company == null || company.isEmpty())) {
-            // Fetch all jobs if both parameters are null or empty
             jobs = jobRepo.findAll();
         } else if (jobType == null || jobType.isEmpty()) {
-            // Fetch jobs filtered by company only
             jobs = jobRepo.findByCompanyName(company);
         } else if (company == null || company.isEmpty()) {
-            // Fetch jobs filtered by jobType only
             jobs = jobRepo.findByJobType(jobType);
         } else {
-            // Fetch jobs filtered by both jobType and company
             jobs = jobRepo.findByJobTypeAndCompanyNameEquals(jobType, company);
         }
 

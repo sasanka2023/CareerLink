@@ -1,26 +1,53 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
+import { saveJob } from "../../api/JobSaveApi";
+
+
+
 
 interface JobPostFormProps {
   onClose: () => void;
-  onSubmit: (jobData: any) => void;
 }
 
-function JobPostForm({ onClose, onSubmit }: JobPostFormProps) {
+function JobPostForm({ onClose }: JobPostFormProps) {
   const [jobData, setJobData] = useState({
+    //company: 0,
     title: "",
-    department: "",
+    //department: "",
     type: "Full-time",
     description: "",
     requirements: [""],
-    salary: "",
+    salary: 0,
     location: "",
-    deadline: "",
+    technologies: [{ techId: 1, techName: "" }], // Default tech object    //deadline: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(jobData);
+
+    const formattedJobData = {
+      //companyId: jobData.company,
+      jobTitle: jobData.title,
+      jobType: jobData.type,
+      description: jobData.description,
+      requirements: Array.isArray(jobData.requirements) ? jobData.requirements : [], 
+      salary: Number(jobData.salary),  //  Ensure it's a number
+      location: jobData.location,
+      technologies: jobData.technologies
+      .filter((tech) => tech.techName.trim() !== "")
+      .map((tech) => ({ techId: tech.techId }))
+        };
+
+    const companyId = 3; // Replace with actual company ID from state/context
+
+    const response = await saveJob(formattedJobData, companyId);
+
+    if (response.success) {
+      alert("Job posted successfully!");
+      onClose();
+    } else {
+      alert("Failed to post job.");
+    }
   };
 
   const addRequirement = () => {
@@ -45,6 +72,16 @@ function JobPostForm({ onClose, onSubmit }: JobPostFormProps) {
       requirements: prev.requirements.filter((_, i) => i !== index),
     }));
   };
+
+  const updateTechnology = (index: number, value: string) => {
+    const newTechnologies = [...jobData.technologies];
+    newTechnologies[index] = { techId: index + 1, techName: value }; // Ensure correct format
+    setJobData((prev) => ({
+      ...prev,
+      technologies: newTechnologies,
+    }));
+  };
+  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -75,24 +112,57 @@ function JobPostForm({ onClose, onSubmit }: JobPostFormProps) {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              location
+            </label>
+            <input
+              type="text"
+              required
+              value={jobData.location}
+              onChange={(e) =>
+                setJobData((prev) => ({ ...prev, location: e.target.value }))
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Technologies
+            </label>
+            {jobData.technologies.map((tech, index) => (
+              <div key={index} className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  required
+                  value={tech.techName}
+                  onChange={(e) => updateTechnology(index, e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+            ))}
+          </div>
+
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Salary
+            </label>
+            <input
+              type="number"
+              required
+              value={jobData.salary}
+              onChange={(e) =>
+                setJobData((prev) => ({ ...prev, salary: Number(e.target.value) }))
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Department
-              </label>
-              <input
-                type="text"
-                required
-                value={jobData.department}
-                onChange={(e) =>
-                  setJobData((prev) => ({
-                    ...prev,
-                    department: e.target.value,
-                  }))
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
+           
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Job Type
@@ -128,85 +198,36 @@ function JobPostForm({ onClose, onSubmit }: JobPostFormProps) {
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Requirements
-              </label>
-              <button
-                type="button"
-                onClick={addRequirement}
-                className="text-sm text-indigo-600 hover:text-indigo-700"
-              >
-                Add Requirement
-              </button>
-            </div>
-            <div className="space-y-2">
-              {jobData.requirements.map((req, index) => (
-                <div key={index} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={req}
-                    onChange={(e) => updateRequirement(index, e.target.value)}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Enter requirement"
-                  />
-                  {index > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => removeRequirement(index)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Salary Range
-              </label>
-              <input
-                type="text"
-                value={jobData.salary}
-                onChange={(e) =>
-                  setJobData((prev) => ({ ...prev, salary: e.target.value }))
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="e.g., $50,000 - $70,000"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location
-              </label>
-              <input
-                type="text"
-                value={jobData.location}
-                onChange={(e) =>
-                  setJobData((prev) => ({ ...prev, location: e.target.value }))
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="e.g., San Francisco, CA"
-              />
-            </div>
-          </div>
-
-          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Application Deadline
+              Requirements
             </label>
-            <input
-              type="date"
-              value={jobData.deadline}
-              onChange={(e) =>
-                setJobData((prev) => ({ ...prev, deadline: e.target.value }))
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
+            {jobData.requirements.map((req, index) => (
+              <div key={index} className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  value={req}
+                  onChange={(e) => updateRequirement(index, e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeRequirement(index)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addRequirement}
+              className="text-sm text-indigo-600 hover:text-indigo-700"
+            >
+              Add Requirement
+            </button>
           </div>
 
           <div className="flex justify-end gap-4">
