@@ -76,8 +76,7 @@ public class Student {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
-    private List<Notification> notifications;
+
 
 
 

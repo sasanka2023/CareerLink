@@ -80,7 +80,14 @@ public class JobServiceImpl implements JobService {
         }
 
         return jobs.stream()
-                .map(job -> modelMapper.map(job, JobgetResponseDTO.class))
+                .map(job -> {
+                    JobgetResponseDTO dto = modelMapper.map(job, JobgetResponseDTO.class);
+
+                    // Explicitly set company name using setter
+                    dto.setCompanyName(job.getCompany().getName());
+
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

@@ -62,24 +62,49 @@ function StudentDashboardLayout({ children,StudentName,profileImage }) {
     useEffect(() => {
         const studentId = extractStudentIdFromToken(token);
         if (!studentId) return;
+        console.log(studentId)
+        // Add this fetch to load existing notifications
+        fetch(`http://localhost:8091/api/notifications/${studentId}`)
+
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                console.log("Raw notification data:", data);
+                const sorted = data.sort((a, b) =>
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setNotifications(sorted);
+            })
+            .catch(err => console.error('Notification fetch error:', err));
 
         // Fetch initial unread count
-        fetch(`http://localhost:8080/api/notifications/${studentId}/unread-count`)
-            .then(res => res.json())
+        fetch(`http://localhost:8091/api/notifications/${studentId}/unread-count`)
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch unread count');
+                return res.json();
+            })
+
             .then(count => setUnreadCount(count))
             .catch(err => console.error('Error fetching unread count:', err));
-
+        console.log(notifications);
         // Connect to WebSocket
-        const socket = new SockJS('http://localhost:8080/ws');
+        const socket = new SockJS('http://localhost:8091/ws');
         const client = new Client({
             webSocketFactory: () => socket,
             onConnect: () => {
-                client.subscribe(`/user/${studentId}/queue/notifications`, (message) => {
-                    const notification = JSON.parse(message.body);
-                    setNotifications(prev => [notification, ...prev]);
-                    setUnreadCount(prev => prev + 1);
+                client.subscribe(`/user/${studentId}/queue/notifications`,
+                    (message) => {
+                        console.log("Received WebSocket message:", message.body); // Log incoming messages
+                        const notification = JSON.parse(message.body);
+                        setNotifications(prev => [notification, ...prev]);
+                        setUnreadCount(prev => prev + 1);
                 });
             },
+            onStompError: (frame) => {
+                console.error("WebSocket error:", frame.headers.message);
+            }
         });
         client.activate();
         setStompClient(client);
@@ -95,7 +120,7 @@ function StudentDashboardLayout({ children,StudentName,profileImage }) {
     };
 
     const markAsRead = (id) => {
-        fetch(`http://localhost:8080/api/notifications/${id}/read`, {
+        fetch(`http://localhost:8091/api/notifications/${id}/read`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -106,6 +131,7 @@ function StudentDashboardLayout({ children,StudentName,profileImage }) {
             })
             .catch(err => console.error('Error marking as read:', err));
     };
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex">
@@ -199,7 +225,15 @@ function StudentDashboardLayout({ children,StudentName,profileImage }) {
                                             <div key={notif.id} className="text-sm text-gray-700 mb-2">
                                                 <p>{notif.message}</p>
                                                 <p className="text-xs text-gray-500">
-                                                    {new Date(notif.createdAt).toLocaleString()}
+                                                    {new Date(
+                                                        notif.createdAt[0],        // Year
+                                                        notif.createdAt[1] - 1,    // Month (Java months 1-12 → JS months 0-11)
+                                                        notif.createdAt[2],        // Day
+                                                        notif.createdAt[3],        // Hours
+                                                        notif.createdAt[4],        // Minutes
+                                                        notif.createdAt[5]         // Seconds
+                                                    ).toLocaleString()}
+
                                                 </p>
                                                 {!notif.isRead && (
                                                     <button

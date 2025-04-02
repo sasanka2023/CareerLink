@@ -24,15 +24,15 @@ export const AuthProvider = ({ children }) => {
     }
 
     const responseInterceptor = axiosInstance.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error.response?.status === 401) {
-          logout();
-          window.location.href = '/student-auth';
-          // navigate('/student-auth');
+        (response) => response,
+        (error) => {
+          if (error.response?.status === 401) {
+            logout();
+            window.location.href = '/student-auth';
+            // navigate('/student-auth');
+          }
+          return Promise.reject(error);
         }
-        return Promise.reject(error);
-      }
     );
 
     // Cleanup interceptors when token or logout changes.
@@ -43,8 +43,8 @@ export const AuthProvider = ({ children }) => {
   }, [token, logout]);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ token, setToken, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 };

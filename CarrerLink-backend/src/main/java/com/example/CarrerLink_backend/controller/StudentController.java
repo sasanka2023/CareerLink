@@ -185,10 +185,11 @@ public class StudentController {
     }
 
     @GetMapping("/jobrecommendations/{studentId}")
-    public List<JobRecommendationDTO> getRecommendations(@PathVariable int studentId) {
-        Student student = studentRepo.findById(studentId)
+    public ResponseEntity<StandardResponse> getRecommendations(@PathVariable int studentId) {
+        Student student = studentRepo.findByUser_Id(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
-        return recommendationService.getRecommendedJobsWithScores(student);
+        List<JobRecommendationDTO> results =  recommendationService.getRecommendedJobsWithScores(student);
+        return ResponseEntity.ok(new StandardResponse(true,"Recommended Jobs fetched successfully",results));
     }
 
 

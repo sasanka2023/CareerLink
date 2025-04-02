@@ -68,41 +68,53 @@ function JobFilters({ onFilterChange, jobTypes, jobTitles, companies }) {
 
 function JobCard({ job }) {
   return (
-    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div className="p-6">
-        <div className="flex items-start space-x-4">
-          <img
-            src={job.companyLogo || "https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=100&h=100&fit=crop"}
-            alt={job.jobType}
-            className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-900 truncate">{job.jobTitle}</h3>
-            <p className="text-sm text-blue-600">{job.company}</p>
+      <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div className="p-6">
+          <div className="flex items-start space-x-4">
+            <img
+                src={job.companyLogo || "https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=100&h=100&fit=crop"}
+                alt={job.jobType}
+                className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+            />
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg font-semibold text-gray-900 truncate">{job.jobTitle}</h3>
+              <p className="text-sm text-blue-600">{job.companyName}</p>
+            </div>
           </div>
-        </div>
-        
-        <div className="mt-4">
-          <p className="text-sm text-gray-600 line-clamp-2">{job.description}</p>
-        </div>
-        
-        <div className="mt-4 flex items-center text-gray-500">
-          <MapPin className="h-4 w-4 mr-2" />
-          <span className="text-sm">{job.location}</span>
-        </div>
-        
-        <div className="mt-4">
+
+          <div className="mt-4">
+            <p className="text-sm text-gray-600 line-clamp-2">{job.description}</p>
+          </div>
+
+          <div className="mt-4 flex items-center text-gray-500">
+            <MapPin className="h-4 w-4 mr-2" />
+            <span className="text-sm">{job.location}</span>
+          </div>
+
+          {/* Added Technology Section */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {job.technologies?.map((tech, index) => (
+                <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+                >
+              {tech.techName}
+            </span>
+            ))}
+          </div>
+
+          <div className="mt-4">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {job.type}
           </span>
+          </div>
+
+          <button className="mt-4 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+            More Info
+            <ArrowUpRight className="h-4 w-4 ml-2" />
+          </button>
         </div>
-        
-        <button className="mt-4 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
-          More Info
-          <ArrowUpRight className="h-4 w-4 ml-2" />
-        </button>
       </div>
-    </div>
   );
 }
 

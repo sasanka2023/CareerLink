@@ -25,7 +25,7 @@ import Companies from './pages/Companies';
 import EditProfile from './components/studentDashboard/EditProfile';
 import JobPage from './pages/JobPage';
 import AdminDashboard from "./components/Dashboard/AdminDashboard/AdminDashboard"; // Import the JobPage component
-
+import RecommendedJobs from './components/Dashboard/StudentDashboard/RecommendedJobs';
 const Layout = () => {
     return (
         <>
@@ -89,6 +89,11 @@ const router = createBrowserRouter([
         path: '/testplatform',
         element:<TestPlatform/> 
     } ,
+    {
+        path: '/student-dashboard/jobs',
+        element:<RecommendedJobs/>
+    },
+
     { path: '/editprofile',element:<EditProfile/>}
     ,
     { path: 'student-dashboard/cv', element: <StudentCV /> }
