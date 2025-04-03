@@ -1,19 +1,23 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.OnlineCourseRecommendationDTO;
 import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.ApplyJobResponseDTO;
 import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
+import com.example.CarrerLink_backend.entity.Student;
 import com.example.CarrerLink_backend.entity.UserEntity;
-import com.example.CarrerLink_backend.service.CourseRecommendationService;
+import com.example.CarrerLink_backend.repo.StudentRepo;
+import com.example.CarrerLink_backend.service.OnlineCourseRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +28,8 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentController {
     private final StudentService studentService;
-    private final CourseRecommendationService courseRecommendationService;
+    private final OnlineCourseRecommendationService courseRecommendationService;
+    private final StudentRepo studentRepo;
 
     @Operation(summary = "Save a student")
     @ApiResponses(value = {
@@ -122,21 +127,28 @@ public class StudentController {
     }
 
 
-    @Operation(summary = "Get recommended courses for a student")
+    @Operation(summary = "Get recommended courses matching student's skills")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched recommended courses"),
-            @ApiResponse(responseCode = "404", description = "Student not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Courses found"),
+            @ApiResponse(responseCode = "404", description = "Student not found")
     })
-    @GetMapping("/recommend-courses")
-    public ResponseEntity<StandardResponse> getRecommendedCourses(@RequestParam int studentId) {
-        List<String> recommendedCourses = courseRecommendationService.getRecommendedCourses(studentId);
+    @GetMapping("/{studentId}/course-recommendations")
+    public ResponseEntity<StandardResponse> getCourseRecommendations(
+            @PathVariable int studentId) {
 
-        if (recommendedCourses.isEmpty()) {
-            return ResponseEntity.status(404).body(new StandardResponse(false, "No recommendations found.", recommendedCourses));
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        List<OnlineCourseRecommendationDTO> recommendations =
+                courseRecommendationService.recommendCoursesForStudent(student);
+
+        if (recommendations.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new StandardResponse(false, "No matching courses found", null));
         }
 
-        return ResponseEntity.ok(new StandardResponse(true, "Recommended courses fetched successfully", recommendedCourses));
+        return ResponseEntity.ok()
+                .body(new StandardResponse(true, "Recommendations found", recommendations));
     }
 
 
