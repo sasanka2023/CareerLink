@@ -2,8 +2,8 @@ import axiosInstance from './AxiosInstance';
 
 const getAdminByUserId = async (userId) => {
     try {
-        const response = await axiosInstance.get(`/admins/userId/${userId}`);
-
+        const response = await axiosInstance.get(`/admin/userId/${userId}`);
+        console.log(response)
         if (!response.data?.success || !response.data?.data) {
             throw new Error('Invalid admin data structure');
         }
@@ -64,8 +64,55 @@ const saveJobField = async (jobFieldData) => {
         };
     }
 };
+const getAdminList = async () => {
+    try {
+        const response = await axiosInstance.get('/admin/getAll');
+
+        if (!response.data?.success || !response.data?.data) {
+            throw new Error('Invalid admin list data structure');
+        }
+
+        return {
+            success: true,
+            data: response.data.data,
+            message: 'Admins fetched successfully'
+        };
+    } catch (error) {
+        console.error('Fetch admin list error:', {
+            status: error.response?.status,
+            message: error.response?.data?.message || error.message
+        });
+        return {
+            success: false,
+            data: null,
+            message: error.response?.data?.message || 'Failed to fetch admin list'
+        };
+    }
+};
+
+const approveAdmin = async (adminId, adminData) => {
+    try {
+        console.log(adminId);
+        console.log(adminData);
+        const response = await axiosInstance.put(`/admin/approve/${adminId}`, adminData);
+        console.log(response);
+        return {
+            success: response.data?.success || false,
+            message: response.data?.message || 'Admin approved successfully'
+        };
+    } catch (error) {
+        console.error('Approve admin error:', {
+            status: error.response?.status,
+            message: error.response?.data?.message || error.message
+        });
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Failed to approve admin'
+        };
+    }
+};
 
 
 
 
-export { getAdminByUserId,saveTechnology, saveJobField };
+export { getAdminByUserId,saveTechnology, saveJobField,getAdminList,approveAdmin };

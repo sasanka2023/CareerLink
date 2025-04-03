@@ -1,9 +1,11 @@
 import React from "react";
 import { useState, useContext } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import Swal from 'sweetalert2';
 import LoginApi from "../api/LoginApi";
 import { AuthContext } from "../api/AuthProvider";
 import { Lock, User } from "lucide-react";
+import { getAdminByUserId } from "../api/AdminDetailsApi"; // Import admin details API
 
 const AdminAuth = () => {
     const { setToken } = useContext(AuthContext);
@@ -16,6 +18,15 @@ const AdminAuth = () => {
         const { name, value } = event.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
+    const extractUsernameFromToken = (token) => {
+        try {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            return decodedToken.userId;
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            return null;
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -23,14 +34,45 @@ const AdminAuth = () => {
 
         try {
             const response = await LoginApi(formData, 'admin');
+            console.log(response);
             if (response.token) {
-                setToken(response.token);
-                navigate("/admin");
+                // Get admin details after successful login
+                const adminResponse = await getAdminByUserId(extractUsernameFromToken(response.token)); // Assuming response contains userId
+
+                if (!adminResponse.success || !adminResponse.data) {
+                    throw new Error('Not Approved for the System'+adminResponse.success+extractUsernameFromToken(response.token));
+                }
+
+                if (adminResponse.data.status) {
+                    setToken(response.token);
+                    navigate("/admin");
+                } else {
+                    await Swal.fire({
+                        icon: 'warning',
+                        title: 'Approval Pending',
+                        text: 'Your account is pending administrator approval.',
+                        showConfirmButton: true,
+                        confirmButtonColor: '#3085d6',
+                    });
+                    // setToken(null);
+                }
             } else {
-                setError(response.message || "Invalid admin credentials");
+                // Handle invalid credentials with SweetAlert
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: response.message || 'Invalid admin credentials',
+                    confirmButtonColor: '#3085d6',
+                });
             }
         } catch (error) {
-            setError("Authentication failed. Please try again.");
+            console.error('Login error:', error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Login Error',
+                text: error.message || 'Authentication failed. Please try again.',
+                confirmButtonColor: '#3085d6',
+            });
         }
     };
 
@@ -42,8 +84,6 @@ const AdminAuth = () => {
                     <p className="mt-2 text-gray-600">Administrator Portal</p>
                 </div>
 
-                {/* Rest of the form similar to CompanyAuth.jsx */}
-                {/* Modify form labels and structure as needed */}
                 <div className="bg-white rounded-xl shadow-sm p-8">
                     {location.state?.message && (
                         <p className="text-green-500 text-center mb-4">{location.state.message}</p>
@@ -86,8 +126,6 @@ const AdminAuth = () => {
                                 />
                             </div>
                         </div>
-
-                        {error && <p className="text-red-500 text-center">{error}</p>}
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center">

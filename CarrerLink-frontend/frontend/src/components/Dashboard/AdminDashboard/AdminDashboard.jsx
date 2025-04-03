@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import { Plus } from 'lucide-react';
 import Sidebar from './Sidebar'; // Import Sidebar component
 import Header from './Header'; // Import Header component
 import Swal from 'sweetalert2';
 import { saveTechnology, saveJobField } from '../../../api/AdminDetailsApi';
+import { AuthContext } from '../../../api/AuthProvider';
+import AdminList from "./AdminList";
+
+
+const extractRoleFromToken = (token) => {
+    try {
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        return decodedToken.role;
+    } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+    }
+};
 const AdminDashboard = () => {
+    const { token } = useContext(AuthContext);
+    const userRole = token ? extractRoleFromToken(token) : null;
+    console.log(userRole);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [technologies, setTechnologies] = useState([]);
     const [jobFields, setJobFields] = useState([]);
@@ -89,7 +105,7 @@ const AdminDashboard = () => {
 
     return (
         <div className="flex h-screen bg-gray-100">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} userRole={userRole} />
             <div className="flex-1 flex flex-col">
                 <Header />
                 <main className="p-8">
@@ -160,6 +176,9 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     )}
+                    {/* Render the AdminList only if the active tab is "adminlist" and the user is a Super Admin */}
+                    {userRole === "ROLE_SUPERADMIN" && activeTab === "adminlist" && <AdminList />}
+
                 </main>
             </div>
         </div>

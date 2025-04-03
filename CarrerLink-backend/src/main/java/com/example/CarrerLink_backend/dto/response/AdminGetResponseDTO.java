@@ -16,4 +16,5 @@ public class AdminGetResponseDTO {
     private String email;
 
     private String profession;
+    private boolean status;
 }

@@ -22,6 +22,7 @@ public class Admin {
 
     private String profession;
 
+    private boolean status;
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;

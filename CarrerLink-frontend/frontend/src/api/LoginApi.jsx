@@ -6,7 +6,12 @@ const LoginApi = async (formData) => {
       username: formData.username,
       password: formData.password,
     });
-    localStorage.setItem('token', response.data.token);
+      const token = response.data.token;
+      localStorage.setItem('token', token);
+    console.log(response);
+
+      // 🔥 Set it RIGHT NOW, not just on load
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     return response.data;
     } catch (error) {
         if (error.response && error.response.data) {

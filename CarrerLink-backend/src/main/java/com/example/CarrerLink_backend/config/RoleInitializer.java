@@ -18,7 +18,7 @@ private final RoleRepo roleRepo;
 
     @Override
     public void run(String... args) throws Exception {
-        List<String> roles = Arrays.asList("ROLE_STUDENT", "ROLE_COMPANY", "ROLE_ADMIN");
+        List<String> roles = Arrays.asList("ROLE_STUDENT", "ROLE_COMPANY", "ROLE_ADMIN","ROLE_SUPERADMIN");
 
         for (String roleName : roles) {
             if (roleRepo.findByName(roleName).isEmpty()) {

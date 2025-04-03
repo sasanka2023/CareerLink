@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/admin")
@@ -72,6 +73,18 @@ public class AdminController {
     public ResponseEntity<StandardResponse> getAdminById(@PathVariable int userId){
         AdminGetResponseDTO admin = adminService.getAdminByUserId(userId);
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", admin));
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<StandardResponse> getAllAdmins() {
+        List<AdminGetResponseDTO> admins = adminService.getAllAdmins();
+        return ResponseEntity.ok(new StandardResponse(true, "Admins fetched successfully", admins));
+    }
+
+    @PutMapping("/approve/{id}")
+    public ResponseEntity<StandardResponse> approveAdmin(@PathVariable int id, @RequestBody AdminGetResponseDTO adminGetResponseDTO) {
+        String message = adminService.approveAdmin(id,adminGetResponseDTO);
+        return ResponseEntity.ok(new StandardResponse(true, "Admin approved successfully", message));
     }
 
 }

@@ -9,11 +9,14 @@ import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.repo.AdminRepo;
 import com.example.CarrerLink_backend.repo.JobFieldRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
+import com.example.CarrerLink_backend.repo.UserRepo;
 import com.example.CarrerLink_backend.service.AdminService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +28,7 @@ public class AdminServiceImpl implements AdminService {
     private final JobFieldRepo jobFieldRepo;
     private final ModelMapper modelMapper;
     private final AdminRepo adminRepo;
+    private final UserRepo userRepo;
     @Override
     public String saveTechnology(TechnologyDTO technologyDTO) {
         Technology technology = modelMapper.map(technologyDTO, Technology.class);
@@ -80,7 +84,27 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminGetResponseDTO getAdminByUserId(int userId) {
-        Admin admin = adminRepo.findByUser_Id(userId).orElseThrow(()->new RuntimeException("Company not found"));
+        UserEntity user = userRepo.findById(userId).orElseThrow(()->new RuntimeException("User not found"));
+        Admin admin = adminRepo.findByUser(user).orElseThrow(()->new RuntimeException("Admin not found"));
         return modelMapper.map(admin, AdminGetResponseDTO.class);
+    }
+
+    @Override
+    public List<AdminGetResponseDTO> getAllAdmins() {
+        List<Admin> admins = adminRepo.findAll();
+        List<AdminGetResponseDTO> adminGetResponseDTOS = modelMapper.map(admins, new TypeToken<List<AdminGetResponseDTO>>() {}.getType());
+        return adminGetResponseDTOS;
+    }
+
+    @Override
+    public String approveAdmin(int id,AdminGetResponseDTO adminGetResponseDTO) {
+        Admin admin = adminRepo.findById(id).orElseThrow(() -> new RuntimeException("Admin not found"));
+
+        // Only update the status field (or any other fields you want to change)
+        admin.setStatus(adminGetResponseDTO.isStatus());
+        adminRepo.save(admin);
+        return "admin "+admin.getFullName()+" approved successfully";
+
+
     }
 }

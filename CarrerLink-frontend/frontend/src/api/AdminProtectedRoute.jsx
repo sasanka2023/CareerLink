@@ -18,8 +18,8 @@ const AdminProtectedRoute = ({ children }) => {
     // You might also want to check for an admin role here if you have role info:
     // const { user } = useContext(AuthContext);
     // if (!token || user?.role !== 'admin') { ... }
-
-    if (!token || extractRoleFromToken(token) !== 'ROLE_ADMIN') {
+    console.log(extractRoleFromToken(token));
+    if (!token || (extractRoleFromToken(token) !== 'ROLE_ADMIN' && extractRoleFromToken(token) !== 'ROLE_SUPERADMIN')) {
         // If there is no token, redirect to the admin login page
         return <Navigate to="/admin-auth" replace />;
     }
