@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/register/company",
                                 "/api/auth/register/student",
+                                "/api/auth/register/admin",
                                 "/api/auth/CreateRoles",
                                 "/api/notifications/**",
                                 "/ws/**"
@@ -70,7 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/students/**").hasRole("STUDENT")
 
                         // Authenticated endpoints (no specific role)
-                        .requestMatchers("/api/cv/**", "/api/v1/requiredCourses/**").authenticated()
+                        .requestMatchers("/api/cv/**", "/api/v1/requiredCourses/**","/api/admin").authenticated()
 
                         // Catch-all rule
                         .anyRequest().authenticated()

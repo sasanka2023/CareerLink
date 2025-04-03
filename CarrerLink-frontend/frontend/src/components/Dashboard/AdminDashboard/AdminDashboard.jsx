@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import Sidebar from './Sidebar'; // Import Sidebar component
 import Header from './Header'; // Import Header component
-
+import Swal from 'sweetalert2';
+import { saveTechnology, saveJobField } from '../../../api/AdminDetailsApi';
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [technologies, setTechnologies] = useState([]);
@@ -34,17 +35,55 @@ const AdminDashboard = () => {
     const [newTechnology, setNewTechnology] = useState({ name: '', category: '' });
     const [newJobField, setNewJobField] = useState({ name: '', description: '' });
 
-    const handleAddTechnology = () => {
+    const handleAddTechnology = async () => {
         if (newTechnology.name && newTechnology.category) {
-            setTechnologies([...technologies, { ...newTechnology, id: Date.now().toString() }]);
-            setNewTechnology({ name: '', category: '' });
+            const response = await saveTechnology(newTechnology);
+
+            if (response.success) {
+                setTechnologies([...technologies, {
+                    ...newTechnology,
+                    id: Date.now().toString()
+                }]);
+                setNewTechnology({ name: '', category: '' });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: response.message,
+                });
+            }
         }
     };
 
-    const handleAddJobField = () => {
+    const handleAddJobField = async () => {
         if (newJobField.name && newJobField.description) {
-            setJobFields([...jobFields, { ...newJobField, id: Date.now().toString() }]);
-            setNewJobField({ name: '', description: '' });
+            const response = await saveJobField(newJobField);
+
+            if (response.success) {
+                setJobFields([...jobFields, {
+                    ...newJobField,
+                    id: Date.now().toString()
+                }]);
+                setNewJobField({ name: '', description: '' });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: response.message,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: response.message,
+                });
+            }
         }
     };
 

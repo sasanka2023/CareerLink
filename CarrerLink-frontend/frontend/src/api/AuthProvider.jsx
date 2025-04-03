@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
         (error) => {
           if (error.response?.status === 401) {
             logout();
-            window.location.href = '/student-auth';
+            window.location.href = '/home';
             // navigate('/student-auth');
           }
           return Promise.reject(error);

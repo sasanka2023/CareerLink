@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.LoginRequestDTO;
 import com.example.CarrerLink_backend.dto.request.RegisterRequestDTO;
@@ -10,6 +11,7 @@ import com.example.CarrerLink_backend.dto.response.RegisterResponseDTO;
 import com.example.CarrerLink_backend.entity.RolesEntity;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.impl.AuthService;
+import com.example.CarrerLink_backend.utill.StandardResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +70,13 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
+    @PostMapping("/register/admin")
+    public ResponseEntity<StandardResponse> registerAdmin(@RequestBody AdminSaveRequestDTO adminSaveRequestDTO) throws IllegalAccessException {
+        RegisterResponseDTO res = authService.registerAdmin(adminSaveRequestDTO);
+        if(res.getError()!=null) return ResponseEntity.badRequest().body(new StandardResponse(false, res.getError(), null));
+
+        return ResponseEntity.ok(new StandardResponse(true,"successfully registered",res));
+    }
 
     @PostMapping("CreateRoles")
     public ResponseEntity<RolesEntity> createRoles(@RequestBody RolesEntity rolesEntity){

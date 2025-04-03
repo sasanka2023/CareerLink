@@ -26,6 +26,9 @@ import EditProfile from './components/studentDashboard/EditProfile';
 import JobPage from './pages/JobPage';
 import AdminDashboard from "./components/Dashboard/AdminDashboard/AdminDashboard"; // Import the JobPage component
 import RecommendedJobs from './components/Dashboard/StudentDashboard/RecommendedJobs';
+import AdminAuth from "./pages/AdminAuth";
+import AdminRegister from "./pages/AdminRegister";
+import AdminProtectedRoute from "./api/AdminProtectedRoute";
 const Layout = () => {
     return (
         <>
@@ -45,7 +48,9 @@ const router = createBrowserRouter([
         children: [
             { path: '/', element: <Home /> },
             { path: '/company-auth', element: <CompanyAuth /> },
+            { path: '/admin-auth', element: <AdminAuth /> },
             { path: '/company-register', element: <CompanyRegister /> },
+            { path: '/admin-register', element: <AdminRegister /> },
             { path: '/company-dashboard', element: <CompanyDashboardPage /> },
             { path: '/student-auth', element: <StudentAuth /> },
             { path: '/student-register', element: <StudentRegister /> },
@@ -64,7 +69,11 @@ const router = createBrowserRouter([
      },
     {
         path: '/admin',
-        element: <AdminDashboard/> // No Header/Footer for this route
+        element: (
+            <AdminProtectedRoute>
+                <AdminDashboard />
+            </AdminProtectedRoute>
+        ), // No Header/Footer for this route
     },
      {
         path: '/cv/template1',

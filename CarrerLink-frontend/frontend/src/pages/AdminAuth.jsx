@@ -1,60 +1,49 @@
-
 import React from "react";
-import { useState } from "react";
-import { useContext } from "react";
-import {useNavigate, useLocation, Link} from "react-router-dom"; // Import useNavigate
-
+import { useState, useContext } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import LoginApi from "../api/LoginApi";
 import { AuthContext } from "../api/AuthProvider";
-import {Lock, User} from "lucide-react";
+import { Lock, User } from "lucide-react";
 
-const CompanyAuth = () => {
+const AdminAuth = () => {
     const { setToken } = useContext(AuthContext);
- 
-    const [formData,setFormData] = useState({
-        username:'',
-        password:''
-    });
-    const navigate = useNavigate(); // Initialize useNavigate
+    const [formData, setFormData] = useState({ username: '', password: '' });
+    const navigate = useNavigate();
     const location = useLocation();
-    const [error,setError] = useState('');
-    const handleChange = (event) =>{
-        const {name,value} = event.target;
-        setFormData(
-            {
-                ...formData,
-                [name]:value
-            }
-        )
-    }
+    const [error, setError] = useState('');
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setError(""); // Clear previous errors
+        setError("");
 
         try {
-            const response = await LoginApi(formData);
-            
+            const response = await LoginApi(formData, 'admin');
             if (response.token) {
                 setToken(response.token);
-                navigate("/company-dashboard"); // Redirect to Dashboard on success
+                navigate("/admin");
             } else {
-                setError(response.message || "Invalid credentials. Please try again.");
+                setError(response.message || "Invalid admin credentials");
             }
         } catch (error) {
-            setError("An unexpected error occurred. Please try again later.");
+            setError("Authentication failed. Please try again.");
         }
     };
-
 
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full">
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">Company Sign In</h2>
-                    <p className="mt-2 text-gray-600">Welcome back to CareerLink</p>
+                    <h2 className="text-3xl font-bold text-gray-900">Admin Sign In</h2>
+                    <p className="mt-2 text-gray-600">Administrator Portal</p>
                 </div>
 
+                {/* Rest of the form similar to CompanyAuth.jsx */}
+                {/* Modify form labels and structure as needed */}
                 <div className="bg-white rounded-xl shadow-sm p-8">
                     {location.state?.message && (
                         <p className="text-green-500 text-center mb-4">{location.state.message}</p>
@@ -130,7 +119,7 @@ const CompanyAuth = () => {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Don't have an account?{" "}
-                            <Link to="/company-register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            <Link to="/admin-register" className="font-medium text-indigo-600 hover:text-indigo-500">
                                 Register now
                             </Link>
                         </p>
@@ -140,5 +129,4 @@ const CompanyAuth = () => {
         </div>
     );
 };
-
-export default CompanyAuth;
+export default AdminAuth;
