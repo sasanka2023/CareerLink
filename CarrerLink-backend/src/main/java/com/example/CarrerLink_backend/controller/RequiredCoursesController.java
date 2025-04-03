@@ -14,13 +14,6 @@ public class RequiredCoursesController {
     @Autowired
     private RequiredCoursesServiceIMPL requiredCoursesServiceIMPL;
 
-    @PostMapping("/save")
-    public String saveRequiredCourses(@RequestBody RequireCoursesDTO requireCoursesDTO) {
-        //RequiredCoursesServiceIMPL requiredCoursesServiceIMPL = new RequiredCoursesServiceIMPL();
-        //requiredCoursesServiceIMPL.saveRequiredCourses(requireCoursesDTO);
-        requiredCoursesServiceIMPL.saveRequiredCourses(requireCoursesDTO);
-        return  "saved";
-    }
 
     @GetMapping(path = "/get-all-required-courses")
     public List<RequireCoursesDTO> getAllRequiredCourses() {
