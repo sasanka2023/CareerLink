@@ -47,13 +47,15 @@ public class SecurityConfig {
                     .sessionManagement(s->s.
                         sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(r->r.
-                             requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student")
+                             requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student","/api/auth/CreateRoles","/ws/**")
                             .permitAll()
                             // Public access to GET requests for companies
                             .requestMatchers("GET", "/api/companies/**")
                             .permitAll()
                             .requestMatchers("GET","/api/jobs/**")
                             .permitAll()
+                            .requestMatchers("PUT", "/api/students/**").permitAll()
+
 
                             // Restricted access to modify company data
                             .requestMatchers("POST", "/api/companies/**").hasRole("COMPANY")

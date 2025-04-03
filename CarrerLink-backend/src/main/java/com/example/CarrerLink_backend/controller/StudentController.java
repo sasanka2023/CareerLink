@@ -1,7 +1,10 @@
 package com.example.CarrerLink_backend.controller;
 
 
+
 import com.example.CarrerLink_backend.dto.OnlineCourseRecommendationDTO;
+import com.example.CarrerLink_backend.dto.JobRecommendationDTO;
+import com.example.CarrerLink_backend.dto.ProjectIdeaDTO;
 import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentUpdateRequestDTO;
@@ -11,15 +14,24 @@ import com.example.CarrerLink_backend.entity.Student;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.service.OnlineCourseRecommendationService;
+import com.example.CarrerLink_backend.service.CourseRecommendationService;
+import com.example.CarrerLink_backend.service.ProjectRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
+import com.example.CarrerLink_backend.service.impl.CourseRecommendationServiceImpl;
+import com.example.CarrerLink_backend.service.impl.JobRecommendationServiceImpl;
 import com.example.CarrerLink_backend.utill.StandardResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,6 +42,11 @@ public class StudentController {
     private final StudentService studentService;
     private final OnlineCourseRecommendationService courseRecommendationService;
     private final StudentRepo studentRepo;
+    private final CourseRecommendationService courseRecommendationService;
+    private final ProjectRecommendationService projectService;
+    private final StudentRepo studentRepo;
+    private final CourseRecommendationServiceImpl courseRecommendationServiceImpl;
+    private final JobRecommendationServiceImpl recommendationService;
 
     @Operation(summary = "Save a student")
     @ApiResponses(value = {
@@ -47,18 +64,31 @@ public class StudentController {
 
     }
 
+    @PutMapping(consumes = {"multipart/form-data"})
     @Operation(summary = "Update student")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "student updated successfully"),
+            @ApiResponse(responseCode = "201", description = "Student updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PutMapping()
-    public ResponseEntity<StandardResponse> updateStudent(@RequestBody StudentUpdateRequestDTO studentUpdateRequestDTO){
-        String message = studentService.updateStudent(studentUpdateRequestDTO);
+    public ResponseEntity<StandardResponse> updateStudent(
+            @RequestPart("student") String studentJson,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
 
+        // Convert studentJson (String) to StudentUpdateRequestDTO
+        ObjectMapper objectMapper = new ObjectMapper();
+        StudentUpdateRequestDTO studentUpdateRequestDTO;
+        try {
+            studentUpdateRequestDTO = objectMapper.readValue(studentJson, StudentUpdateRequestDTO.class);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body(new StandardResponse(false, "Invalid JSON format", null));
+        }
+
+        String message = studentService.updateStudent(studentUpdateRequestDTO, imageFile);
         return ResponseEntity.ok(new StandardResponse(true, "Student updated successfully", message));
     }
+
+
 
 
     @Operation(summary = "Delete student")
@@ -70,7 +100,7 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<StandardResponse> deleteStudent(@PathVariable int id) {
         studentService.deleteStudent(id);
-        return ResponseEntity.ok(new StandardResponse(true, "Company deleted successfully", null));
+        return ResponseEntity.ok(new StandardResponse(true, "Student deleted successfully", null));
     }
 
     @Operation(summary = "Apply for a job")
@@ -86,18 +116,7 @@ public class StudentController {
     }
 
 
-    @Operation(summary = "Get all applicants for a job")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @GetMapping("/get-all-applicants-for-job")
 
-    public ResponseEntity<StandardResponse> getAllApplicants(@RequestParam int jobId){
-        List<StudentgetResponseDTO> students = studentService.getAllApplicants(jobId);
-        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
-    }
 
     @Operation(summary = "Get all jobs applied by a student")
     @ApiResponses(value = {
@@ -165,6 +184,26 @@ public class StudentController {
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 
+
+
+    @GetMapping("/recommend/{studentId}")
+    public ResponseEntity<List<ProjectIdeaDTO>> recommendProjects(@PathVariable int studentId) {
+        try {
+            List<ProjectIdeaDTO> projects = projectService.getProjectIdeas(studentId);
+            return ResponseEntity.ok(projects);
+        } catch (Exception e) {
+            // Log the error for debugging
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @GetMapping("/jobrecommendations/{studentId}")
+    public List<JobRecommendationDTO> getRecommendations(@PathVariable int studentId) {
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        return recommendationService.getRecommendedJobsWithScores(student);
+    }
 
 
 }

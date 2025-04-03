@@ -1,7 +1,9 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
+import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
 import com.example.CarrerLink_backend.entity.Company;
 import com.example.CarrerLink_backend.service.JobService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
@@ -73,6 +75,24 @@ private final JobService jobService;
         String msg = jobService.saveJob(jobgetResponseDTO,companyId);
         return  ResponseEntity.ok(new StandardResponse(true, msg, null));
     }
+
+    @Operation(
+            summary = "close a job"
+
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "successfully closed job vacancy"),
+            @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
+            @ApiResponse(responseCode = "500",description = "Internal server error")
+    })
+    @PutMapping( path="/close/{jobId}")
+    public ResponseEntity<StandardResponse> closeJob(@PathVariable int jobId){
+        String msg = jobService.closeJob(jobId);
+        return  ResponseEntity.ok(new StandardResponse(true, msg, null));
+    }
+
+
+
     @Operation(
             summary = "update a job",
             description = "update job"
@@ -104,17 +124,33 @@ private final JobService jobService;
         return  ResponseEntity.ok(new StandardResponse(true, msg, null));
     }
 
-    @ApiResponses(value ={
-            @ApiResponse(responseCode = "200",description = "Successfully deleted job"),
-            @ApiResponse(responseCode = "400",description = "Invalid path parameters"),
-            @ApiResponse(responseCode = "500",description = "Internal server error")
+
+
+    @Operation(summary = "Get all applicants for a job")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(path="/getcompany")
-    public ResponseEntity<StandardResponse> getCompanyByJob(@RequestParam int jobId){
-        Company company = jobService.getCompanyByJobId(jobId);
-        return ResponseEntity.ok(new StandardResponse(true,"Jobs fetched successfully",company));
+    @GetMapping("/get-all-applicants-for-job")
+
+    public ResponseEntity<StandardResponse> getAllApplicants(@RequestParam int jobId){
+        List<ApplicantDetailsgetResponseDTO> students = jobService.getAllApplicants(jobId);
+        return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 
+    @Operation(summary = "get all the jobs")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all jobs"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/get-all-jobs-by-company")
+    public ResponseEntity<StandardResponse> getAllJobsByCompany(@RequestParam int companyId){
+        List<JobgetResponseDTO> jobs = jobService.getAllJobByCompany(companyId);
+        return ResponseEntity.ok(new StandardResponse(true,"Jobs fetched successfully",jobs));
+
+    }
 
 
 

@@ -2,9 +2,12 @@ package com.example.CarrerLink_backend.controller;
 
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 
 
+import com.example.CarrerLink_backend.dto.response.JobApproveResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
@@ -135,5 +138,39 @@ public class CompanyController {
         CompanygetResponseDTO company = companyService.getCompanyByUserId(userId);
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", company));
     }
+
+
+
+    @Operation(summary = "Aprove a job for student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PutMapping("/approve-job")
+    public ResponseEntity<StandardResponse> approveJob(
+            @RequestParam int studentId,
+            @RequestParam int jobId,
+            @RequestBody JobApproveResponseDTO jobApproveResponseDTO){
+        String message = companyService.approveJob(studentId,jobId,jobApproveResponseDTO);
+        return ResponseEntity.ok(new StandardResponse(true,"Job approved successfully",message));
+    }
+
+    @Operation(summary = "get all the approved applicants")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/all-the-approved-applicants/{companyId}")
+    public ResponseEntity<StandardResponse> getAllTheApprovedApplicants(@PathVariable int companyId){
+        List<ApplicantDetailsgetResponseDTO> applicantDetailsgetResponseDTOList = companyService.getApprovedApplicants(companyId);
+        return ResponseEntity.ok(new StandardResponse(true,"Job approved successfully",applicantDetailsgetResponseDTOList));
+
+    }
+
+
+
+
 }
 

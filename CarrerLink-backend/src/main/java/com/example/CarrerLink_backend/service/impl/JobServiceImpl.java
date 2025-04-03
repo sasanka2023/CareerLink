@@ -3,13 +3,14 @@ package com.example.CarrerLink_backend.service.impl;
 
 
 import com.example.CarrerLink_backend.dto.TechnologyDTO;
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
-import com.example.CarrerLink_backend.entity.Company;
-import com.example.CarrerLink_backend.entity.Job;
-import com.example.CarrerLink_backend.entity.Technology;
+import com.example.CarrerLink_backend.dto.response.StudentgetResponseDTO;
+import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.exception.ResourceNotFoundException;
 import com.example.CarrerLink_backend.repo.CompanyRepository;
 import com.example.CarrerLink_backend.repo.JobRepo;
+import com.example.CarrerLink_backend.repo.StudentJobsRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.service.JobService;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ public class JobServiceImpl implements JobService {
     private final JobRepo jobRepo;
     private final ModelMapper modelMapper;
     private final TechnologyRepo technologyRepo;
+    private final StudentJobsRepo studentJobsRepo;
     @Autowired
     private CompanyRepository companyRepository;
 
@@ -91,9 +94,25 @@ public class JobServiceImpl implements JobService {
     @Override
     public String updateJob(JobgetResponseDTO jobgetResponseDTO) {
         if(jobRepo.existsById(jobgetResponseDTO.getJobId())){
-            Job job = modelMapper.map(jobgetResponseDTO,Job.class);
-            jobRepo.save(job);
-            return job.getJobTitle()+"updated";
+
+            Job existingJob = jobRepo.findByJobId(jobgetResponseDTO.getJobId()).orElseThrow(()->new RuntimeException("Job not found"));
+
+            existingJob.setJobTitle(jobgetResponseDTO.getJobTitle());
+            existingJob.setJobType(jobgetResponseDTO.getJobType());
+            existingJob.setDescription(jobgetResponseDTO.getDescription());
+            existingJob.setRequirements(jobgetResponseDTO.getRequirements());
+            existingJob.setRate(jobgetResponseDTO.getRate());
+            existingJob.setLocation(jobgetResponseDTO.getLocation());
+            existingJob.setStatus(jobgetResponseDTO.getStatus());
+            List<Technology> newTechs = new ArrayList<>();
+            for (TechnologyDTO techDTO : jobgetResponseDTO.getTechnologies()) {
+                Technology tech = technologyRepo.findByTechName(techDTO.getTechName())
+                        .orElseThrow(() -> new ResourceNotFoundException("Technology with name " + techDTO.getTechName() + "Not found"));
+                newTechs.add(tech);
+            }
+            existingJob.setTechnologies(newTechs);
+            jobRepo.save(existingJob);
+            return existingJob.getJobTitle()+"updated";
         }else{
             throw new RuntimeException("Job not found");
         }
@@ -111,8 +130,51 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Company getCompanyByJobId(int jobId) {
-        return jobRepo.findByJobId(jobId).orElseThrow(() -> new ResourceNotFoundException("no company found"));
+    public List<JobgetResponseDTO> getAllJobByCompany(int companyId) {
+        Long company = (long) companyId;
+        if(companyRepository.existsById(company)){
+            Company company1 = companyRepository.findById(company).orElseThrow(()->new RuntimeException("Company not found"));
+            List<Job> jobs = jobRepo.findByCompany(company1);
+            return modelMapper.map(jobs,new TypeToken<List<JobgetResponseDTO>>() {}.getType());
+        }
+        else{
+            throw new ResourceNotFoundException("Company is not found");
+        }
+
 
     }
+
+    public String closeJob(int jobId){
+        Job job = jobRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+        job.setStatus(JobStatus.CLOSED);
+        jobRepo.save(job);
+        return "Job closed";
+    }
+
+
+    @Override
+    public List<ApplicantDetailsgetResponseDTO> getAllApplicants(@RequestParam int jobId) {
+        Job job = jobRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        List<StudentJobs> studentJobs = studentJobsRepo.findByJob(job);
+        List<ApplicantDetailsgetResponseDTO> applicantgetResponseDTOS = new ArrayList<>();
+        for(StudentJobs studentJobs1 : studentJobs){
+            ApplicantDetailsgetResponseDTO applicantDetailsgetResponseDTO = new ApplicantDetailsgetResponseDTO();
+            Student student = studentJobs1.getStudent();
+            applicantDetailsgetResponseDTO.setFirstName(student.getFirstName());
+            applicantDetailsgetResponseDTO.setLastName(student.getLastName());
+            applicantDetailsgetResponseDTO.setStudentId(student.getStudentId());
+            applicantDetailsgetResponseDTO.setStatus(studentJobs1.getStatus());
+            applicantDetailsgetResponseDTO.setUniversity(student.getUniversity());
+            applicantDetailsgetResponseDTO.setInterviewDate(studentJobs1.getInterviewDate());
+            applicantgetResponseDTOS.add(applicantDetailsgetResponseDTO);
+        }
+
+        return applicantgetResponseDTOS;
+
+    }
+
+
 }

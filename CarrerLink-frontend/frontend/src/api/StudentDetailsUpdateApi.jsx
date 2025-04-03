@@ -1,19 +1,24 @@
-import axiosInstance from './AxiosInstance';
+import axios from "axios";
 
-const UpdateStudent = async (formdata) => {
+const UpdateStudent = async (studentData, imageFile) => {
   try {
-    const response = await axiosInstance.put('/students',formdata);
-    if (!response.data?.success || !response.data?.data) {
-      throw new Error('Invalid API response structure');
+    const formData = new FormData();
+    formData.append("student", JSON.stringify(studentData)); // Convert JSON to string
+    if (imageFile) {
+      formData.append("image", imageFile); // Append file if exists
     }
-    return response.data;
-  } catch (error) {
-    console.error('Error updating student data:', {
-      status: error.response?.status,
-      message: error.response?.data?.message || error.message
+
+    const response = await axios.put("http://localhost:8091/api/students", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
-    return { success: false };
+
+    console.log("Success:", response.data);
+  } catch (error) {
+    console.error("Error updating student:", error.response?.data || error.message);
   }
 };
+
 
 export default UpdateStudent;

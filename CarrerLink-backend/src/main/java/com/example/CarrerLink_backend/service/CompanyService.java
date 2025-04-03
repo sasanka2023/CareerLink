@@ -2,7 +2,9 @@ package com.example.CarrerLink_backend.service;
 
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
+import com.example.CarrerLink_backend.dto.response.ApplicantDetailsgetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
+import com.example.CarrerLink_backend.dto.response.JobApproveResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 
 import java.util.List;
@@ -19,5 +21,9 @@ public interface CompanyService {
     CompanygetResponseDTO getCompanyByName(String username);
 
     CompanygetResponseDTO getCompanyByUserId(int userId);
+
+    String approveJob(int studentId, int jobId,JobApproveResponseDTO jobApproveResponseDTO);
+
+    List<ApplicantDetailsgetResponseDTO> getApprovedApplicants(int companyId);
 }
 
