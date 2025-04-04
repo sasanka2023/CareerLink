@@ -6,7 +6,7 @@ import { ApproveJob } from "../../../api/CompanyDetailsGetApi";
 import { AuthContext } from "../../../api/AuthProvider";
 
 function Applications({ applicants, company }) {
-  const { token } = useContext(AuthContext);
+  const { token} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [selectedPosition, setSelectedPosition] = useState("");
   const [students, setStudents] = useState([]);
@@ -57,8 +57,32 @@ function Applications({ applicants, company }) {
     }));
   };
 
+  const sendNotification = async (studentId, message) => {
+    try {
+      const response = await fetch('http://localhost:8091/api/notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ studentId, message })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Notification error:', error);
+      Swal.fire('Error', 'Failed to send notification', 'error');
+    }
+  };
+
+
   const handleApproveJob = async (studentId, jobId) => {
+
+
     if (!interviewDates[studentId]) {
+
       Swal.fire({
         icon: "warning",
         title: "Interview Date Required",
@@ -80,6 +104,11 @@ function Applications({ applicants, company }) {
       console.log(jobId);
       console.log(requestBody);
       if (response?.success) {
+        //sending notifications
+        await sendNotification(
+            studentId,
+            `Your application for ${selectedPosition} has been approved! Interview scheduled on ${interviewDates[studentId]}`
+        );
         // Update the students state to reflect the approval
         setStudents(prevStudents =>
             prevStudents.map(student =>

@@ -9,28 +9,7 @@ function JobPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchJobDetails = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await getAllJobsusingFilters(null, null);
-  //       if (!response.success) throw new Error("Failed to fetch job details");
 
-  //       const selectedJob = response.data.find((j) => j.jobId === parseInt(jobId || ''));
-  //       if (selectedJob) {
-  //         setJob(selectedJob);
-  //       } else {
-  //         setError("Job not found");
-  //       }
-  //     } catch (err) {
-  //       setError("Failed to fetch job details");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchJobDetails();
-  // }, [jobId]);
 
   if (loading) {
     return (

@@ -3,7 +3,7 @@ import { Camera, Mail, MapPin } from 'lucide-react';
 import DashboardLayout from '../Dashboard/StudentDashboard/StudentDashboardLayout';
 import UpdateStudent from '../../api/StudentDetailsUpdateApi';
 import { AuthContext } from '../../api/AuthProvider';
-import getStudentByUsername from '../../api/StudentDetailsApi';
+import {getStudentByUsername} from '../../api/StudentDetailsApi';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 

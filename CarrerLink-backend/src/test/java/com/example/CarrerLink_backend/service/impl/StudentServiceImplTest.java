@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.Optional;
@@ -48,6 +49,7 @@ class StudentServiceImplTest {
     private Student student;
     private StudentSaveRequestDTO studentSaveRequestDTO;
     private StudentUpdateRequestDTO studentUpdateRequestDTO;
+    private MultipartFile imageFile;
 
     @BeforeEach
     void setUp() {
@@ -72,6 +74,7 @@ class StudentServiceImplTest {
         studentUpdateRequestDTO.setLastName("gayathra");
         studentUpdateRequestDTO.setEmail("sasa@gmail.com");
         studentUpdateRequestDTO.setAddress("Ahangama/Galle");
+
 
     }
 
@@ -98,7 +101,7 @@ class StudentServiceImplTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            studentService.updateStudent(studentUpdateRequestDTO);
+            studentService.updateStudent(studentUpdateRequestDTO,imageFile);
         });
 
         assertEquals("Student with ID 99 not found. ", exception.getMessage());
@@ -112,7 +115,7 @@ class StudentServiceImplTest {
         when(studentRepo.save(student)).thenReturn(student);
 
         // Act
-        String result = studentService.updateStudent(studentUpdateRequestDTO);
+        String result = studentService.updateStudent(studentUpdateRequestDTO,imageFile);
 
         // Assert
         assertEquals("Updated student successfully", result);

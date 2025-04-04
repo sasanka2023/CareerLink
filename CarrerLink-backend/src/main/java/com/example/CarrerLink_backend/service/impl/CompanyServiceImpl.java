@@ -19,7 +19,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final StudentJobsRepo studentJobsRepo;
     private final JobRepo jobRepo;
     private final StudentRepo studentRepo;
-    private final NotificationService notificationService;
+
 
     @Override
     public List<CompanygetResponseDTO> getCompanies(String location, String category) {
