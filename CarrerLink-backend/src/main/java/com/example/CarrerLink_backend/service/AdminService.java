@@ -28,5 +28,5 @@ public interface AdminService {
     List<AdminGetResponseDTO> getAllAdmins();
 
     String approveAdmin(int id,AdminGetResponseDTO adminGetResponseDTO);
-
+    List<RequireCoursesDTO> getAllRequiredCourses();
 }

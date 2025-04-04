@@ -112,15 +112,15 @@ public class AdminServiceImpl implements AdminService {
 
         if (optionalRequiredCourses.isPresent()) {
             RequiredCourses requiredCourses = optionalRequiredCourses.get();
-            requiredCourses.setCourseName(requireCoursesDTO.getCourceName());
+            requiredCourses.setCourseName(requireCoursesDTO.getCourseName());
             requiredCourses.setRequiredSkill(requireCoursesDTO.getRequiredSkill());
             requiredCourses.setSkillLevel(requireCoursesDTO.getSkillLevel());
             requiredCoursesRepo.save(requiredCourses);
             return modelMapper.map(requiredCourses, RequireCoursesDTO.class);
-        }
-        else {
+        } else {
             throw new RuntimeException("Courses Not Found with ID : " + id);
         }
+    }
 
     public String save(AdminSaveRequestDTO adminSaveRequestDTO, UserEntity userdata) {
         Admin admin = modelMapper.map(adminSaveRequestDTO, Admin.class);
@@ -154,5 +154,11 @@ public class AdminServiceImpl implements AdminService {
 
 
 
+    }
+
+    @Override
+    public List<RequireCoursesDTO> getAllRequiredCourses() {
+        List<RequiredCourses> getAllRequiredCourses = requiredCoursesRepo.findAll();
+        return modelMapper.map(getAllRequiredCourses,new TypeToken<List<RequireCoursesDTO>>() {}.getType());
     }
 }

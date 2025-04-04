@@ -6,7 +6,8 @@ import {
     FileCheck,
     Calendar,
     LogOut,
-    ChevronRight
+    ChevronRight,
+    FilePen,
 } from 'lucide-react';
 import { AuthContext } from "../../../api/AuthProvider";
 import {useNavigate} from "react-router-dom";
@@ -52,6 +53,18 @@ const Sidebar = ({ activeTab, setActiveTab, userRole }) => {
                         {activeTab === 'technologies' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     <button
+                        onClick={() => setActiveTab('Courses')}
+                        className={`flex items-center w-full p-3 rounded-xl transition-all ${
+                            activeTab === 'Courses'
+                                ? 'bg-indigo-50 text-indigo-600'
+                                : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                    >
+                        <FilePen size={20} className="mr-3"/>
+                        <span className="font-medium">Courses</span>
+                        {activeTab === 'Courses' && <ChevronRight className="ml-auto" size={18}/>}
+                    </button>
+                    <button
                         onClick={() => setActiveTab('jobs')}
                         className={`flex items-center w-full p-3 rounded-xl transition-all ${
                             activeTab === 'jobs'
@@ -88,17 +101,17 @@ const Sidebar = ({ activeTab, setActiveTab, userRole }) => {
                         {activeTab === 'tests' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     {userRole === "ROLE_SUPERADMIN" && (<button
-                        onClick={() => setActiveTab('adminlist')}
-                        className={`flex items-center w-full p-3 rounded-xl transition-all ${
-                            activeTab === 'adminlist'
-                                ? 'bg-indigo-50 text-indigo-600'
-                                : 'text-gray-600 hover:bg-gray-50'
-                        }`}
-                    >
-                        <Calendar size={20} className="mr-3"/>
-                        <span className="font-medium">Admin List</span>
-                        {activeTab === 'adminlist' && <ChevronRight className="ml-auto" size={18}/>}
-                    </button>
+                            onClick={() => setActiveTab('adminlist')}
+                            className={`flex items-center w-full p-3 rounded-xl transition-all ${
+                                activeTab === 'adminlist'
+                                    ? 'bg-indigo-50 text-indigo-600'
+                                    : 'text-gray-600 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Calendar size={20} className="mr-3"/>
+                            <span className="font-medium">Admin List</span>
+                            {activeTab === 'adminlist' && <ChevronRight className="ml-auto" size={18}/>}
+                        </button>
                     )}
                 </nav>
             </div>

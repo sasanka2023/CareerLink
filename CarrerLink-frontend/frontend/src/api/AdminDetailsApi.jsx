@@ -26,6 +26,29 @@ const getAdminByUserId = async (userId) => {
     }
 };
 
+const getAllCourses = async () => {
+    try {
+        const response = await axiosInstance.get(`/admin/get-all-required-courses`);
+        console.log("getAllCourses API response:", response);
+
+        if (!Array.isArray(response.data)) {
+            throw new Error('Invalid course data');
+        }
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        console.error('Fetch admin details error:', {
+            status: error.response?.status,
+            message: error.response?.data?.message || error.message
+        });
+        return { success: false };
+    }
+};
+
+
 const saveTechnology = async (technologyData) => {
     try {
         const response = await axiosInstance.post('/saveTechnology',
@@ -64,6 +87,7 @@ const saveJobField = async (jobFieldData) => {
         };
     }
 };
+
 const getAdminList = async () => {
     try {
         const response = await axiosInstance.get('/admin/getAll');
@@ -115,4 +139,4 @@ const approveAdmin = async (adminId, adminData) => {
 
 
 
-export { getAdminByUserId,saveTechnology, saveJobField,getAdminList,approveAdmin };
+export { getAdminByUserId,saveTechnology,getAllCourses, saveJobField,getAdminList,approveAdmin };
