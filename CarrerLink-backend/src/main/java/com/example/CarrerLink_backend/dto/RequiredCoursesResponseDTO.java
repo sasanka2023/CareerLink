@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OnlineCourseRecommendationDTO {
-    private Long id;
-    private String courseName;
-    private String courseLink;
-    private String skill;
+@Data
+public class RequiredCoursesResponseDTO {
+    private int courceId;
+    private String courceName;
+    private String requiredSkill;
     private String skillLevel;
-    private String recommendationNote;
+    private String url;
 }
