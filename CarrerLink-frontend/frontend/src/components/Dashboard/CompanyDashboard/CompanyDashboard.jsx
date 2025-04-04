@@ -289,9 +289,13 @@ function CompanyDashboard() {
                           <p className="text-sm text-gray-600">
                             {applicant.university}
                           </p>
+
                         </div>
                         <div className="flex flex-col items-center w-[280px] justify-center">
                           <p className="font-medium">{applicant.interviewDate}</p>
+                          <p className="text-sm ">
+                            {applicant.jobFieldName}
+                          </p>
                         </div>
                       </div>
                       <span className="px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-sm">
@@ -343,42 +347,35 @@ function CompanyDashboard() {
         )}
 
         {selectedTab === "about" && (
-          <div className="space-y-8">
-            {/* About Section */}
-            <div className="bg-white rounded-xl shadow-sm p-8">
-              <h2 className="text-2xl font-bold mb-4">About Us</h2>
-              <p className="text-gray-600 mb-6">{company.description}</p>
+            <div className="space-y-8">
+              {/* About Section */}
+              <div className="bg-white rounded-xl shadow-sm p-8">
+                <h2 className="text-2xl font-bold mb-4">About Us</h2>
+                <p className="text-gray-600 mb-6">{company.description}</p>
+                <h2 className="text-2xl font-bold mb-4">Requirements</h2>
+                <p className="text-gray-600 mb-6">{company.requirements}</p>
 
-              {/* Technologies */}
-              <h3 className="text-xl font-semibold mb-4">
-                Technologies We Use
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {companyInfo.technologies.map((tech) => (
-                  <div key={tech.category} className="space-y-2">
-                    <h4 className="font-medium text-gray-900">
-                      {tech.category}
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {tech.items.map((item) => (
-                        <span
-                          key={item}
+                {/* Technologies */}
+                <h3 className="text-xl font-semibold mb-4">
+                  Technologies We Use
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {company.technologies?.map((tech) => (
+                      <span
+                          key={tech.techId}
                           className="px-3 py-1 bg-gray-100 rounded-full text-sm"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                      >
+            {tech.techName}
+          </span>
+                  ))}
+                </div>
               </div>
+
+              <FeaturesAndPartners companyInfo={company}/>
+
+              {/* Contact */}
+              <ContactEmployee/>
             </div>
-
-           <FeaturesAndPartners companyInfo={companyInfo} />
-
-            {/* Contact */}
-            <ContactEmployee/>
-          </div>
         )}
       </main>
 

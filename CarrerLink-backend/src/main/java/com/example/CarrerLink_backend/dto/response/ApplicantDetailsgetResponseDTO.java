@@ -17,6 +17,7 @@ public class ApplicantDetailsgetResponseDTO {
     private Boolean status;
     private String university;
     private LocalDate interviewDate;
+    private String jobFieldName;
 
 
 

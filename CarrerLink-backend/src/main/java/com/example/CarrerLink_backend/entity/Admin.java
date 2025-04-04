@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -26,5 +28,11 @@ public class Admin {
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "createdBy")
+    private Set<SkillTest> skillTests;
+
+
+
 
 }
