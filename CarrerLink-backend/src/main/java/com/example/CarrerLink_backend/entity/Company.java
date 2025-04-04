@@ -20,12 +20,14 @@ public class Company {
     private String name;
 
     private String slogan;
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
     private String category;
     private String mobile;
     private String location;
     private String coverImage;
     private String email;
+    @Column(columnDefinition = "LONGTEXT")
     private String requirements;
     private String website;
     private String size;

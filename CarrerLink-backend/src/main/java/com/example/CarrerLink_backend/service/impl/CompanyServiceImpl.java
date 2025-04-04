@@ -215,6 +215,7 @@ public class CompanyServiceImpl implements CompanyService {
             applicantDetailsgetResponseDTO.setUniversity(studentJobs2.getStudent().getUniversity());
             applicantDetailsgetResponseDTO.setStatus(studentJobs2.getStatus());
             applicantDetailsgetResponseDTO.setInterviewDate(studentJobs2.getInterviewDate());
+            applicantDetailsgetResponseDTO.setJobFieldName(studentJobs2.getJob().getJobTitle());
             applicantDetailsgetResponseDTOList.add(applicantDetailsgetResponseDTO);
         }
         return applicantDetailsgetResponseDTOList;
