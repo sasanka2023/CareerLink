@@ -41,6 +41,7 @@ public class StudentController {
     private final StudentRepo studentRepo;
     private final CourseRecommendationServiceImpl courseRecommendationServiceImpl;
     private final JobRecommendationServiceImpl recommendationService;
+    private final ProjectRecommendationService projectRecommendationService;
     @Operation(summary = "Save a student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "student created successfully"),
@@ -172,16 +173,9 @@ public class StudentController {
 
 
 
-    @GetMapping("/recommend/{studentId}")
-    public ResponseEntity<List<ProjectIdeaDTO>> recommendProjects(@PathVariable int studentId) {
-        try {
-            List<ProjectIdeaDTO> projects = projectService.getProjectIdeas(studentId);
-            return ResponseEntity.ok(projects);
-        } catch (Exception e) {
-            // Log the error for debugging
-            System.err.println("An unexpected error occurred: " + e.getMessage());
-            return ResponseEntity.status(500).body(null);
-        }
+    @GetMapping("/recommend-projects/{studentId}")
+    public ResponseEntity<List<ProjectIdeaDTO>> getProjectRecommendations(@PathVariable int studentId) {
+        return ResponseEntity.ok(projectRecommendationService.getProjectRecommendations(studentId));
     }
 
     @GetMapping("/jobrecommendations/{studentId}")

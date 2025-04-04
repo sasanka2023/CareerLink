@@ -1,18 +1,17 @@
 package com.example.CarrerLink_backend.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectIdeaDTO {
     private String title;
     private String description;
-    private List<String> relatedSkills;
+    private List<String> technologies;
+    private String difficulty;
 }
