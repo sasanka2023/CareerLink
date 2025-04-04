@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.service.impl;
 
 
+import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.LoginRequestDTO;
 import com.example.CarrerLink_backend.dto.request.RegisterRequestDTO;
@@ -12,6 +13,7 @@ import com.example.CarrerLink_backend.entity.RolesEntity;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.repo.RoleRepo;
 import com.example.CarrerLink_backend.repo.UserRepo;
+import com.example.CarrerLink_backend.service.AdminService;
 import com.example.CarrerLink_backend.service.CompanyService;
 import lombok.AllArgsConstructor;
 
@@ -40,6 +42,7 @@ public class AuthService {
     private final RoleRepo roleRepo;
     private final StudentServiceImpl studentService;
     private final CompanyService companyService;
+    private final AdminService adminService;
 
     public List<UserEntity> getAllUsers(){
         return userRepo.findAll();
@@ -118,6 +121,29 @@ public class AuthService {
         return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
     }
 
+    public RegisterResponseDTO registerAdmin(AdminSaveRequestDTO adminSaveRequestDTO) throws IllegalAccessException {
+
+        if(Boolean.TRUE.equals(isUserEnable(adminSaveRequestDTO.getUserSaveRequestDTO().getUsername()))) {
+            throw new IllegalAccessException("User already exists in the System");
+        }
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setName(adminSaveRequestDTO.getFullName());
+        userEntity.setEmail(adminSaveRequestDTO.getEmail());
+        userEntity.setUsername(adminSaveRequestDTO.getUserSaveRequestDTO().getUsername());
+        userEntity.setPassword(passwordEncoder.encode(adminSaveRequestDTO.getUserSaveRequestDTO().getPassword()));
+        RolesEntity adminRole = roleRepo.findByName("ROLE_ADMIN").orElseThrow(()->new RuntimeException("Role not found"));
+        userEntity.setRole(adminRole.getName());
+        UserEntity userdata = userRepo.save(userEntity);
+        adminService.save(adminSaveRequestDTO,userdata);
+
+        if(userdata.getId() == 0) return new RegisterResponseDTO(null,"system error");
+        return new RegisterResponseDTO(String.format("user registers at %s",userdata.getId()),null);
+
+
+    }
+
+
 
 
     private Boolean isUserEnable(String username){
@@ -128,4 +154,6 @@ public class AuthService {
     public RolesEntity createRoles(RolesEntity rolesEntity) {
         return roleRepo.save(rolesEntity);
     }
+
+
 }

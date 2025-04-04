@@ -280,15 +280,18 @@ function CompanyDashboard() {
                     >
                       <div className="flex items-center gap-3">
                         <img
-                          src={applicant.image}
-                          alt={applicant.firstName}
-                          className="w-10 h-10 rounded-full"
+                            src={applicant.image}
+                            alt={applicant.firstName}
+                            className="w-10 h-10 rounded-full"
                         />
                         <div>
                           <p className="font-medium">{applicant.firstName}</p>
                           <p className="text-sm text-gray-600">
                             {applicant.university}
                           </p>
+                        </div>
+                        <div className="flex flex-col items-center w-[280px] justify-center">
+                          <p className="font-medium">{applicant.interviewDate}</p>
                         </div>
                       </div>
                       <span className="px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-sm">

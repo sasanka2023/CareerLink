@@ -229,7 +229,7 @@ private final AmazonS3 amazonS3;
         int studentId = applyJobRequestDTO.getStudentId();
         int jobId = applyJobRequestDTO.getJobId();
 
-        Student student = studentRepo.findById(studentId)
+        Student student = studentRepo.findByUser_Id(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         Job job = jobRepo.findById(jobId)

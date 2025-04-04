@@ -12,7 +12,7 @@ import { AuthContext } from "../../../api/AuthProvider";
 import {useNavigate} from "react-router-dom";
 
 
-const Sidebar = ({ activeTab, setActiveTab }) => {
+const Sidebar = ({ activeTab, setActiveTab, userRole }) => {
 
 
     const navigate = useNavigate();
@@ -35,9 +35,9 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                                 : 'text-gray-600 hover:bg-gray-50'
                         }`}
                     >
-                        <LayoutDashboard size={20} className="mr-3" />
+                        <LayoutDashboard size={20} className="mr-3"/>
                         <span className="font-medium">Dashboard</span>
-                        {activeTab === 'dashboard' && <ChevronRight className="ml-auto" size={18} />}
+                        {activeTab === 'dashboard' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     <button
                         onClick={() => setActiveTab('technologies')}
@@ -47,9 +47,9 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                                 : 'text-gray-600 hover:bg-gray-50'
                         }`}
                     >
-                        <Cpu size={20} className="mr-3" />
+                        <Cpu size={20} className="mr-3"/>
                         <span className="font-medium">Technologies</span>
-                        {activeTab === 'technologies' && <ChevronRight className="ml-auto" size={18} />}
+                        {activeTab === 'technologies' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     <button
                         onClick={() => setActiveTab('jobs')}
@@ -59,9 +59,9 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                                 : 'text-gray-600 hover:bg-gray-50'
                         }`}
                     >
-                        <Briefcase size={20} className="mr-3" />
+                        <Briefcase size={20} className="mr-3"/>
                         <span className="font-medium">Job Fields</span>
-                        {activeTab === 'jobs' && <ChevronRight className="ml-auto" size={18} />}
+                        {activeTab === 'jobs' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     <button
                         onClick={() => setActiveTab('cvs')}
@@ -71,9 +71,9 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                                 : 'text-gray-600 hover:bg-gray-50'
                         }`}
                     >
-                        <FileCheck size={20} className="mr-3" />
+                        <FileCheck size={20} className="mr-3"/>
                         <span className="font-medium">CV Approval</span>
-                        {activeTab === 'cvs' && <ChevronRight className="ml-auto" size={18} />}
+                        {activeTab === 'cvs' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     <button
                         onClick={() => setActiveTab('tests')}
@@ -83,10 +83,23 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                                 : 'text-gray-600 hover:bg-gray-50'
                         }`}
                     >
-                        <Calendar size={20} className="mr-3" />
+                        <Calendar size={20} className="mr-3"/>
                         <span className="font-medium">Test Schedule</span>
-                        {activeTab === 'tests' && <ChevronRight className="ml-auto" size={18} />}
+                        {activeTab === 'tests' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
+                    {userRole === "ROLE_SUPERADMIN" && (<button
+                        onClick={() => setActiveTab('adminlist')}
+                        className={`flex items-center w-full p-3 rounded-xl transition-all ${
+                            activeTab === 'adminlist'
+                                ? 'bg-indigo-50 text-indigo-600'
+                                : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                    >
+                        <Calendar size={20} className="mr-3"/>
+                        <span className="font-medium">Admin List</span>
+                        {activeTab === 'adminlist' && <ChevronRight className="ml-auto" size={18}/>}
+                    </button>
+                    )}
                 </nav>
             </div>
             <div className="absolute bottom-0 left-0 w-64 p-6 border-t border-gray-200">
@@ -97,7 +110,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                 <button
                     onClick={handleLogout}
                     className="flex items-center w-full p-3 text-gray-600 hover:bg-gray-50 rounded-xl">
-                    <LogOut size={20} className="mr-3" />
+                    <LogOut size={20} className="mr-3"/>
                     <span className="font-medium">Logout</span>
                 </button>
             </div>
