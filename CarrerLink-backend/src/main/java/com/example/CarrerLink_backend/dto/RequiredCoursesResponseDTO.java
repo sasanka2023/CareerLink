@@ -7,13 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RequireCoursesDTO {
+public class RequiredCoursesResponseDTO {
     private int courceId;
     private String courceName;
     private String requiredSkill;
     private String skillLevel;
     private String url;
-    private double score;
-    private String recommendationMessage;
-
 }
