@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { saveTechnology, saveJobField } from '../../../api/AdminDetailsApi';
 import { AuthContext } from '../../../api/AuthProvider';
 import AdminList from "./AdminList";
+import Course from './Course';
 
 
 const extractRoleFromToken = (token) => {
@@ -176,6 +177,8 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     )}
+
+                    {activeTab === 'Courses' && <Course/>}
                     {/* Render the AdminList only if the active tab is "adminlist" and the user is a Super Admin */}
                     {userRole === "ROLE_SUPERADMIN" && activeTab === "adminlist" && <AdminList />}
 

@@ -9,11 +9,13 @@ import com.example.CarrerLink_backend.dto.response.AdminGetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.AdminService;
+import com.example.CarrerLink_backend.service.impl.RequiredCoursesServiceIMPL;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,8 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminController {
     private AdminService adminService;
-
+    @Autowired
+    private RequiredCoursesServiceIMPL requiredCoursesServiceIMPL;
 
     @PostMapping("save")
     public ResponseEntity<StandardResponse> saveAdmin(@RequestBody AdminSaveRequestDTO adminSaveRequestDTO, UserEntity userdata){
@@ -87,7 +90,7 @@ public class AdminController {
     public ResponseEntity<RequireCoursesDTO> updateCourse(@PathVariable int id, @RequestBody RequireCoursesDTO requireCoursesDTO) {
         RequireCoursesDTO updaterequireCoursesDTO = adminService.updateCourses(id, requireCoursesDTO);
         return ResponseEntity.ok(updaterequireCoursesDTO);
-
+    }
     @Operation(summary = "Get company by userid")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
@@ -111,6 +114,11 @@ public class AdminController {
         String message = adminService.approveAdmin(id,adminGetResponseDTO);
         return ResponseEntity.ok(new StandardResponse(true, "Admin approved successfully", message));
 
+    }
+    @GetMapping(path = "/get-all-required-courses")
+    public List<RequireCoursesDTO> getAllRequiredCourses() {
+        List<RequireCoursesDTO> allRequireCourses = requiredCoursesServiceIMPL.getAllRequiredCourses();
+        return allRequireCourses;
     }
 
 }
