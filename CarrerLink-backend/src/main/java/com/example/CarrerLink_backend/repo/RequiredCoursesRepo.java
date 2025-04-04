@@ -1,6 +1,6 @@
 package com.example.CarrerLink_backend.repo;
 
-import com.example.CarrerLink_backend.entity.RequiredCources;
+import com.example.CarrerLink_backend.entity.RequiredCourses;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+@EnableJPARepositories
 public interface RequiredCoursesRepo extends JpaRepository<RequiredCources, Integer> {
 
     // Either use this derived query method (no @Query needed)
@@ -24,3 +25,4 @@ public interface RequiredCoursesRepo extends JpaRepository<RequiredCources, Inte
             @Param("level") String level
     );
 }
+

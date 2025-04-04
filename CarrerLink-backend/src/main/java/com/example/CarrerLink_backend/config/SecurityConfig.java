@@ -1,6 +1,5 @@
 package com.example.CarrerLink_backend.config;
 
-
 import com.example.CarrerLink_backend.filter.JWTFilter;
 import com.example.CarrerLink_backend.repo.UserRepo;
 import com.example.CarrerLink_backend.service.impl.CustomUserDetailsService;
@@ -34,47 +33,57 @@ public class SecurityConfig {
     private final JWTFilter jwtFilter;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                    .csrf(c->c.disable())
-                    .cors(Customizer.withDefaults())
-                    .sessionManagement(s->s.
-                        sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeHttpRequests(r->r.
-                             requestMatchers("/api/auth/login","/api/auth/register/company","/api/auth/register/student","/api/auth/CreateRoles","/ws/**")
-                            .permitAll()
-                            // Public access to GET requests for companies
-                            .requestMatchers("GET", "/api/companies/**")
-                            .permitAll()
-                            .requestMatchers("GET","/api/jobs/**")
-                            .permitAll()
-                            .requestMatchers("PUT", "/api/students/**").permitAll()
+                .csrf(c -> c.disable())
+                .cors(Customizer.withDefaults())
+                .sessionManagement(s -> s
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(r -> r
+                        // Public endpoints
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register/company",
+                                "/api/auth/register/student",
+                                "/api/auth/register/admin",
+                                "/api/auth/CreateRoles",
+                                "/api/notifications/**",
+                                "/ws/**"
+                        ).permitAll()
 
+                        // Public GET endpoints
+                        .requestMatchers("GET", "/api/companies/**").permitAll()
+                        .requestMatchers("GET", "/api/jobs/**").permitAll()
+                        .requestMatchers("PUT", "/api/students/**").permitAll()
 
-                            // Restricted access to modify company data
-                            .requestMatchers("POST", "/api/companies/**").hasRole("COMPANY")
-                            .requestMatchers("PUT", "/api/companies/**").hasRole("COMPANY")
-                            .requestMatchers("DELETE", "/api/companies/**").hasRole("COMPANY")
-                            .requestMatchers("/api/students/**").hasRole("STUDENT") // Accessible by Company role
-                            .requestMatchers("/api/cv/**", "/api/jobs/**","/api/v1/requiredCourses/**").authenticated()
-                             // Any other endpoints require authentication
-                    .anyRequest().authenticated())
-                    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class
-                    )
-                    .authenticationProvider(authenticationProvider())
-                    .httpBasic(Customizer.withDefaults())
+                        // Company role endpoints
+                        .requestMatchers("POST", "/api/companies/**").hasRole("COMPANY")
+                        .requestMatchers("PUT", "/api/companies/**").hasRole("COMPANY")
+                        .requestMatchers("DELETE", "/api/companies/**").hasRole("COMPANY")
 
-                    .build();
+                        // Student role endpoints
+                        .requestMatchers("GET", "/api/students/**").hasRole("STUDENT")
+                        .requestMatchers("/api/students/**").hasRole("STUDENT")
+
+                        // Authenticated endpoints (no specific role)
+                        .requestMatchers("/api/cv/**", "/api/v1/requiredCourses/**","/api/admin").authenticated()
+
+                        // Catch-all rule
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .authenticationProvider(authenticationProvider())
+                .httpBasic(Customizer.withDefaults())
+                .build();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(){
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService());
         provider.setPasswordEncoder(passwordEncoder());
@@ -82,7 +91,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService(userRepo);
     }
 
@@ -95,7 +104,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        // Update allowed methods to include PATCH
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
@@ -103,5 +113,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }

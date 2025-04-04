@@ -2,24 +2,25 @@ package com.example.CarrerLink_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-// Notification.java (Entity)
 @Entity
-@Data
+@Table(name = "course")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Notification {
+@Data
+public class RequiredCourses {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String message;
-    private int studentId;
-    private boolean isRead;
-    private LocalDateTime createdAt;
+    private int courseId;
 
-    // Getters and Setters
+    private String courseName;
+
+    private String requiredSkill;
+
+    private String skillLevel;
+
+    private String url;
+
 }

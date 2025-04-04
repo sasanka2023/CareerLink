@@ -25,7 +25,7 @@ const getAllJobsusingFilters = async (jobType, company) => {
 const getAllJobs = async () => {
     try {
       const response = await axiosInstance.get('jobs');
-  
+      console.log(response)
       if (!response.data?.success || !response.data?.data) {
         throw new Error('Invalid API response structure');
       }

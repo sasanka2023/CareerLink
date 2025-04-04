@@ -25,6 +25,7 @@ public class JobgetResponseDTO {
     private int rate;
     private String location;
     private List<TechnologyDTO> technologies;
+    private String companyName;
 
 
 

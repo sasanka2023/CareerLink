@@ -161,6 +161,7 @@ public class StudentController {
         return ResponseEntity.ok(new StandardResponse(true, "Applicants fetched successfully", students));
     }
 
+
     @GetMapping("/recommend/{studentId}")
     public ResponseEntity<List<ProjectIdeaDTO>> recommendProjects(@PathVariable int studentId) {
         try {
@@ -173,9 +174,10 @@ public class StudentController {
     }
 
     @GetMapping("/jobrecommendations/{studentId}")
-    public List<JobRecommendationDTO> getJobRecommendations(@PathVariable int studentId) {
-        Student student = studentRepo.findById(studentId)
+    public ResponseEntity<StandardResponse> getRecommendations(@PathVariable int studentId) {
+        Student student = studentRepo.findByUser_Id(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
-        return jobRecommendationService.getRecommendedJobsWithScores(student);
+        List<JobRecommendationDTO> results =  recommendationService.getRecommendedJobsWithScores(student);
+        return ResponseEntity.ok(new StandardResponse(true,"Recommended Jobs fetched successfully",results));
     }
 }

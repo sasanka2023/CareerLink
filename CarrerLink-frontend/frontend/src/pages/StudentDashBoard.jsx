@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import DashboardLayout from '../components/Dashboard/StudentDashboard/StudentDashboardLayout';
 import { AuthContext } from '../api/AuthProvider';
-import getStudentByUsername from '../api/StudentDetailsApi';
+import {getStudentByUsername} from '../api/StudentDetailsApi';
 import SkillProgress from "../components/studentDashboard/SkillProgress";
 import TechJobCard from "../components/studentDashboard/TechJobCard";
 

@@ -16,6 +16,7 @@ function JobCard({ job, onEdit, onClose }) {
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <h3 className="text-xl font-semibold">{job.jobTitle}</h3>
+                    <p>{job.companyName}</p>
                     <p className="text-gray-600">
                         {job.location} • {job.jobType}
                     </p>
