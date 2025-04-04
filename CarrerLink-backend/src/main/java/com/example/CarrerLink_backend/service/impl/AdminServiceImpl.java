@@ -2,12 +2,20 @@ package com.example.CarrerLink_backend.service.impl;
 
 import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.JobFieldDTO;
+import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
 import com.example.CarrerLink_backend.dto.TechnologyDTO;
+
+import com.example.CarrerLink_backend.entity.JobField;
+import com.example.CarrerLink_backend.entity.RequiredCourses;
+import com.example.CarrerLink_backend.entity.Technology;
+
 import com.example.CarrerLink_backend.dto.response.AdminGetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 import com.example.CarrerLink_backend.entity.*;
 import com.example.CarrerLink_backend.repo.AdminRepo;
+
 import com.example.CarrerLink_backend.repo.JobFieldRepo;
+import com.example.CarrerLink_backend.repo.RequiredCoursesRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.repo.UserRepo;
 import com.example.CarrerLink_backend.service.AdminService;
@@ -26,6 +34,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final TechnologyRepo technologyRepo;
     private final JobFieldRepo jobFieldRepo;
+    private final RequiredCoursesRepo requiredCoursesRepo;
     private final ModelMapper modelMapper;
     private final AdminRepo adminRepo;
     private final UserRepo userRepo;
@@ -75,6 +84,44 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+
+    public void saveCourses(RequireCoursesDTO requireCoursesDTO) {
+        RequiredCourses requiredCourses = modelMapper.map(requireCoursesDTO, RequiredCourses.class);
+        requiredCoursesRepo.save(requiredCourses);
+    }
+
+    @Override
+    public void deleteCourses(int id) {
+        if (requiredCoursesRepo.existsById(id)){
+            requiredCoursesRepo.deleteById(id);
+        }
+        else {
+            throw new RuntimeException("Courses Not Found with ID : " + id);
+        }
+    }
+
+    @Override
+    public RequireCoursesDTO getCourses(int id) {
+        RequiredCourses requiredCourses = requiredCoursesRepo.findById(id).orElseThrow(() -> new RuntimeException("Courses Not Found with ID : " + id));
+        return modelMapper.map(requiredCourses, RequireCoursesDTO.class);
+    }
+
+    @Override
+    public RequireCoursesDTO updateCourses(int id, RequireCoursesDTO requireCoursesDTO) {
+        Optional<RequiredCourses> optionalRequiredCourses = requiredCoursesRepo.findById(id);
+
+        if (optionalRequiredCourses.isPresent()) {
+            RequiredCourses requiredCourses = optionalRequiredCourses.get();
+            requiredCourses.setCourseName(requireCoursesDTO.getCourceName());
+            requiredCourses.setRequiredSkill(requireCoursesDTO.getRequiredSkill());
+            requiredCourses.setSkillLevel(requireCoursesDTO.getSkillLevel());
+            requiredCoursesRepo.save(requiredCourses);
+            return modelMapper.map(requiredCourses, RequireCoursesDTO.class);
+        }
+        else {
+            throw new RuntimeException("Courses Not Found with ID : " + id);
+        }
+
     public String save(AdminSaveRequestDTO adminSaveRequestDTO, UserEntity userdata) {
         Admin admin = modelMapper.map(adminSaveRequestDTO, Admin.class);
         admin.setUser(userdata);
@@ -104,6 +151,7 @@ public class AdminServiceImpl implements AdminService {
         admin.setStatus(adminGetResponseDTO.isStatus());
         adminRepo.save(admin);
         return "admin "+admin.getFullName()+" approved successfully";
+
 
 
     }

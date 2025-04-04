@@ -2,6 +2,7 @@ package com.example.CarrerLink_backend.service;
 
 import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.JobFieldDTO;
+import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
 import com.example.CarrerLink_backend.dto.TechnologyDTO;
 import com.example.CarrerLink_backend.dto.response.AdminGetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
@@ -15,6 +16,11 @@ public interface AdminService {
     TechnologyDTO updateTechnology(int id,TechnologyDTO technologyDTO);
     void deleteTechnology(int id);
 
+    void saveCourses(RequireCoursesDTO requireCoursesDTO);
+    void deleteCourses(int id);
+    RequireCoursesDTO getCourses(int id);
+    RequireCoursesDTO updateCourses(int id,RequireCoursesDTO requireCoursesDTO);
+
     String save(AdminSaveRequestDTO adminSaveRequestDTO, UserEntity userdata);
 
     AdminGetResponseDTO getAdminByUserId(int userId);
@@ -22,4 +28,5 @@ public interface AdminService {
     List<AdminGetResponseDTO> getAllAdmins();
 
     String approveAdmin(int id,AdminGetResponseDTO adminGetResponseDTO);
+
 }

@@ -3,6 +3,7 @@ package com.example.CarrerLink_backend.controller;
 
 import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.JobFieldDTO;
+import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
 import com.example.CarrerLink_backend.dto.TechnologyDTO;
 import com.example.CarrerLink_backend.dto.response.AdminGetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
@@ -63,6 +64,30 @@ public class AdminController {
         return ResponseEntity.ok(updatedTechnologyDTO);
     }
 
+
+    @PostMapping("/saveCourse")
+    public ResponseEntity<String> saveCourse(@RequestBody RequireCoursesDTO requireCoursesDTO) {
+        adminService.saveCourses(requireCoursesDTO);
+        return ResponseEntity.ok("Courses Saved Successfully");
+    }
+
+    @DeleteMapping("/deleteCourse/{id}")
+    public ResponseEntity<String> deleteCourse(@PathVariable int id) {
+        adminService.deleteCourses(id);
+        return ResponseEntity.ok("Courses Deleted Successfully");
+    }
+
+    @GetMapping("getCourse/{id}")
+    public ResponseEntity<RequireCoursesDTO> getCourse(@PathVariable int id) {
+        RequireCoursesDTO requireCoursesDTO = adminService.getCourses(id);
+        return ResponseEntity.ok(requireCoursesDTO);
+    }
+
+    @PutMapping("updateCourse/{id}")
+    public ResponseEntity<RequireCoursesDTO> updateCourse(@PathVariable int id, @RequestBody RequireCoursesDTO requireCoursesDTO) {
+        RequireCoursesDTO updaterequireCoursesDTO = adminService.updateCourses(id, requireCoursesDTO);
+        return ResponseEntity.ok(updaterequireCoursesDTO);
+
     @Operation(summary = "Get company by userid")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully fetched all applicants"),
@@ -85,6 +110,7 @@ public class AdminController {
     public ResponseEntity<StandardResponse> approveAdmin(@PathVariable int id, @RequestBody AdminGetResponseDTO adminGetResponseDTO) {
         String message = adminService.approveAdmin(id,adminGetResponseDTO);
         return ResponseEntity.ok(new StandardResponse(true, "Admin approved successfully", message));
+
     }
 
 }
