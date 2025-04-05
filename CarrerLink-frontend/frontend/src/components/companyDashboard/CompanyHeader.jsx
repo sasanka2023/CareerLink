@@ -15,7 +15,7 @@ function CompanyHeader({ companyInfo }: CompanyHeaderProps) {
 
   const handleLogout = () => {
     // Add logout logic here
-    navigate("/company-login");
+    navigate("/company-auth");
   };
 
   return (
@@ -30,7 +30,8 @@ function CompanyHeader({ companyInfo }: CompanyHeaderProps) {
           <Bell className="h-6 w-6" />
         </button>
         <button
-          onClick={() => navigate("/company-settings")}
+          onClick={() => navigate("/company-dashboard/settings" +
+              "")}
           className="p-2 text-white hover:bg-white/10 rounded-full transition-colors"
         >
           <Settings className="h-6 w-6" />

@@ -374,7 +374,7 @@ function CompanyDashboard() {
               <FeaturesAndPartners companyInfo={company}/>
 
               {/* Contact */}
-              <ContactEmployee/>
+              <ContactEmployee company={company}/>
             </div>
         )}
       </main>

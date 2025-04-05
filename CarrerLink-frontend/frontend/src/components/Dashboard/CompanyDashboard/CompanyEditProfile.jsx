@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Mail, MapPin, Briefcase, Globe, Smartphone, Users, Type } from 'lucide-react';
-import { AuthContext } from '../../api/AuthProvider';
+import { Mail, MapPin, Briefcase, Globe, Smartphone, Users, Type, Tag, ListChecks } from 'lucide-react';
+import { AuthContext } from '../../../api/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { getCompanyDetailsByUsername, updateCompany } from '../../api/CompanyDetailsApi';
+import { getCompanyDetailsByUsername, updateCompany } from '../../../api/CompanyDetailsApi';
 
 const allTechnologies = [
     "Spring Boot", "React", "Node.js", "Python", "MongoDB",
@@ -17,12 +17,12 @@ function CompanyEditProfile() {
     const [company, setCompany] = useState(null);
     const [formData, setFormData] = useState({
         id: '',
+        name: '',
         slogan: '',
         description: '',
         category: '',
         mobile: '',
         location: '',
-        email: '',
         requirements: '',
         website: '',
         size: '',
@@ -38,12 +38,12 @@ function CompanyEditProfile() {
                     setCompany(response.data);
                     setFormData({
                         id: response.data.id,
+                        name: response.data.name,
                         slogan: response.data.slogan,
                         description: response.data.description,
                         category: response.data.category,
                         mobile: response.data.mobile,
                         location: response.data.location,
-                        email: response.data.email,
                         requirements: response.data.requirements,
                         website: response.data.website,
                         size: response.data.size,
@@ -117,6 +117,21 @@ function CompanyEditProfile() {
             <div className="bg-white rounded-xl shadow-sm p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-4">
+                        {/* Company Name */}
+                        <div className="flex items-center space-x-4">
+                            <Type className="h-5 w-5 text-gray-400" />
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                placeholder="Company Name"
+                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
+                                required
+                            />
+                        </div>
+
+                        {/* Slogan */}
                         <div className="flex items-center space-x-4">
                             <Type className="h-5 w-5 text-gray-400" />
                             <input
@@ -129,6 +144,7 @@ function CompanyEditProfile() {
                             />
                         </div>
 
+                        {/* Description */}
                         <div className="flex items-center space-x-4">
                             <Briefcase className="h-5 w-5 text-gray-400" />
                             <textarea
@@ -141,7 +157,40 @@ function CompanyEditProfile() {
                             />
                         </div>
 
+                        {/* Category */}
+                        <div className="flex items-center space-x-4">
+                            <Tag className="h-5 w-5 text-gray-400" />
+                            <select
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                required
+                            >
+                                <option value="">Select Category</option>
+                                <option value="IT">IT & Software</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Education">Education</option>
+                                <option value="Retail">Retail</option>
+                            </select>
+                        </div>
+
+                        {/* Requirements */}
+                        <div className="flex items-center space-x-4">
+                            <ListChecks className="h-5 w-5 text-gray-400" />
+                            <textarea
+                                name="requirements"
+                                value={formData.requirements}
+                                onChange={handleChange}
+                                placeholder="Job Requirements"
+                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
+                                rows="3"
+                            />
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Location */}
                             <div className="flex items-center space-x-4">
                                 <MapPin className="h-5 w-5 text-gray-400" />
                                 <input
@@ -154,6 +203,7 @@ function CompanyEditProfile() {
                                 />
                             </div>
 
+                            {/* Mobile */}
                             <div className="flex items-center space-x-4">
                                 <Smartphone className="h-5 w-5 text-gray-400" />
                                 <input
@@ -168,6 +218,7 @@ function CompanyEditProfile() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Website */}
                             <div className="flex items-center space-x-4">
                                 <Globe className="h-5 w-5 text-gray-400" />
                                 <input
@@ -180,6 +231,7 @@ function CompanyEditProfile() {
                                 />
                             </div>
 
+                            {/* Company Size */}
                             <div className="flex items-center space-x-4">
                                 <Users className="h-5 w-5 text-gray-400" />
                                 <select
@@ -198,18 +250,7 @@ function CompanyEditProfile() {
                             </div>
                         </div>
 
-                        <div className="flex items-center space-x-4">
-                            <Mail className="h-5 w-5 text-gray-400" />
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="Contact Email"
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
-                            />
-                        </div>
-
+                        {/* Technologies */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">Technologies</h3>
                             <select
@@ -227,15 +268,15 @@ function CompanyEditProfile() {
                                         key={tech.techName}
                                         className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm flex items-center"
                                     >
-                    {tech.techName}
+                                        {tech.techName}
                                         <button
                                             type="button"
                                             onClick={() => removeTechnology(tech.techName)}
                                             className="ml-2 text-indigo-600 hover:text-indigo-800"
                                         >
-                      ×
-                    </button>
-                  </span>
+                                            ×
+                                        </button>
+                                    </span>
                                 ))}
                             </div>
                         </div>

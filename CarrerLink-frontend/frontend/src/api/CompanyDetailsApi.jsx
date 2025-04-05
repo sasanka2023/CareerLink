@@ -37,5 +37,14 @@ const getCompanyDetailsByUsername = async (userId) => {
         return { success: false, data: null };
     }
 };
+ const updateCompany = async (formData) => {
+    try {
+        const response = await axiosInstance.put('/companies', formData);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating company:', error);
+        throw error;
+    }
+};
 
-export {  getCompanyDetailsByUsername };
+export {  getCompanyDetailsByUsername,updateCompany };
