@@ -18,17 +18,19 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String username;
-    private String password;
-    private String logo;
+
+    private String slogan;
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
     private String category;
     private String mobile;
     private String location;
     private String coverImage;
     private String email;
+    @Column(columnDefinition = "LONGTEXT")
     private String requirements;
     private String website;
+    private String size;
 
     // One-to-Many relationship with Job entity
     //@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -58,5 +60,10 @@ public class Company {
 
     @OneToMany(mappedBy = "company",cascade = CascadeType.ALL)
     private List<Products> products;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
 
 }

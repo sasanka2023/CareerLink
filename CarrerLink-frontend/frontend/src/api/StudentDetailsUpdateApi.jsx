@@ -1,21 +1,24 @@
-import React from 'react'
+import axios from "axios";
 
-const UpdateStudent = async (username) => {
-    try {
-      const response = await axiosInstance.post(`/students/username/`,{
-        
-      });
-      if (!response.data?.success || !response.data?.data) {
-        throw new Error('Invalid API response structure');
-      }
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching student data:', {
-        status: error.response?.status,
-        message: error.response?.data?.message || error.message
-      });
-      return { success: false };
+const UpdateStudent = async (studentData, imageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("student", JSON.stringify(studentData)); // Convert JSON to string
+    if (imageFile) {
+      formData.append("image", imageFile); // Append file if exists
     }
-  };
 
-export default StudentDetailsUpdateApi
+    const response = await axios.put("http://localhost:8091/api/students", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("Success:", response.data);
+  } catch (error) {
+    console.error("Error updating student:", error.response?.data || error.message);
+  }
+};
+
+
+export default UpdateStudent;

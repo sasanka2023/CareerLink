@@ -35,12 +35,12 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/student-auth'); // Redirect to login page
+    navigate('/home'); // Redirect to login page
   };
 
   return (
     <div
-      className={`flex h-[630px] flex-col bg-gray-900 text-white transition-all duration-300 ${
+      className={`flex h-full flex-col bg-gray-900 text-white transition-all duration-300 ${
         isCollapsed ? "w-16" : "w-64"
       }`}
     >

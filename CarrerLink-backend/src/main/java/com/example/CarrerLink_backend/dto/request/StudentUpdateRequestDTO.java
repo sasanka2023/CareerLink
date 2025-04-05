@@ -12,13 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class StudentUpdateRequestDTO {
-    private int StudentId;
+    private int studentId;
     private String firstName;
     private String lastName;
     private String email;
 
     private String address;
-    private String userName;
+
     private List<JobFieldDTO> jobsFields;
     private List<TechnologyDTO> technologies;
 

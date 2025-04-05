@@ -3,28 +3,22 @@ import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 import com.example.CarrerLink_backend.entity.Company;
+import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.repo.ClientRepo;
 import com.example.CarrerLink_backend.repo.CompanyRepository;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
-import com.example.CarrerLink_backend.service.impl.CompanyServiceImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CompanyServiceImplTest {
@@ -148,14 +142,14 @@ public class CompanyServiceImplTest {
         CompanySaveRequestDTO saveRequestDTO = new CompanySaveRequestDTO();
         saveRequestDTO.setName("Tech Solutions");
         saveRequestDTO.setLocation("New York");
-
+        UserEntity newuser = new UserEntity();
         Company company = new Company();
         company.setName("Tech Solutions");
 
         Mockito.when(companyRepository.findByName("Tech Solutions")).thenReturn(Optional.empty());
         Mockito.when(modelMapper.map(saveRequestDTO, Company.class)).thenReturn(company);
 
-        String result = companyService.saveCompany(saveRequestDTO);
+        String result = companyService.saveCompany(saveRequestDTO, newuser);
 
         Assertions.assertEquals("Company saved successfully", result);
     }

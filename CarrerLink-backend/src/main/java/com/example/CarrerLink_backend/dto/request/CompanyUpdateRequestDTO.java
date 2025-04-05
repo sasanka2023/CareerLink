@@ -15,6 +15,7 @@ import java.util.List;
 public class CompanyUpdateRequestDTO {
     private Long id;
     private String name;
+    private String slogan;
     private String logo;
     private String description;
     private String category;
@@ -24,6 +25,7 @@ public class CompanyUpdateRequestDTO {
     private String email;
     private String requirements;
     private String website;
+    private String size;
     private List<ClientDTO> clients;
     private List<TechnologyDTO> technologies;
     private List<ProductDTO> products;

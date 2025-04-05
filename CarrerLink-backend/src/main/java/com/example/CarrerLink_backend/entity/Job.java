@@ -25,6 +25,8 @@ public class Job {
 
     private int rate;
     private String location;
+    @Enumerated(EnumType.STRING)
+    private JobStatus status = JobStatus.ACTIVE;
 
 
 
@@ -39,8 +41,8 @@ public class Job {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToMany(mappedBy = "jobs")
-    private List<Student> students;
+    @OneToMany(mappedBy = "job")
+    private List<StudentJobs> studentJobs;
 
 
 }

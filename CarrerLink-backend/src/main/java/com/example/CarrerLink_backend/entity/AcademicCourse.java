@@ -17,5 +17,9 @@ public class AcademicCourse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int courseId;
     private String courseName;
+    private String requiredSkill;
+    private String skillLevel;
+
+    private String url;
 
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import UpdateStudent from '../../api/StudentDetailsUpdateApi';
 
 const allTechnologies = [
   "Spring Boot",
@@ -32,34 +33,53 @@ const allJobFields = [
 ];
 
 const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
-  const [name, setName] = useState(student.firstName || "");
-  const [email, setEmail] = useState(student.email || "");
+  //const [name, setName] = useState(student.firstName || "");
+  //const [email, setEmail] = useState(student.email || "");
   const [profilePicture, setProfilePicture] = useState('/placeholder.svg');
-  const [technologies, setTechnologies] = useState(student.technologies || []);
-  const [appliedJobFields, setAppliedJobFields] = useState(student.jobsFields || []);
-  const [address, setAddress] = useState(student.address || "");
+  const [technologies, setTechnologies] = useState(
+    student.technologies?.map(t => typeof t === 'string' ? { techName: t } : t) || []
+  );
+  const [appliedJobFields, setAppliedJobFields] = useState(
+    student.jobsFields?.map(j => typeof j === 'string' ? { jobField: j } : j) || []
+  );
+  //const [address, setAddress] = useState(student.address || "");
   const [formdata,setFormdata] = useState({
-    StudentId:'',
-    firstName:'',
-    lastName:'',
-    email:'',
-    address:'',
-    userName:'',
-    jobsFields:[],
-    technologies:[]
+    studentId:student.studentId,
+    firstName:student.firstName,
+    lastName:student.lastName,
+    email:student.email,
+    address:student.address,
+    userName:student.userName,
+    jobsFields:student.jobsFields,
+    technologies:student.technologies
 
   })
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({
-      name,
-      email,
-      profilePicture,
-      technologies,
-      appliedJobFields,
-      address,
-    });
+
+  const handelChange = (event) =>{
+    event.preventDefault();
+    const {name,value} = event.target;
+    setFormdata((prev) => ({
+        ...prev,
+        [name]:value
+    }));
+    
+}
+  const handleSubmit = async (event) =>{
+    event.preventDefault();
+    console.log(formdata);
+    console.log(student)
+    try {
+        const response = await UpdateStudent(formdata);
+        console.log('Response:', response);
+        onSubmit(formdata);
+        
+    } catch (error) {
+        console.error('Error during registration:', error);
+        alert('Registration failed. Please try again.');
+    }
   };
+
+
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -73,33 +93,43 @@ const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
   };
 
   const addTechnology = (tech) => {
-    if (!technologies.includes(tech)) {
-      const updatedTechnologies = [...technologies, tech];
+    if (!technologies.some(t => t.techName === tech)) {
+      const updatedTechnologies = [...technologies, { techName: tech }];
       setTechnologies(updatedTechnologies);
-      setFormdata((prev) =>({
-          ...prev,
-          technologies:updatedTechnologies
+      setFormdata((prev) => ({
+        ...prev,
+        technologies: updatedTechnologies
       }));
     }
   };
 
   const removeTechnology = (tech) => {
-    setTechnologies(technologies.filter((t) => t !== tech));
+    const updatedTechnologies = technologies.filter(t => t.techName !== tech);
+    setTechnologies(updatedTechnologies);
+    setFormdata((prev) => ({
+      ...prev,
+      technologies: updatedTechnologies
+    }));
   };
 
   const addJobField = (field) => {
-    if (!appliedJobFields.includes(field)) {
-      const updatedJobFields = [...appliedJobFields, field];
+    if (!appliedJobFields.some(f => f.jobField === field)) {
+      const updatedJobFields = [...appliedJobFields, { jobField: field }];
       setAppliedJobFields(updatedJobFields);
-      setFormdata((prev) =>({
+      setFormdata((prev) => ({
         ...prev,
-        jobsFields:updatedJobFields
-    }));
-  }
+        jobsFields: updatedJobFields
+      }));
+    }
   };
 
   const removeJobField = (field) => {
-    setAppliedJobFields(appliedJobFields.filter((f) => f !== field));
+    const updatedJobFields = appliedJobFields.filter(f => f.jobField !== field);
+    setAppliedJobFields(updatedJobFields);
+    setFormdata((prev) => ({
+      ...prev,
+      jobsFields: updatedJobFields
+    }));
   };
 
   return (
@@ -115,11 +145,11 @@ const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
       </div>
       <div>
         <label htmlFor="name">Name</label>
-        <input id="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full border p-2 rounded" />
+        <input id="name" name="firstName" value={formdata.firstName} onChange={handelChange} className="w-full border p-2 rounded" />
       </div>
       <div>
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border p-2 rounded" />
+        <input id="email" name="email" type="email" value={formdata.email} onChange={handelChange} className="w-full border p-2 rounded" />
       </div>
       <div>
         <label htmlFor="technologies">Technologies</label>
@@ -132,13 +162,17 @@ const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
           ))}
         </select>
         <div className="flex flex-wrap gap-2 mt-2">
-          {technologies.map((tech) => (
-            <span key={tech} className="bg-black text-white p-2 rounded-full">
-              {tech}
-              <button type="button" onClick={() => removeTechnology(tech)} className="ml-2 text-white-500">
-                x
-              </button>
-            </span>
+        {technologies.map((tech) => (
+          <span key={tech.techName} className="bg-black text-white p-2 rounded-full">
+            {tech.techName}
+            <button 
+            type="button" 
+            onClick={() => removeTechnology(tech.techName)} 
+            className="ml-2 text-white-500"
+            >
+            x
+            </button>
+          </span>
           ))}
         </div>
       </div>
@@ -153,10 +187,14 @@ const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
           ))}
         </select>
         <div className="flex flex-wrap gap-2 mt-2">
-          {appliedJobFields.map((field) => (
-            <span key={field} className="bg-black text-white p-2 rounded-full">
-              {field}
-              <button type="button" onClick={() => removeJobField(field)} className="ml-2 text-white-500">
+        {appliedJobFields.map((field) => (
+            <span key={field.jobField} className="bg-black text-white p-2 rounded-full">
+              {field.jobField}
+              <button 
+                type="button" 
+                onClick={() => removeJobField(field.jobField)} 
+                className="ml-2 text-white-500"
+              >
                 x
               </button>
             </span>
@@ -165,7 +203,7 @@ const UpdateDetailsForm = ({ student, onSubmit, onClose }) => {
       </div>
       <div>
         <label htmlFor="address">Address</label>
-        <textarea id="address" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full border p-2 rounded" />
+        <textarea id="address" name="address" value={formdata.address} onChange={handelChange} className="w-full border p-2 rounded" />
       </div>
       <div className="flex justify-between">
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">

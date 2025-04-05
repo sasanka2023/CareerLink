@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class RequireCoursesDTO {
 
-    private int courceId;
-    private String courceName;
+    private int courseId;
+    private String courseName;
     private String requiredSkill;
     private String skillLevel;
 

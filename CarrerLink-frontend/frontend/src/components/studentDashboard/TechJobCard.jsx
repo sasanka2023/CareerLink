@@ -1,40 +1,45 @@
 import React from "react";
 
-export default function CombinedCard() {
-  const technologies = ["React", "Node.js", "Python", "Docker", "AWS"];
-  const jobFields = ["Software Development", "Data Science", "Cloud Engineering", "Cybersecurity", "Project Management"];
+export default function TechJobCard({ student = {} }) {
+    console.log(student);
 
-  return (
-    <div className="bg-white shadow-md rounded-lg p-4 w-full max-w-sm">
-      {/* Technology Section */}
-      <div className="mb-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">Technology</h3>
-        <div className="flex flex-wrap gap-2">
-          {technologies.map((tech, index) => (
-            <span
-              key={index}
-              className="bg-purple-100 text-purple-700 text-xs font-medium rounded-md py-1 px-2"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      </div>
+    // Use optional chaining and provide default values
+    const technologies = student?.technologies || ["Java", "Spring Boot", "React", "Node.js"];
+    const jobFields = student?.jobsFields || ["Software Development", "Data Science", "Cloud Engineering", "Cybersecurity", "Project Management"];
 
-      {/* Job Fields Section */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">Job Fields</h3>
-        <div className="flex flex-wrap gap-2">
-          {jobFields.map((field, index) => (
-            <span
-              key={index}
-              className="bg-blue-100 text-blue-700 text-xs font-medium rounded-md py-1 px-2"
-            >
-              {field}
-            </span>
-          ))}
+    console.log(technologies);
+
+    return (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+            {/* Technology Section */}
+            <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-4">Technologies</h3>
+                <div className="flex flex-wrap gap-2">
+                    {technologies.map((tech, index) => (
+                        <span
+                            key={index}
+                            className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-sm"
+                        >
+                            {tech?.techName || tech}
+                        </span>
+                    ))}
+                </div>
+            </div>
+
+            {/* Job Fields Section */}
+            <div>
+                <h3 className="text-lg font-semibold mb-4">Job Fields</h3>
+                <div className="flex flex-wrap gap-2">
+                    {jobFields.map((field, index) => (
+                        <span
+                            key={index}
+                            className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm"
+                        >
+                            {field?.jobField || field}
+                        </span>
+                    ))}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

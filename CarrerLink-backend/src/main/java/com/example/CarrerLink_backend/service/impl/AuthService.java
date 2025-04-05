@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.service.impl;
 
 
+import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.LoginRequestDTO;
 import com.example.CarrerLink_backend.dto.request.RegisterRequestDTO;
@@ -12,6 +13,7 @@ import com.example.CarrerLink_backend.entity.RolesEntity;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.repo.RoleRepo;
 import com.example.CarrerLink_backend.repo.UserRepo;
+import com.example.CarrerLink_backend.service.AdminService;
 import com.example.CarrerLink_backend.service.CompanyService;
 import lombok.AllArgsConstructor;
 
@@ -40,6 +42,7 @@ public class AuthService {
     private final RoleRepo roleRepo;
     private final StudentServiceImpl studentService;
     private final CompanyService companyService;
+    private final AdminService adminService;
 
     public List<UserEntity> getAllUsers(){
         return userRepo.findAll();
@@ -65,6 +68,7 @@ public class AuthService {
         Map<String,Object> claims = new HashMap<String,Object>();
         claims.put("role",user.getRole());
         claims.put("email",user.getEmail());
+        claims.put("userId",user.getId());
         String token = jwtService.getJWTToken(loginRequestDTO.getUsername(),claims);
 
         System.out.println(jwtService.getFieldFromToken(token,"role"));
@@ -80,42 +84,65 @@ public class AuthService {
 //    }
     @Transactional
     public RegisterResponseDTO registerStudent(StudentSaveRequestDTO studentSaveRequestDTO) throws IllegalAccessException {
-        if(Boolean.TRUE.equals(isUserEnable(studentSaveRequestDTO.getUserName()))) {
+        if(Boolean.TRUE.equals(isUserEnable(studentSaveRequestDTO.getUserSaveRequestDTO().getUsername()))) {
             throw new IllegalAccessException("User already exists in the System");
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setName(studentSaveRequestDTO.getFirstName()+" "+studentSaveRequestDTO.getLastName());
         userEntity.setEmail(studentSaveRequestDTO.getEmail());
-        userEntity.setUsername(studentSaveRequestDTO.getUserName());
-        userEntity.setPassword(passwordEncoder.encode(studentSaveRequestDTO.getPassword()));
+        userEntity.setUsername(studentSaveRequestDTO.getUserSaveRequestDTO().getUsername());
+        userEntity.setPassword(passwordEncoder.encode(studentSaveRequestDTO.getUserSaveRequestDTO().getPassword()));
         RolesEntity studentRole = roleRepo.findByName("ROLE_STUDENT").orElseThrow(() ->new RuntimeException("Role not found"));
         userEntity.setRole(studentRole.getName());
-
-        studentService.saveStudent(studentSaveRequestDTO);
-
         UserEntity userData = userRepo.save(userEntity);
+        studentService.saveStudent(studentSaveRequestDTO,userData);
+
+
         if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
         return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
     }
     @Transactional
     public RegisterResponseDTO registerCompany(CompanySaveRequestDTO companySaveRequestDTO) throws IllegalAccessException {
-        if(Boolean.TRUE.equals(isUserEnable(companySaveRequestDTO.getUsername()))) {
+        if(Boolean.TRUE.equals(isUserEnable(companySaveRequestDTO.getUserSaveRequestDTO().getUsername()))) {
             throw new IllegalAccessException("User already exists in the System");
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setName(companySaveRequestDTO.getName());
         userEntity.setEmail(companySaveRequestDTO.getEmail());
-        userEntity.setUsername(companySaveRequestDTO.getUsername());
-        userEntity.setPassword(passwordEncoder.encode(companySaveRequestDTO.getPassword()));
+        userEntity.setUsername(companySaveRequestDTO.getUserSaveRequestDTO().getUsername());
+        userEntity.setPassword(passwordEncoder.encode(companySaveRequestDTO.getUserSaveRequestDTO().getPassword()));
         RolesEntity companyRole = roleRepo.findByName("ROLE_COMPANY").orElseThrow(()->new RuntimeException("Role not found"));
         userEntity.setRole(companyRole.getName());
-
-        companyService.saveCompany(companySaveRequestDTO);
-
         UserEntity userData = userRepo.save(userEntity);
+        companyService.saveCompany(companySaveRequestDTO,userData);
+
+
         if(userData.getId() == 0) return new RegisterResponseDTO(null,"system error");
         return new RegisterResponseDTO(String.format("user registers at %s",userData.getId()),null);
     }
+
+    public RegisterResponseDTO registerAdmin(AdminSaveRequestDTO adminSaveRequestDTO) throws IllegalAccessException {
+
+        if(Boolean.TRUE.equals(isUserEnable(adminSaveRequestDTO.getUserSaveRequestDTO().getUsername()))) {
+            throw new IllegalAccessException("User already exists in the System");
+        }
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setName(adminSaveRequestDTO.getFullName());
+        userEntity.setEmail(adminSaveRequestDTO.getEmail());
+        userEntity.setUsername(adminSaveRequestDTO.getUserSaveRequestDTO().getUsername());
+        userEntity.setPassword(passwordEncoder.encode(adminSaveRequestDTO.getUserSaveRequestDTO().getPassword()));
+        RolesEntity adminRole = roleRepo.findByName("ROLE_ADMIN").orElseThrow(()->new RuntimeException("Role not found"));
+        userEntity.setRole(adminRole.getName());
+        UserEntity userdata = userRepo.save(userEntity);
+        adminService.save(adminSaveRequestDTO,userdata);
+
+        if(userdata.getId() == 0) return new RegisterResponseDTO(null,"system error");
+        return new RegisterResponseDTO(String.format("user registers at %s",userdata.getId()),null);
+
+
+    }
+
 
 
 
@@ -123,5 +150,10 @@ public class AuthService {
         return userRepo.findByUsername(username)!=null;
 
     }
+
+    public RolesEntity createRoles(RolesEntity rolesEntity) {
+        return roleRepo.save(rolesEntity);
+    }
+
 
 }
