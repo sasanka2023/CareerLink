@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.service.impl;
 
 import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
+import com.example.CarrerLink_backend.entity.AcademicCourse;
 import com.example.CarrerLink_backend.entity.RequiredCourses;
 import com.example.CarrerLink_backend.repo.RequiredCoursesRepo;
 import com.example.CarrerLink_backend.service.RequirdCoursesService;
@@ -21,13 +22,13 @@ public class RequiredCoursesServiceIMPL implements RequirdCoursesService {
 
     @Override
     public List<RequireCoursesDTO> getAllRequiredCourses() {
-        List<RequiredCourses> getAllRequiredCourses = requiredCoursesRepo.findAll();
+        List<AcademicCourse> getAllRequiredCourses = requiredCoursesRepo.findAll();
         return modelMapper.map(getAllRequiredCourses,new TypeToken<List<RequireCoursesDTO>>() {}.getType());
     }
 
     @Override
     public RequireCoursesDTO getRequiredCoursesById(int id) {
-        List<RequiredCourses> getAllRequiredCourses = requiredCoursesRepo.findAll();
+        List<AcademicCourse> getAllRequiredCourses = requiredCoursesRepo.findAll();
         return modelMapper.map(getAllRequiredCourses,new TypeToken<List<RequireCoursesDTO>>() {}.getType());
     }
 }
