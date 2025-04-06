@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface AcademicCourseRepo extends JpaRepository<AcademicCourse, Long> {
     Optional<AcademicCourse> findByCourseName(String courseName);
 
+
     List<AcademicCourse> findByRequiredSkillIgnoreCaseAndSkillLevelIgnoreCase(
             String requiredSkill,
             String skillLevel
@@ -26,5 +27,10 @@ public interface AcademicCourseRepo extends JpaRepository<AcademicCourse, Long> 
             @Param("skill") String skill,
             @Param("level") String level
     );
+
+    List<AcademicCourse> findByRequiredSkillIgnoreCase(String requiredSkill);
+    List<AcademicCourse> findBySkillLevel(String skillLevel);
+    List<AcademicCourse> findByRequiredSkillAndSkillLevelIgnoreCase(String requiredSkill, String skillLevel);
+
 }
 

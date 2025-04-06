@@ -34,4 +34,7 @@ public interface AdminService {
     List<TechnologyStudentCount> getStudentCountPerTechnology();
 
     List<JobFieldStudentCount> getStudentCountPerJobField();
+
+
+    List<RequireCoursesDTO> getAllCourses( String requiredSkill, String skillLevel);
 }
