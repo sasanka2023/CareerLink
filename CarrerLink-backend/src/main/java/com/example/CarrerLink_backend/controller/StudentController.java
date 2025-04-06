@@ -14,6 +14,7 @@ import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import com.example.CarrerLink_backend.service.ProjectRecommendationService;
 import com.example.CarrerLink_backend.service.StudentService;
+import com.example.CarrerLink_backend.service.impl.CountBroadcastService;
 import com.example.CarrerLink_backend.service.impl.CourseRecommendationServiceImpl;
 import com.example.CarrerLink_backend.service.impl.JobRecommendationServiceImpl;
 import com.example.CarrerLink_backend.utill.StandardResponse;
@@ -26,6 +27,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +44,7 @@ public class StudentController {
     private final CourseRecommendationServiceImpl courseRecommendationServiceImpl;
     private final JobRecommendationServiceImpl recommendationService;
     private final ProjectRecommendationService projectRecommendationService;
+    private final CountBroadcastService countBroadcastService;
     @Operation(summary = "Save a student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "student created successfully"),
@@ -52,7 +55,7 @@ public class StudentController {
     public ResponseEntity<StandardResponse> saveStudent(@RequestBody StudentSaveRequestDTO studentSaveRequestDTO, UserEntity user){
 
         String message = studentService.saveStudent(studentSaveRequestDTO,user);
-
+        countBroadcastService.broadcastChartUpdates();
         return ResponseEntity.status(201)
                 .body(new StandardResponse(true, "Company saved successfully", message));
 
@@ -79,6 +82,7 @@ public class StudentController {
         }
 
         String message = studentService.updateStudent(studentUpdateRequestDTO, imageFile);
+        countBroadcastService.broadcastChartUpdates();
         return ResponseEntity.ok(new StandardResponse(true, "Student updated successfully", message));
     }
 

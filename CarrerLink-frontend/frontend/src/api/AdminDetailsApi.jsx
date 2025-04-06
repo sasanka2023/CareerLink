@@ -49,45 +49,26 @@ const getAllCourses = async () => {
 };
 
 
-const saveTechnology = async (technologyData) => {
+const saveTechnology = async (techData) => {
     try {
-        const response = await axiosInstance.post('/saveTechnology',
-            {
-                techName: technologyData.techName
-            });
-        return {
-            success: true,
-            data: response.data,
-            message: 'Technology added successfully'
-        };
+        const response = await axiosInstance.post('/admin/saveTechnology', {
+            techName: techData.name
+        });
+        return response.data;
     } catch (error) {
-        console.error('Save technology error:', error);
-        return {
-            success: false,
-            message: error.response?.data?.message || 'Failed to save technology'
-        };
+        return { success: false, message: error.response?.data?.message };
     }
 };
-const saveJobField = async (jobFieldData) => {
+ const saveJobField = async (fieldData) => {
     try {
-        const response = await axiosInstance.post('/saveJobField',
-            {
-                jobName: jobFieldData.jobField
-            });
-        return {
-            success: true,
-            data: response.data,
-            message: 'Job field added successfully'
-        };
+        const response = await axiosInstance.post('/admin/saveJobField', {
+            jobField: fieldData.name
+        });
+        return response.data;
     } catch (error) {
-        console.error('Save job field error:', error);
-        return {
-            success: false,
-            message: error.response?.data?.message || 'Failed to save job field'
-        };
+        return { success: false, message: error.response?.data?.message };
     }
 };
-
 const getAdminList = async () => {
     try {
         const response = await axiosInstance.get('/admin/getAll');
@@ -136,7 +117,41 @@ const approveAdmin = async (adminId, adminData) => {
     }
 };
 
+// Get All Technologies
+ const getAllTechnologies = async () => {
+    try {
+        const response = await axiosInstance.get('/admin/get-all-technologies');
+        return {
+            success: response.data?.success,
+            data: response.data?.data,
+            message: response.data?.message
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Failed to fetch technologies'
+        };
+    }
+};
+
+// Get All Job Fields
+ const getAllJobFields = async () => {
+    try {
+        const response = await axiosInstance.get('/admin/get-all-job-fields');
+        return {
+            success: response.data?.success,
+            data: response.data?.data,
+            message: response.data?.message
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Failed to fetch job fields'
+        };
+    }
+};
 
 
 
-export { getAdminByUserId,saveTechnology,getAllCourses, saveJobField,getAdminList,approveAdmin };
+
+export { getAdminByUserId,saveTechnology,getAllCourses, saveJobField,getAdminList,approveAdmin,getAllTechnologies,getAllJobFields };

@@ -16,6 +16,7 @@ import com.example.CarrerLink_backend.repo.JobFieldRepo;
 import com.example.CarrerLink_backend.repo.JobRepo;
 import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
+import com.example.CarrerLink_backend.service.AdminService;
 import com.example.CarrerLink_backend.service.SkillAnalysisService;
 import com.example.CarrerLink_backend.service.StudentService;
 import com.example.CarrerLink_backend.utill.CommonFileSaveBinaryDataDto;
@@ -24,6 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,6 +59,8 @@ private final AmazonS3 amazonS3;
     private final FileServiceImpl fileService;
     private final ProfileImageRepo profileImageRepo;
     private final JobRecommendationServiceImpl jobRecommendationService;
+
+    private SimpMessagingTemplate messagingTemplate;
 
     @Override
     @Transactional
@@ -127,6 +131,7 @@ private final AmazonS3 amazonS3;
             }
 
             studentRepo.save(existingStudent);
+
             return existingStudent.getProfilePicUrl();
 
         } catch (IOException e) {
@@ -314,6 +319,8 @@ private final AmazonS3 amazonS3;
 
         return technologyDTOS;
     }
+
+
 
 
 

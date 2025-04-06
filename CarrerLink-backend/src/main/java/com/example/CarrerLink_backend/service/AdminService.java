@@ -1,9 +1,6 @@
 package com.example.CarrerLink_backend.service;
 
-import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
-import com.example.CarrerLink_backend.dto.JobFieldDTO;
-import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
-import com.example.CarrerLink_backend.dto.TechnologyDTO;
+import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.response.AdminGetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 
@@ -29,4 +26,12 @@ public interface AdminService {
 
     String approveAdmin(int id,AdminGetResponseDTO adminGetResponseDTO);
     List<RequireCoursesDTO> getAllRequiredCourses();
+
+    List<JobFieldDTO> getAllJobFields();
+
+    List<TechnologyDTO> getAllTechnologies();
+
+    List<TechnologyStudentCount> getStudentCountPerTechnology();
+
+    List<JobFieldStudentCount> getStudentCountPerJobField();
 }

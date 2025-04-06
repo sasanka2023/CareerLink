@@ -12,11 +12,11 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Map;
 
 @Component
 public class WebSocketAuthInterceptor implements ChannelInterceptor {
-
     private final JWTService jwtService;
 
     public WebSocketAuthInterceptor(JWTService jwtService) {
@@ -28,22 +28,23 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            String token = accessor.getFirstNativeHeader("Authorization");
+            String tokenHeader = accessor.getFirstNativeHeader("Authorization");
 
-            if (token == null || !token.startsWith("Bearer ")) {
-                throw new AuthenticationCredentialsNotFoundException("Missing or invalid authorization header");
+            if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
+                throw new AuthenticationCredentialsNotFoundException("Missing authorization token");
             }
 
-            String jwtToken = token.substring(7);
-            Map<String, Object> claims = jwtService.getTokenData(jwtToken);
+            String token = tokenHeader.substring(7);
+            Claims claims = jwtService.getTokenData(token);
 
             if (claims == null) {
                 throw new AuthenticationCredentialsNotFoundException("Invalid or expired token");
             }
 
-            String role = (String) claims.get("role");
-            if (!"ROLE_STUDENT".equals(role)) {
-                throw new AuthenticationCredentialsNotFoundException("Unauthorized role for WebSocket connection");
+            // Optional: Add basic username verification
+            String username = jwtService.getUsername(token);
+            if (username == null) {
+                throw new AuthenticationCredentialsNotFoundException("Invalid token payload");
             }
         }
 

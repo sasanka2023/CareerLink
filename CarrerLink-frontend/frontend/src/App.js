@@ -29,6 +29,8 @@ import RecommendedJobs from './components/Dashboard/StudentDashboard/Recommended
 import AdminAuth from "./pages/AdminAuth";
 import AdminRegister from "./pages/AdminRegister";
 import AdminProtectedRoute from "./api/AdminProtectedRoute";
+import CompanyEditProfile from "./components/Dashboard/CompanyDashboard/CompanyEditProfile";
+import CompanyDashboardLayout from "./components/Dashboard/CompanyDashboard/CompanyDashboardLayout";
 const Layout = () => {
     return (
         <>
@@ -78,6 +80,10 @@ const router = createBrowserRouter([
      {
         path: '/cv/template1',
         element: <CV1 />
+    },
+    {
+        path: '/company-dashboard/settings',
+        element: <CompanyEditProfile />
     },
     {
         path: '/cv/template2',

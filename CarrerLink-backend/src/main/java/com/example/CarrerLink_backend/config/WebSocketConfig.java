@@ -14,11 +14,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     // If you have any interceptors for WebSocket authentication, include them here
-    // private final WebSocketAuthInterceptor webSocketAuthInterceptor;
+     private final WebSocketAuthInterceptor webSocketAuthInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/queue");
+        config.enableSimpleBroker("/topic","/queue");
         config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
     }
@@ -32,6 +32,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        // registration.interceptors(webSocketAuthInterceptor);
+         registration.interceptors(webSocketAuthInterceptor);
     }
 }
