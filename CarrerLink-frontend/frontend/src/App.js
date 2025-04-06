@@ -43,76 +43,75 @@ const Layout = () => {
     </>
   );
 };
-
-
-    {
-        element: <Layout />, // Applies Header/Footer to all child routes
-        children: [
-            { path: '/', element: <Home /> },
-            { path: '/company-auth', element: <CompanyAuth /> },
-            { path: '/admin-auth', element: <AdminAuth /> },
-            { path: '/company-register', element: <CompanyRegister /> },
-            { path: '/admin-register', element: <AdminRegister /> },
-            { path: '/company-dashboard', element: <CompanyDashboardPage /> },
-            { path: '/student-auth', element: <StudentAuth /> },
-            { path: '/student-register', element: <StudentRegister /> },
-            { path: '/home', element: <Home /> },
-            { path: '/jobs', element: <Jobs /> },
-            { path: '/employer', element: <Employer /> },
-            { path: '/courses', element: <Courses /> },
-            { path: '/contact', element: <Contact /> },
-            { path: '/employees', element: <Companies /> },
-            { path: '/jobs/:jobId', element: <JobPage /> }, // Add this route for JobPage
-        ],
-    },
-    {
-        path: '/student',
-        element: <StudentDashBoard /> // No Header/Footer for this route
-     },
-    {
-        path: '/admin',
-        element: (
-            <AdminProtectedRoute>
-                <AdminDashboard />
-            </AdminProtectedRoute>
-        ), // No Header/Footer for this route
-    },
-     {
-        path: '/cv/template1',
-        element: <CV1 />
-    },
-    {
-        path: '/company-dashboard/settings',
-        element: <CompanyEditProfile />
-    },
-    {
-        path: '/cv/template2',
-        element: <CV2 />
-    },
-    {
-        path: '/cv/template3',
-        element: <CV3 />
-    },
-    {
-        path: '/cv/template4',
-        element: <CV4 />
-    },
-    {
-        path: '/bluetemplate',
-        element:<CvTemplate7/>    
-    } ,{
-        path: '/testplatform',
-        element:<TestPlatform/> 
-    } ,
-    {
-        path: '/student-dashboard/jobs',
-        element:<RecommendedJobs/>
-    },
-       {
+const router = createBrowserRouter([
+  {
+    element: <Layout />, // Applies Header/Footer to all child routes
+    children: [
+      { path: "/", element: <Home /> },
+      { path: "/company-auth", element: <CompanyAuth /> },
+      { path: "/admin-auth", element: <AdminAuth /> },
+      { path: "/company-register", element: <CompanyRegister /> },
+      { path: "/admin-register", element: <AdminRegister /> },
+      { path: "/company-dashboard", element: <CompanyDashboardPage /> },
+      { path: "/student-auth", element: <StudentAuth /> },
+      { path: "/student-register", element: <StudentRegister /> },
+      { path: "/home", element: <Home /> },
+      { path: "/jobs", element: <Jobs /> },
+      { path: "/employer", element: <Employer /> },
+      { path: "/courses", element: <Courses /> },
+      { path: "/contact", element: <Contact /> },
+      { path: "/employees", element: <Companies /> },
+      { path: "/jobs/:jobId", element: <JobPage /> }, // Add this route for JobPage
+    ],
+  },
+  {
+    path: "/student",
+    element: <StudentDashBoard />, // No Header/Footer for this route
+  },
+  {
+    path: "/admin",
+    element: (
+      <AdminProtectedRoute>
+        <AdminDashboard />
+      </AdminProtectedRoute>
+    ), // No Header/Footer for this route
+  },
+  {
+    path: "/cv/template1",
+    element: <CV1 />,
+  },
+  {
+    path: "/company-dashboard/settings",
+    element: <CompanyEditProfile />,
+  },
+  {
+    path: "/cv/template2",
+    element: <CV2 />,
+  },
+  {
+    path: "/cv/template3",
+    element: <CV3 />,
+  },
+  {
+    path: "/cv/template4",
+    element: <CV4 />,
+  },
+  {
+    path: "/bluetemplate",
+    element: <CvTemplate7 />,
+  },
+  {
+    path: "/testplatform",
+    element: <TestPlatform />,
+  },
+  {
+    path: "/student-dashboard/jobs",
+    element: <RecommendedJobs />,
+  },
+  {
     path: "/student-dashboard/courses",
     element: <RecommendedCourses />,
   },
-
 
   { path: "/editprofile", element: <EditProfile /> },
   { path: "student-dashboard/cv", element: <StudentCV /> },

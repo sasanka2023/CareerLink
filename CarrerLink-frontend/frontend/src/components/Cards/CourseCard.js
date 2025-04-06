@@ -1,4 +1,3 @@
-
 import React from "react";
 import { GrFormNext } from "react-icons/gr";
 
@@ -25,13 +24,11 @@ const CourseCard = ({ course }) => {
         </div>
       </div>
 
-
       {/* Footer Section */}
       <div className="flex flex-col pt-4 pl-4">
         <div className="mb-2 rounded-full bg-cyan-600 py-0.5 px-2.5 border border-transparent text-xs text-white transition-all shadow-sm w-fit text-center">
           {course.skillLevel || "Unknown Level"}
         </div>
-
       </div>
 
       {/* More Info Button */}
@@ -49,9 +46,5 @@ const CourseCard = ({ course }) => {
     </div>
   );
 };
-
-    );
-}
-
 
 export default CourseCard;
