@@ -1,9 +1,6 @@
 package com.example.CarrerLink_backend.service.impl;
 
-import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
-import com.example.CarrerLink_backend.dto.JobFieldDTO;
-import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
-import com.example.CarrerLink_backend.dto.TechnologyDTO;
+import com.example.CarrerLink_backend.dto.*;
 
 import com.example.CarrerLink_backend.entity.JobField;
 import com.example.CarrerLink_backend.entity.RequiredCourses;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.example.CarrerLink_backend.entity.AcademicCourse;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -159,5 +157,37 @@ public class AdminServiceImpl implements AdminService {
     public List<RequireCoursesDTO> getAllRequiredCourses() {
         List<AcademicCourse> getAllRequiredCourses = AcedeminCoursesRepo.findAll();
         return modelMapper.map(getAllRequiredCourses,new TypeToken<List<RequireCoursesDTO>>() {}.getType());
+    }
+
+    @Override
+    public List<JobFieldDTO> getAllJobFields() {
+        List<JobField> allJobFields = jobFieldRepo.findAll();
+        return modelMapper.map(allJobFields, new TypeToken<List<JobFieldDTO>>() {}.getType());
+    }
+
+    @Override
+    public List<TechnologyDTO> getAllTechnologies() {
+        List<Technology> allTechnologies = technologyRepo.findAll();
+        return modelMapper.map(allTechnologies, new TypeToken<List<TechnologyDTO>>() {}.getType());
+    }
+
+    public List<TechnologyStudentCount> getStudentCountPerTechnology() {
+        List<Technology> technologies = technologyRepo.findAllWithStudents();
+        return technologies.stream()
+                .map(tech -> new TechnologyStudentCount(
+                        tech.getTechName(),
+                        tech.getStudents().size()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<JobFieldStudentCount> getStudentCountPerJobField() {
+        List<JobField> jobFields = jobFieldRepo.findAllWithStudents();
+        return jobFields.stream()
+                .map(job -> new JobFieldStudentCount(
+                        job.getJobField(),
+                        job.getStudents().size()
+                ))
+                .collect(Collectors.toList());
     }
 }
