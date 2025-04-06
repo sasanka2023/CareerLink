@@ -12,30 +12,15 @@ const CourseCard = ({ course }) => {
 
   return (
     <div className="relative flex flex-col p-4 my-6 bg-white shadow-sm border border-slate-200 rounded-lg w-96">
-      {/* Header Section */}
+      {/* Header Section (No image) */}
       <div className="flex p-4">
-        <div className="flex">
-          <img
-            alt={course.courseName || "Course"}
-            src={"/default-course.png"} // You can dynamically update if backend has an image
-            className="relative inline-block h-16 w-16 rounded-full"
-          />
-          <div className="flex flex-col ml-3 text-sm">
-            <span className="text-xl font-semibold">
-              {course.courseName || "Untitled Course"}
-            </span>
-            <span className="text-sm text-gray-600">
-              Skill: {course.requiredSkill || "N/A"}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Recommendation Message */}
-      <div className="px-4 mt-2">
-        <div className="text-slate-600 font-light text-sm italic">
-          {course.recommendationMessage ||
-            "No recommendation message provided."}
+        <div className="flex flex-col text-sm">
+          <span className="text-xl font-semibold">
+            {course.courseName || "Untitled Course"}
+          </span>
+          <span className="text-sm text-gray-600">
+            Skill: {course.requiredSkill || "N/A"}
+          </span>
         </div>
       </div>
 
