@@ -43,7 +43,7 @@ const Layout = () => {
     </>
   );
 };
-
+const router = createBrowserRouter([
 
     {
         element: <Layout />, // Applies Header/Footer to all child routes
