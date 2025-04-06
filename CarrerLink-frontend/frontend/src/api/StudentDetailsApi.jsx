@@ -1,16 +1,16 @@
-import axiosInstance from './AxiosInstance';
+import axiosInstance from "./AxiosInstance";
 
 const getStudentByUsername = async (userId) => {
   try {
     const response = await axiosInstance.get(`/students/userId/${userId}`);
     if (!response.data?.success || !response.data?.data) {
-      throw new Error('Invalid API response structure');
+      throw new Error("Invalid API response structure");
     }
     return response.data;
   } catch (error) {
-    console.error('Error fetching student data:', {
+    console.error("Error fetching student data:", {
       status: error.response?.status,
-      message: error.response?.data?.message || error.message
+      message: error.response?.data?.message || error.message,
     });
     return { success: false };
   }
@@ -18,39 +18,85 @@ const getStudentByUsername = async (userId) => {
 
 const getJobRecommendations = async (studentId) => {
   try {
-    const response = await axiosInstance.get(`/students/jobrecommendations/${studentId}`);
+    const response = await axiosInstance.get(
+      `/students/jobrecommendations/${studentId}`
+    );
     if (!response.data?.success || !response.data?.data) {
-      throw new Error('Invalid API response structure');
+      throw new Error("Invalid API response structure");
     }
     return response.data;
   } catch (error) {
-    console.error('Error fetching student data:', {
+    console.error("Error fetching student data:", {
       status: error.response?.status,
-      message: error.response?.data?.message || error.message
+      message: error.response?.data?.message || error.message,
     });
     return { success: false };
   }
-}
+};
 
 const applyForJob = async (applicationData) => {
   console.log(applicationData);
   try {
-    const response = await axiosInstance.post('/students/apply-job', {
+    const response = await axiosInstance.post("/students/apply-job", {
       studentId: applicationData.studentId,
-      jobId: applicationData.jobId
-
+      jobId: applicationData.jobId,
     });
     if (!response.data?.success) {
-      throw new Error(response.data?.message || 'Application failed');
+      throw new Error(response.data?.message || "Application failed");
     }
     return response.data;
   } catch (error) {
-    console.error('Application error:', {
+    console.error("Application error:", {
       status: error.response?.status,
-      message: error.response?.data?.message || error.message
+      message: error.response?.data?.message || error.message,
     });
     throw error;
   }
 };
 
-export {getStudentByUsername,getJobRecommendations,applyForJob};
+const getRecommendedCourses = async (token, studentId) => {
+  try {
+    // Validate studentId exists and is a number
+    if (!studentId || isNaN(studentId)) {
+      throw new Error("Invalid student ID");
+    }
+
+    const response = await axiosInstance.get(
+      `/students/recommend-courses`, // Corrected API path
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: { studentId }, // Pass the studentId as query param
+      }
+    );
+
+    console.log("API Request URL:", `/students/recommend-courses`);
+
+    if (!response.data?.success) {
+      throw new Error(response.data?.message || "Invalid response structure");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("API Request Failed:", {
+      endpoint: "/students/recommend-courses",
+      status: error.response?.status,
+      error: error.message,
+      response: error.response?.data,
+    });
+
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message,
+      data: null,
+    };
+  }
+};
+
+export {
+  getStudentByUsername,
+  getJobRecommendations,
+  applyForJob,
+  getRecommendedCourses,
+};
