@@ -1,11 +1,10 @@
+// Admin.java
 package com.example.CarrerLink_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Entity
 @Data
@@ -17,7 +16,6 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
     private String fullName;
 
     private String email;
@@ -25,14 +23,8 @@ public class Admin {
     private String profession;
 
     private boolean status;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
-
-    @OneToMany(mappedBy = "createdBy")
-    private Set<SkillTest> skillTests;
-
-
-
-
 }
