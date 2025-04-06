@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.controller;
 
 
+import com.example.CarrerLink_backend.dto.CourseRecommendationDTO;
 import com.example.CarrerLink_backend.dto.JobRecommendationDTO;
 import com.example.CarrerLink_backend.dto.ProjectIdeaDTO;
 import com.example.CarrerLink_backend.dto.request.ApplyJobRequestDTO;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -144,22 +146,30 @@ public class StudentController {
     }
 
 
-    @Operation(summary = "Get recommended courses for a student")
+    @Operation(summary = "Get recommended courses matching student's skills")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully fetched recommended courses"),
-            @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "200", description = "Courses found"),
+            @ApiResponse(responseCode = "404", description = "Student not found or no course recommendations available"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/recommend-courses")
-    public ResponseEntity<StandardResponse> getRecommendedCourses(@RequestParam int studentId) {
-        List<String> recommendedCourses = courseRecommendationService.getRecommendedCourses(studentId);
+    public ResponseEntity<StandardResponse> getCourseRecommendations(@RequestParam int studentId) {
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        if (recommendedCourses.isEmpty()) {
-            return ResponseEntity.status(404).body(new StandardResponse(false, "No recommendations found.", recommendedCourses));
+        List<CourseRecommendationDTO> recommendations =
+                courseRecommendationService.getRecommendedCoursesWithScores(student);
+
+        if (recommendations.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new StandardResponse(false, "No recommendations found for the student", recommendations));
         }
 
-        return ResponseEntity.ok(new StandardResponse(true, "Recommended courses fetched successfully", recommendedCourses));
+        return ResponseEntity.ok(
+                new StandardResponse(true, "Recommendations found", recommendations)
+        );
     }
+
 
 
 

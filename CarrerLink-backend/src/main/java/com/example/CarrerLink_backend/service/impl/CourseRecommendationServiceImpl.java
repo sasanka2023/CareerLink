@@ -1,85 +1,52 @@
 package com.example.CarrerLink_backend.service.impl;
 
-import com.example.CarrerLink_backend.dto.response.GeminiResponse;
-import com.example.CarrerLink_backend.entity.SkillSet;
-import com.example.CarrerLink_backend.repo.SkillSetRepo;
+import com.example.CarrerLink_backend.dto.CourseRecommendationDTO;
+import com.example.CarrerLink_backend.entity.RequiredCourses;
+import com.example.CarrerLink_backend.entity.Student;
+import com.example.CarrerLink_backend.repo.CoursesRecommendRepo;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.http.MediaType;
-import reactor.core.publisher.Mono;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CourseRecommendationServiceImpl implements CourseRecommendationService {
 
-    private final SkillSetRepo skillSetRepo;
-    private final WebClient webClient;
-
-    @Value("${gemini.api.url}")
-    private String geminiApiUrl;
-
-    @Value("${gemini.api.key}")
-    private String geminiApiKey;
+    private final CoursesRecommendRepo coursesRecommendRepo;
 
     @Override
-    public List<String> getRecommendedCourses(int studentId) {
-        List<SkillSet> skills = skillSetRepo.findByStudent_StudentId(studentId);
+    public List<CourseRecommendationDTO> getRecommendedCoursesWithScores(Student student) {
+        return student.getSkills().stream()
+                .peek(skill -> log.info("Checking skill: '{}' at level: '{}'",
+                        skill.getSkillName(), skill.getSkillLevel()))
+                .flatMap(skill -> {
+                    String skillName = skill.getSkillName().trim();
+                    String skillLevel = skill.getSkillLevel().trim();
 
-        if (skills.isEmpty()) {
-            return List.of("No skills found for this student.");
-        }
+                    List<RequiredCourses> courses = coursesRecommendRepo
+                            .findByRequiredSkillIgnoreCaseAndSkillLevelIgnoreCase(skillName, skillLevel);
 
-        String prompt = generatePrompt(skills);
-        return fetchRecommendationsFromGemini(prompt);
+                    log.info("Found {} courses for skill '{}', level '{}'",
+                            courses.size(), skillName, skillLevel);
+
+                    return courses.stream()
+                            .map(course -> new CourseRecommendationDTO(
+                                    course.getCourseId(),
+                                    course.getCourseName(),
+                                    course.getRequiredSkill(),
+                                    course.getSkillLevel(),
+                                    course.getUrl(),
+                                    1.0,
+                                    "Recommended for your " + skillLevel + " level in " + skillName
+                            ));
+                })
+                .collect(Collectors.toList());
     }
 
-    private String generatePrompt(List<SkillSet> skills) {
-        StringBuilder prompt = new StringBuilder("Suggest the top 5 online courses for the following skills and levels:\n");
 
-        for (SkillSet skill : skills) {
-            prompt.append("For ").append(skill.getSkillName())
-                    .append(" (Level: ").append(skill.getSkillLevel()).append("), recommend the most relevant courses.\n");
-        }
-
-        return prompt.toString();
-    }
-
-    private List<String> fetchRecommendationsFromGemini(String prompt) {
-        String apiUrl = geminiApiUrl + "?key=" + geminiApiKey;
-
-        String requestBody = """
-        {
-            "contents": [
-                {
-                    "parts": [
-                        {
-                            "text": "%s"
-                        }
-                    ]
-                }
-            ]
-        }
-        """.formatted(prompt);
-
-        try {
-            GeminiResponse response = webClient.post()
-                    .uri(apiUrl)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(GeminiResponse.class)
-                    .doOnError(error -> System.err.println("Error fetching recommendations from Gemini API: " + error.getMessage()))
-                    .block();
-
-            return response != null ? response.extractCourseList() : List.of("No recommendations found.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return List.of("Error fetching recommendations from Gemini API.");
-        }
-    }
 }
