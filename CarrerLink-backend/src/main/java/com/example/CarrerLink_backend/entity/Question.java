@@ -5,83 +5,29 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "questions")
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Table(name = "questions")
 public class Question {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long questionId;
 
-    @Column(nullable = false)
-    private String questionText;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String text;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private QuestionType questionType;
+    @ElementCollection
+    @CollectionTable(name = "question_options", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "option")
+    private List<String> options;
 
-    @Column(nullable = false)
-    private int marks;
+    private String correctAnswer;
 
-    @ManyToOne
-    @JoinColumn(name = "skill_test_id", nullable = false)
-    private SkillTest skillTest;
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Option> options = new ArrayList<>();
-
-    // Enum definition
-    public enum QuestionType {
-        MULTIPLE_CHOICE,
-        SINGLE_CHOICE,
-        TRUE_FALSE
-    }
-
-    // Explicit getters required by the service
-    public int getMarks() {
-        return marks;
-    }
-
-    public List<Option> getOptions() {
-        return options;
-    }
-
-    public SkillTest getSkillTest() {
-        return skillTest;
-    }
-
-    public QuestionType getQuestionType() {
-        return questionType;
-    }
-
-    // Explicit setters (optional, as @Data provides them)
-    public void setMarks(int marks) {
-        this.marks = marks;
-    }
-
-    public void setOptions(List<Option> options) {
-        this.options = options;
-    }
-
-    public void setSkillTest(SkillTest skillTest) {
-        this.skillTest = skillTest;
-    }
-
-    public void setQuestionType(QuestionType questionType) {
-        this.questionType = questionType;
-    }
-
-    public String getQuestionText() {
-        return questionText;
-    }
-
-    public void setQuestionText(String questionText) {
-        this.questionText = questionText;
-    }
+    @Column(name = "marks", nullable = false) // Match the DB column
+    private Integer marks; // Added field
 }

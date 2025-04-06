@@ -1,13 +1,13 @@
-import { useState,useContext } from 'react';
+import { useState, useContext } from 'react';
 import { Plus } from 'lucide-react';
-import Sidebar from './Sidebar'; // Import Sidebar component
-import Header from './Header'; // Import Header component
+import Sidebar from './Sidebar';
+import Header from './Header';
 import Swal from 'sweetalert2';
 import { saveTechnology, saveJobField } from '../../../api/AdminDetailsApi';
 import { AuthContext } from '../../../api/AuthProvider';
 import AdminList from "./AdminList";
 import Course from './Course';
-
+import TestManager from './TestManager';
 
 const extractRoleFromToken = (token) => {
     try {
@@ -18,6 +18,7 @@ const extractRoleFromToken = (token) => {
         return null;
     }
 };
+
 const AdminDashboard = () => {
     const { token } = useContext(AuthContext);
     const userRole = token ? extractRoleFromToken(token) : null;
@@ -39,15 +40,7 @@ const AdminDashboard = () => {
             submittedDate: '2024-03-14'
         }
     ]);
-    const [tests] = useState([
-        {
-            id: '1',
-            candidateName: 'John Doe',
-            technology: 'React',
-            date: '2024-03-20',
-            time: '10:00'
-        }
-    ]);
+    const [tests, setTests] = useState([]); // Changed to mutable empty array
 
     const [newTechnology, setNewTechnology] = useState({ name: '', category: '' });
     const [newJobField, setNewJobField] = useState({ name: '', description: '' });
@@ -178,10 +171,9 @@ const AdminDashboard = () => {
                         </div>
                     )}
 
-                    {activeTab === 'Courses' && <Course/>}
-                    {/* Render the AdminList only if the active tab is "adminlist" and the user is a Super Admin */}
+                    {activeTab === 'tests' && <TestManager initialTests={tests} />}
+                    {activeTab === 'Courses' && <Course />}
                     {userRole === "ROLE_SUPERADMIN" && activeTab === "adminlist" && <AdminList />}
-
                 </main>
             </div>
         </div>
