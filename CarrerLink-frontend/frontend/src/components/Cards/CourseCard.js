@@ -65,8 +65,8 @@ const CourseCard = ({ course }) => {
   );
 };
 
-    );
-}
+
+
 
 
 export default CourseCard;
