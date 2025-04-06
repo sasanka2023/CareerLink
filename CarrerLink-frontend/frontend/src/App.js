@@ -62,7 +62,7 @@ const router = createBrowserRouter([
             { path: '/courses', element: <Courses /> },
             { path: '/contact', element: <Contact /> },
             { path: '/employees', element: <Companies /> },
-            { path: '/job', element: <JobPage /> }, // Add this route for JobPage
+            { path: '/jobs/:jobId', element: <JobPage /> }, // Add this route for JobPage
         ],
     },
     {

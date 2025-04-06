@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useContext } from 'react';
 import { useEffect } from 'react';
+import {useLocation} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { Search, Building2, MapPin, Users2, Globe2, ArrowUpRight } from 'lucide-react';
 import {getAllCompanies} from '../api/CompanyDetailsGetApi'
 import {getAllCompaniesusingFilters} from '../api/CompanyDetailsGetApi'
 import { AuthContext } from '../api/AuthProvider';
 import { getCompanyByName } from '../api/CompanyDetailsGetApi';
+import Employer from "./Employer";
 // Sample company data
 
 
@@ -19,10 +22,14 @@ function Companies() {
   const [loading,setLoading] = useState(true);
   const[companyes,setCompanies] = useState([]);
   const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const industries = ['all', 'Technology', 'Service', 'Marketing', 'Artificial Intelligence'];
   const locations = ['all', 'Srilanka', 'New York', 'San Francisco', 'London','Berlin'];
   const statusOptions = ['all', 'Actively Hiring', 'Open to Talent', 'Not Hiring'];
+
+
+
 
   const handleSearch = async () => {
      const searchval = searchTerm === '' ? null : searchTerm;
@@ -211,7 +218,9 @@ function Companies() {
                   </div>
                 </div>
                 
-                <button className="mt-6 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+                <button className="mt-6 w-full flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+                        onClick={() => navigate('/employer', { state: { company } })}
+                >
                   <Globe2 className="h-4 w-4 mr-2" />
                   View Company Profile
                   <ArrowUpRight className="h-4 w-4 ml-2" />

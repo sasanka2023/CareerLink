@@ -1,5 +1,5 @@
 import axiosInstance from './AxiosInstance';
-
+import axios from 'axios';
 const getAdminByUserId = async (userId) => {
     try {
         const response = await axiosInstance.get(`/admin/userId/${userId}`);
@@ -152,6 +152,26 @@ const approveAdmin = async (adminId, adminData) => {
 };
 
 
+const getAllCoursesUsingFilters = async (requiredSkill, skillLevel) => {
+    try {
+        const response = await axios.get('http://localhost:8091/api/v1/acedemicCourses/filter', {
+            params: {
+                requiredSkill,
+                skillLevel
+            }
+        });
+
+        return {
+            success: true,
+            data: response.data.data
+        };
+    } catch (error) {
+        console.error('Fetch courses error:', error);
+        return { success: false };
+    }
+};
 
 
-export { getAdminByUserId,saveTechnology,getAllCourses, saveJobField,getAdminList,approveAdmin,getAllTechnologies,getAllJobFields };
+
+
+export { getAdminByUserId,saveTechnology,getAllCourses, saveJobField,getAdminList,approveAdmin,getAllTechnologies,getAllJobFields,getAllCoursesUsingFilters };
