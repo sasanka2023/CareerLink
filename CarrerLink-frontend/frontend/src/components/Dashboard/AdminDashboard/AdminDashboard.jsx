@@ -1,18 +1,24 @@
+
+
 import { useState,useContext,useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import Sidebar from './Sidebar'; // Import Sidebar component
-import Header from './Header'; // Import Header component
+import Sidebar from './Sidebar';
+import Header from './Header';
 import Swal from 'sweetalert2';
 import { saveTechnology, saveJobField } from '../../../api/AdminDetailsApi';
 import { AuthContext } from '../../../api/AuthProvider';
 import AdminList from "./AdminList";
 import Course from './Course';
+
+import TestManager from './TestManager';
+
 import TechnologyManagement from './TechnologyManagement';
 import JobFieldManagement from './JobFieldManagement';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import JobFieldStudentChart from "./JobFieldStudentChart";
 import TechnologyStudentChart from "./TechnologyStudentChart";
+
 
 
 const extractRoleFromToken = (token) => {
@@ -55,15 +61,7 @@ const AdminDashboard = () => {
             submittedDate: '2024-03-14'
         }
     ]);
-    const [tests] = useState([
-        {
-            id: '1',
-            candidateName: 'John Doe',
-            technology: 'React',
-            date: '2024-03-20',
-            time: '10:00'
-        }
-    ]);
+    const [tests, setTests] = useState([]); // Changed to mutable empty array
 
     const fetchChartData = async () => {
         try {
@@ -292,6 +290,8 @@ const AdminDashboard = () => {
 
                     {activeTab === 'jobs' && <JobFieldManagement />}
 
+
+                    {activeTab === 'tests' && <TestManager initialTests={tests} />}
                     {activeTab === 'Courses' && <Course />}
 
                     {userRole === "ROLE_SUPERADMIN" && activeTab === "adminlist" && <AdminList />}

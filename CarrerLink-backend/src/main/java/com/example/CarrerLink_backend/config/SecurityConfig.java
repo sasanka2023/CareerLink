@@ -53,7 +53,8 @@ public class SecurityConfig {
                                 "/api/auth/register/admin",
                                 "/api/auth/CreateRoles",
                                 "/api/notifications/**",
-                                "/ws/**"
+                                "/ws/**",
+                                "/api/v1/acedemicCourses/filter"
                         ).permitAll()
 
                         // Public GET endpoints
@@ -69,7 +70,7 @@ public class SecurityConfig {
                         // Student role endpoints
                         .requestMatchers("GET", "/api/students/**").hasRole("STUDENT")
                         .requestMatchers("/api/students/**").hasRole("STUDENT")
-
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")
                         // Authenticated endpoints (no specific role)
                         .requestMatchers("/api/cv/**", "/api/v1/requiredCourses/**","/api/admin").authenticated()
 
