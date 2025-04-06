@@ -190,4 +190,28 @@ public class AdminServiceImpl implements AdminService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<RequireCoursesDTO> getAllCourses( String requiredSkill, String skillLevel) {
+        List<AcademicCourse> courses;
+
+        if (requiredSkill != null && skillLevel != null) {
+            courses = AcedeminCoursesRepo.findByRequiredSkillAndSkillLevelIgnoreCase(requiredSkill, skillLevel);
+        }else if (requiredSkill != null) {
+            courses = AcedeminCoursesRepo.findByRequiredSkillIgnoreCase(requiredSkill);
+        } else if (skillLevel != null) {
+            courses = AcedeminCoursesRepo.findBySkillLevel(skillLevel);
+        } else {
+            courses = AcedeminCoursesRepo.findAll();
+        }
+
+        if (courses.isEmpty()) {
+            throw new RuntimeException("No courses found for the given filters.");
+        }
+
+        return modelMapper.map(courses, new TypeToken<List<RequireCoursesDTO>>(){}.getType());
+    }
+
+
+
 }
