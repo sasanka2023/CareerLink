@@ -96,7 +96,7 @@ public class ProjectRecommendationServiceImpl implements ProjectRecommendationSe
 
     private String buildProjectPrompt(List<Technology> technologies) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Generate exactly 5 practical project ideas using these technologies. ");
+        prompt.append("Generate exactly 3 practical project ideas using these technologies.");
         prompt.append("For each project, provide:\n\n");
         prompt.append("Title: [Project Name]\n");
         prompt.append("Description: [2-3 sentence description]\n");
@@ -112,9 +112,10 @@ public class ProjectRecommendationServiceImpl implements ProjectRecommendationSe
         prompt.append("Technologies: React, Node.js, MongoDB\n");
         prompt.append("Difficulty: Beginner\n\n");
 
-        prompt.append("Now generate exactly 5 projects following this exact format.");
+        prompt.append("Now generate exactly 3 projects following this exact format (Beginner, Intermediate, Advanced).");
         return prompt.toString();
     }
+
 
     private List<ProjectIdeaDTO> parseGeminiResponse(String responseText) {
         if (responseText == null || responseText.isEmpty()) {
@@ -138,25 +139,44 @@ public class ProjectRecommendationServiceImpl implements ProjectRecommendationSe
 
     private ProjectIdeaDTO parseProjectBlock(String block) {
         try {
+            String title = "";
+            String description = "";
+            List<String> technologies = new ArrayList<>();
+            String difficulty = "";
+
             String[] lines = block.split("\n");
-            if (lines.length < 4) {
-                log.warn("Incomplete project block: {}", block);
+
+            for (String line : lines) {
+                line = line.trim();
+
+                if (line.startsWith("Title:")) {
+                    title = line.replaceFirst("Title:", "").trim();
+                } else if (line.startsWith("Description:")) {
+                    description = line.replaceFirst("Description:", "").trim();
+                } else if (line.startsWith("Technologies:")) {
+                    String techLine = line.replaceFirst("Technologies:", "").trim();
+                    technologies = Arrays.stream(techLine.split(","))
+                            .map(String::trim)
+                            .collect(Collectors.toList());
+                } else if (line.startsWith("Difficulty:")) {
+                    difficulty = line.replaceFirst("Difficulty:", "").trim();
+                }
+            }
+
+            // Ensure at least title and description are present
+            if (title.isEmpty() || description.isEmpty()) {
+                log.warn("Incomplete project block:\n{}", block);
                 return null;
             }
 
-            return new ProjectIdeaDTO(
-                    lines[0].replace("Title:", "").trim(),
-                    lines[1].replace("Description:", "").trim(),
-                    Arrays.stream(lines[2].replace("Technologies:", "").split(","))
-                            .map(String::trim)
-                            .collect(Collectors.toList()),
-                    lines[3].replace("Difficulty:", "").trim()
-            );
+            return new ProjectIdeaDTO(title, description, technologies, difficulty);
+
         } catch (Exception e) {
             log.error("Error parsing project block", e);
             return null;
         }
     }
+
 
     private ProjectIdeaDTO createDefaultProjectDTO(String message) {
         return new ProjectIdeaDTO(

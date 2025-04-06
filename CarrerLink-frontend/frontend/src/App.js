@@ -45,6 +45,7 @@ const Layout = () => {
 };
 const router = createBrowserRouter([
 
+
     {
         element: <Layout />, // Applies Header/Footer to all child routes
         children: [
@@ -109,10 +110,10 @@ const router = createBrowserRouter([
         element:<RecommendedJobs/>
     },
        {
+
     path: "/student-dashboard/courses",
     element: <RecommendedCourses />,
   },
-
 
   { path: "/editprofile", element: <EditProfile /> },
   { path: "student-dashboard/cv", element: <StudentCV /> },
