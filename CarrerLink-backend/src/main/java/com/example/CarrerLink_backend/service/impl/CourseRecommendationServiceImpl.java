@@ -1,9 +1,9 @@
 package com.example.CarrerLink_backend.service.impl;
 
 import com.example.CarrerLink_backend.dto.CourseRecommendationDTO;
-import com.example.CarrerLink_backend.entity.RequiredCourses;
+import com.example.CarrerLink_backend.entity.AcademicCourse;
 import com.example.CarrerLink_backend.entity.Student;
-import com.example.CarrerLink_backend.repo.CoursesRecommendRepo;
+import com.example.CarrerLink_backend.repo.AcademicCourseRepo;
 import com.example.CarrerLink_backend.service.CourseRecommendationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CourseRecommendationServiceImpl implements CourseRecommendationService {
 
-    private final CoursesRecommendRepo coursesRecommendRepo;
+    private final AcademicCourseRepo academicCourseRepo;
 
     @Override
     public List<CourseRecommendationDTO> getRecommendedCoursesWithScores(Student student) {
@@ -28,7 +28,7 @@ public class CourseRecommendationServiceImpl implements CourseRecommendationServ
                     String skillName = skill.getSkillName().trim();
                     String skillLevel = skill.getSkillLevel().trim();
 
-                    List<RequiredCourses> courses = coursesRecommendRepo
+                    List<AcademicCourse> courses = academicCourseRepo
                             .findByRequiredSkillIgnoreCaseAndSkillLevelIgnoreCase(skillName, skillLevel);
 
                     log.info("Found {} courses for skill '{}', level '{}'",
