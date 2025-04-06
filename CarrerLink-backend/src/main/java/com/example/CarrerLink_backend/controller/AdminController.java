@@ -1,14 +1,14 @@
 package com.example.CarrerLink_backend.controller;
 
 
-import com.example.CarrerLink_backend.dto.AdminSaveRequestDTO;
-import com.example.CarrerLink_backend.dto.JobFieldDTO;
-import com.example.CarrerLink_backend.dto.RequireCoursesDTO;
-import com.example.CarrerLink_backend.dto.TechnologyDTO;
+import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.response.AdminGetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
+import com.example.CarrerLink_backend.repo.JobFieldRepo;
+import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.service.AdminService;
+import com.example.CarrerLink_backend.service.impl.CountBroadcastService;
 import com.example.CarrerLink_backend.service.impl.RequiredCoursesServiceIMPL;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,15 +20,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/admin")
+@CrossOrigin("http://localhost:3000")
 @AllArgsConstructor
 public class AdminController {
     private AdminService adminService;
+    private final CountBroadcastService countBroadcastService;
     @Autowired
     private RequiredCoursesServiceIMPL requiredCoursesServiceIMPL;
+    private final JobFieldRepo jobFieldRepo;
+    private final TechnologyRepo technologyRepo;
 
     @PostMapping("save")
     public ResponseEntity<StandardResponse> saveAdmin(@RequestBody AdminSaveRequestDTO adminSaveRequestDTO, UserEntity userdata){
@@ -40,6 +46,7 @@ public class AdminController {
     @PostMapping("/saveTechnology")
     public ResponseEntity<StandardResponse> saveTechnology(@RequestBody TechnologyDTO technologyDTO) {
         String message = adminService.saveTechnology(technologyDTO);
+        countBroadcastService.broadcastCounts();
         return ResponseEntity.ok(new StandardResponse(true, "Technology saved successfully", message));
     }
 
@@ -58,6 +65,7 @@ public class AdminController {
     @PostMapping("/saveJobField")
     public ResponseEntity<StandardResponse> saveJobField(@RequestBody JobFieldDTO jobFieldDTO) {
         String message = adminService.saveJobField(jobFieldDTO);
+        countBroadcastService.broadcastCounts();
         return ResponseEntity.ok(new StandardResponse(true, "JobField saved successfully", message));
     }
 
@@ -119,6 +127,37 @@ public class AdminController {
     public List<RequireCoursesDTO> getAllRequiredCourses() {
         List<RequireCoursesDTO> allRequireCourses = requiredCoursesServiceIMPL.getAllRequiredCourses();
         return allRequireCourses;
+    }
+
+    @GetMapping(path="get-all-job-fields")
+    public ResponseEntity<StandardResponse> getAllJobFields() {
+        List<JobFieldDTO> allJobFields = adminService.getAllJobFields();
+        return ResponseEntity.ok(new StandardResponse(true, "Job fields fetched successfully", allJobFields));
+    }
+
+    @GetMapping(path="get-all-technologies")
+    public ResponseEntity<StandardResponse> getAllTechnologies() {
+        List<TechnologyDTO> allTechnologies = adminService.getAllTechnologies();
+        return ResponseEntity.ok(new StandardResponse(true, "Technologies fetched successfully", allTechnologies));
+    }
+
+    @GetMapping("/dashboard-counts")
+    public ResponseEntity<StandardResponse> getDashboardCounts() {
+        Map<String, Long> counts = new HashMap<>();
+        counts.put("technologies", technologyRepo.count());
+        counts.put("jobFields", jobFieldRepo.count());
+        return ResponseEntity.ok(new StandardResponse(true, "Dashboard counts", counts));
+    }
+
+    @GetMapping("/student-technology-counts")
+    public ResponseEntity<StandardResponse> getStudentTechnologyCounts() {
+        List<TechnologyStudentCount> counts = adminService.getStudentCountPerTechnology();
+        return ResponseEntity.ok(new StandardResponse(true, "Technology student counts", counts));
+    }
+    @GetMapping("/student-jobfield-counts")
+    public ResponseEntity<StandardResponse> getStudentJobFieldCounts() {
+        List<JobFieldStudentCount> counts = adminService.getStudentCountPerJobField();
+        return ResponseEntity.ok(new StandardResponse(true, "Job Field student counts", counts));
     }
 
 }

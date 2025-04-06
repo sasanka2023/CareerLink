@@ -100,7 +100,18 @@ public class CompanyServiceImpl implements CompanyService {
         if (!companyRepository.existsById(companyUpdateRequestDTO.getId())) {
             throw new ResourceNotFoundException("Company with ID " + companyUpdateRequestDTO.getId() + ACTION_1);
         }
-        Company company = modelMapper.map(companyUpdateRequestDTO, Company.class);
+        Company company = companyRepository.findById(companyUpdateRequestDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Company with ID " + companyUpdateRequestDTO.getId() + ACTION_1));
+        company.setName(companyUpdateRequestDTO.getName());
+        company.setLocation(companyUpdateRequestDTO.getLocation());
+        company.setCategory(companyUpdateRequestDTO.getCategory());
+        company.setSlogan(companyUpdateRequestDTO.getSlogan());
+        company.setDescription(companyUpdateRequestDTO.getDescription());
+        company.setSize(companyUpdateRequestDTO.getSize());
+        company.setMobile(companyUpdateRequestDTO.getMobile());
+        company.setWebsite(companyUpdateRequestDTO.getWebsite());
+        company.setRequirements(companyUpdateRequestDTO.getRequirements());
+
         updateProducts(companyUpdateRequestDTO, company);
         updateClients(companyUpdateRequestDTO, company);
         updateTechnologies(companyUpdateRequestDTO, company);

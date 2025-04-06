@@ -8,6 +8,7 @@ import {
   Mail,
   Settings,
   LogOut,
+    Bell
 } from "lucide-react";
 import { AuthContext } from "../../../api/AuthProvider";
 

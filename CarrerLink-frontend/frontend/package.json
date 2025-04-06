@@ -21,6 +21,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.1.1",
     "react-scripts": "^5.0.1",
+    "recharts": "^2.15.2",
     "sockjs-client": "^1.6.1",
     "sweetalert2": "^11.17.2"
   },
