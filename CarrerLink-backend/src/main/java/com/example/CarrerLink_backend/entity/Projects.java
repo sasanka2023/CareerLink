@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +27,10 @@ public class Projects {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
+
+    @ManyToOne
+    @JoinColumn(name= "cv_id")
+
+    private CV cv;
 
 }

@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
-import { User, Briefcase, GraduationCap, Heart, Wrench, FolderGit2, Award, Coffee, FileText, FileDown, Plus, Trash2 } from 'lucide-react';
+import React, {useEffect,useContext, useState, useRef} from 'react';
+ // Assuming you have a toast component
+import axiosInstance from '../../../api/AxiosInstance'; // Your configured axios instance
+
+import { useNavigate } from 'react-router-dom';
+import {
+    User,
+    Briefcase,
+    GraduationCap,
+    Heart,
+    Wrench,
+    FolderGit2,
+    Award,
+    Coffee,
+    FileText,
+    FileDown,
+    Plus,
+    Trash2
+} from 'lucide-react';
 import StudentDashboardLayout from "./StudentDashboardLayout";
 import html2pdf from 'html2pdf.js';
-import { useRef } from 'react';
-
+import axios from 'axios'
+import { Save } from 'lucide-react';
+import {AuthContext} from "../../../api/AuthProvider";
+import {SaveCV} from "../../../api/StudentDetailsApi";
+import * as sweetalert2 from "sweetalert2";
 
 function App() {
+    const { token } = useContext(AuthContext);
     const [activeSection, setActiveSection] = useState('personal-info');
+    const [studentId, setStudent] = useState(null);
     const [formData, setFormData] = useState({
         personalInfo: {
             fullName: '',
@@ -37,7 +59,46 @@ function App() {
     const [techCategory, setTechCategory] = useState('frontend');
     const [newTech, setNewTech] = useState('');
     const previewRef = useRef();
-
+    const navigate = useNavigate();
+    // Prepare API payload
+    const prepareCVData = (formData) => ({
+        name: formData.personalInfo.fullName,
+        title: formData.personalInfo.title,
+        email: formData.personalInfo.email,
+        mobile: formData.personalInfo.phone,
+        address: formData.personalInfo.location,
+        githubLink: formData.personalInfo.github,
+        linkedinLink: formData.personalInfo.linkedin,
+        summary: formData.personalInfo.summary,
+        skills: transformTechnicalSkills(formData.technicalSkills),
+        projects: formData.projects.map(proj => ({
+            projectName: proj.name,
+            projectDescription: proj.description,
+            githubLink: proj.link
+        })),
+        experiences: formData.experience.map(exp => ({
+            jobTitle: exp.title,
+            companyName: exp.company,
+            startDate: exp.startDate,
+            endDate: exp.current ? null : exp.endDate,
+            description: exp.description
+        })),
+        educations: formData.education.map(edu => ({
+            degree: edu.degree,
+            institution: edu.institution,
+            location: edu.location,
+            startDate: edu.startDate,
+            endDate: edu.endDate,
+            gpa: edu.gpa,
+            description: edu.description
+        })),
+        certifications: formData.certificates.map(cert => ({
+            name: cert.name,
+            organization: cert.issuer,
+            issueDate: cert.date,
+            certificationLink: cert.link
+        }))
+    });
 
     const sections = [
         { id: 'personal-info', title: 'Personal Info', icon: <User className="w-5 h-5" /> },
@@ -51,6 +112,42 @@ function App() {
         //{ id: 'references', title: 'References', icon: <FileText className="w-5 h-5" /> },
     ];
 
+
+
+    useEffect(() => {
+        const fetchStudent = async () => {
+            try {
+                const studentId = extractStudentIdFromToken(token);
+                setStudent(studentId)
+                // const response = await axios.get(`/api/students/${studentId}`, {
+                //     headers: {
+                //         Authorization: `Bearer ${token}`,
+                //     },
+                // });
+                // setStudent(response.data);
+            } catch (error) {
+                console.error("Error fetching student data:", error);
+            }
+        };
+
+        if (token) {
+            fetchStudent();
+        }
+    }, [token]);
+    const extractStudentIdFromToken = (token) => {
+        try {
+            const decodedToken = JSON.parse(atob(token.split(".")[1]));
+            return decodedToken.userId; // Adjust based on your token structure
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            return null;
+        }
+    };
+    const transformTechnicalSkills = (technicalSkills) => {
+        return Object.entries(technicalSkills).flatMap(([category, skills]) =>
+            skills.map(skill => ({ techSkill: skill, category }))
+        );
+    };
     const handlePersonalInfoChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -279,6 +376,36 @@ function App() {
                 extra.id === id ? { ...extra, [field]: value } : extra
             ),
         }));
+    };
+
+    const handleSaveCV = async () => {
+        if (!studentId) {
+            console.log('Student ID not found');
+            return;
+        }
+
+
+        try {
+            const cvData = prepareCVData(formData);
+            console.log('CV Data:', cvData);
+            const response =await SaveCV(studentId,cvData);
+
+            if (response.data.success) {
+                sweetalert2.fire({
+                    title: 'Success',
+                    text: 'CV saved successfully!',
+                    icon: 'success',
+
+                })
+            } else {
+                throw new Error(response.data.message || 'Failed to save CV');
+            }
+        } catch (error) {
+            console.error('CV Save Error:', error);
+
+
+    };
+        // await axios.put(`/api/cv?studentId=${studentId}`, cvData);
     };
 
     const addReference = () => {
@@ -1152,9 +1279,10 @@ function App() {
                                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
                             >
                                 Back
-                </button>
-            </div>
-        </div>
+                            </button>
+
+                        </div>
+                    </div>
     );
 
             default:
@@ -1166,6 +1294,18 @@ function App() {
         <StudentDashboardLayout>
             <div className="relative flex h-screen">
 
+                <button
+                    onClick={handleSaveCV}
+                    className="absolute top-4 right-40 z-10 flex items-center justify-center px-4 py-2 bg-white text-blue-900 rounded-lg hover:bg-blue-50 transition-colors shadow">
+                    <Save className="w-5 h-5 mr-2"/>
+                    Save CV
+                </button>
+                <button
+                    onClick={handleSaveCV}
+                    className="absolute top-4 right-40 z-10 flex items-center justify-center px-4 py-2 bg-white text-blue-900 rounded-lg hover:bg-blue-50 transition-colors shadow">
+                    <Save className="w-5 h-5 mr-2"/>
+                    Save CV
+                </button>
                 <button
                     onClick={handleDownloadPDF}
                     className="absolute top-4 right-4 z-10 flex items-center justify-center px-4 py-2 bg-white text-blue-900 rounded-lg hover:bg-blue-50 transition-colors shadow">
@@ -1186,6 +1326,7 @@ function App() {
                         </div>
 
                     </div>
+
 
                     {/* Preview Area */}
                     <div ref={previewRef} className="w-[800px] bg-gray-50 border-l p-8 overflow-y-auto">
@@ -1365,7 +1506,7 @@ function App() {
                 {tech}
               </span>
                                                     ))}
-                </div>
+                                                </div>
                                             )}
                                         </div>
                                     ))}
@@ -1395,7 +1536,7 @@ function App() {
                                                 {cert.date && <p className="text-sm text-gray-500">{cert.date}</p>}
                                             </div>
                                         </div>
-                    ))}
+                                    ))}
                                 </section>
                             )}
 
@@ -1429,9 +1570,9 @@ function App() {
                                 </section>
                             )}
                             {/* Other sections will be added here */}
+                        </div>
+                    </div>
                 </div>
-                </div>
-            </div>
             </div>
         </StudentDashboardLayout>
     );

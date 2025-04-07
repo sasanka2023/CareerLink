@@ -9,6 +9,7 @@ import com.example.CarrerLink_backend.entity.UserEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StudentService {
     String saveStudent(StudentSaveRequestDTO studentSaveRequestDTO, UserEntity user);
@@ -34,4 +35,10 @@ public interface StudentService {
     StudentgetResponseDTO getStudentByUserName(String userName);
 
     StudentgetResponseDTO getStudentByUserId(int userId);
+
+
+
+    String approveStudent(int studentId);
+
+    List<StudentgetResponseDTO> getAllStudents();
 }

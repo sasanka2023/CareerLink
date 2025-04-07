@@ -200,5 +200,19 @@ public class StudentController {
         return ResponseEntity.ok(new StandardResponse(true,"Recommended Jobs fetched successfully",results));
     }
 
+    @GetMapping("/getall")
+    public ResponseEntity<StandardResponse> getAllStudents(){
+        List<StudentgetResponseDTO> students = studentService.getAllStudents();
+        return ResponseEntity.ok(new StandardResponse(true, "Students fetched successfully", students));
+
+    }
+
+    @PutMapping("approve/{studentId}")
+    public ResponseEntity<StandardResponse> approveStudent(@PathVariable int studentId) {
+        String message = studentService.approveStudent(studentId);
+        return ResponseEntity.ok(new StandardResponse(true, "Student approved successfully", message));
+
+    }
+
 
 }

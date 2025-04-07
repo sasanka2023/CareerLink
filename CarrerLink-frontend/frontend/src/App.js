@@ -32,6 +32,7 @@ import AdminProtectedRoute from "./api/AdminProtectedRoute";
 import CompanyEditProfile from "./components/Dashboard/CompanyDashboard/CompanyEditProfile";
 import CompanyDashboardLayout from "./components/Dashboard/CompanyDashboard/CompanyDashboardLayout";
 import RecommendedCourses from "./components/Dashboard/StudentDashboard/RecommendedCourses";
+import ViewCV  from "./components/Dashboard/StudentDashboard/ViewCV";
 const Layout = () => {
   return (
     <>
@@ -117,6 +118,7 @@ const router = createBrowserRouter([
 
   { path: "/editprofile", element: <EditProfile /> },
   { path: "student-dashboard/cv", element: <StudentCV /> },
+    {path: "/student-dashboard/viewcv/:studentId", element: <ViewCV />},
 ]);
 
 function App() {

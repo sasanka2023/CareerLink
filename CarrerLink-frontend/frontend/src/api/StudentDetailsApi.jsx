@@ -123,10 +123,72 @@ const getProjectRecommendations = async (token, studentId) => {
   }
 };
 
+const SaveCV = async (studentId,transformedCVData) => {
+  try {
+    const response = await axiosInstance.put(`/cv?studentId=${studentId}`, transformedCVData);
+    console.log('Save successful:', response.data);
+  } catch (error) {
+    console.error('Save failed:', error);
+  }
+};
+const getCV = async (studentId) => {
+  try {
+    const response = await axiosInstance.get(`/cv?studentId=${studentId}`);
+    console.log('CV fetched successfully:', response.data);
+    return response.data;
+
+  } catch (error) {
+    console.error('Error fetching CV:', error);
+    return { success: false };
+  }
+};
+
+const getAllStudents = async () => {
+  try {
+    const response = await axiosInstance.get("/students/getall");
+    console.log('Students fetched successfully:', response.data);
+
+    if (!response.data?.success) {
+      throw new Error(response.data?.message || "Failed to fetch students");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching students:", {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    });
+    return { success: false, message: error.message };
+  }
+};
+
+const approveStudent = async (studentId) => {
+  try {
+    const response = await axiosInstance.put(`/students/approve/${studentId}`);
+    console.log('Student approval response:', response.data);
+
+    if (!response.data?.success) {
+      throw new Error(response.data?.message || "Approval failed");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Approval error:", {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    });
+    return { success: false, message: error.message };
+  }
+};
+
 export {
   getStudentByUsername,
   getJobRecommendations,
   applyForJob,
   getRecommendedCourses,
   getProjectRecommendations,
+  SaveCV,
+  getCV,
+  getAllStudents,
+  approveStudent
 };

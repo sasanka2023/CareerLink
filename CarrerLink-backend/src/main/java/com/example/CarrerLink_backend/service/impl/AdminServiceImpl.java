@@ -33,7 +33,7 @@ public class AdminServiceImpl implements AdminService {
     private final ModelMapper modelMapper;
     private final AdminRepo adminRepo;
     private final UserRepo userRepo;
-
+    private final EmailService emailService;
 
     @Override
     public String saveTechnology(TechnologyDTO technologyDTO) {
@@ -147,6 +147,12 @@ public class AdminServiceImpl implements AdminService {
         // Only update the status field (or any other fields you want to change)
         admin.setStatus(adminGetResponseDTO.isStatus());
         adminRepo.save(admin);
+        try {
+            emailService.sendApprovalEmail(admin.getEmail(), admin.getFullName());
+        } catch (Exception e) {
+            // Log error but don't throw (approval succeeded, email failed)
+            System.err.println("Email sending failed: " + e.getMessage());
+        }
         return "admin "+admin.getFullName()+" approved successfully";
 
 

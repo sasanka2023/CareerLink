@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { getAllApplicants, getAllJobsByCompany } from "../../../api/JobDetailsApi";
 import { ApproveJob } from "../../../api/CompanyDetailsGetApi";
 import { AuthContext } from "../../../api/AuthProvider";
-
+import { useNavigate } from 'react-router-dom';
 function Applications({ applicants, company }) {
   const { token} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -12,7 +12,7 @@ function Applications({ applicants, company }) {
   const [students, setStudents] = useState([]);
   const [interviewDates, setInterviewDates] = useState({});
   const [jobId,setJobId] = useState(0);
-
+  const navigate = useNavigate();
   useEffect(() => {
     let isMounted = true;
     const fetchCompanyData = async () => {
@@ -191,7 +191,9 @@ function Applications({ applicants, company }) {
                 </div>
 
                 <div className="flex gap-2 w-[280px] justify-end">
-                  <button className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors">
+                  <button
+                      onClick={() => navigate(`/student-dashboard/viewcv/${applicant.studentId}`)}
+                      className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors">
                     View CV
                   </button>
                   <button

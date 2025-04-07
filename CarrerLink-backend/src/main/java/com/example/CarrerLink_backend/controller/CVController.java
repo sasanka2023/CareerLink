@@ -2,6 +2,8 @@ package com.example.CarrerLink_backend.controller;
 
 import com.example.CarrerLink_backend.dto.request.CVUpdateRequestDTO;
 import com.example.CarrerLink_backend.dto.response.CVgetResponseDTO;
+import com.example.CarrerLink_backend.entity.Student;
+import com.example.CarrerLink_backend.repo.StudentRepo;
 import com.example.CarrerLink_backend.service.CVService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class CVController {
 
     private final CVService cvService;
+    private final StudentRepo studentRepo;
+
 
     @Operation(summary = "Update student's CV")
     @ApiResponses(value = {
@@ -28,7 +32,11 @@ public class CVController {
     })
     @PutMapping()
     public ResponseEntity<StandardResponse> updateCV(@RequestParam int studentId, @RequestBody CVUpdateRequestDTO cvUpdateRequestDTO) {
-        String updatedCV = cvService.updateCV(studentId, cvUpdateRequestDTO);
+        Student student = studentRepo.findByUser_Id(studentId).orElseThrow(
+                () -> new RuntimeException("Student not found with ID: " + studentId)
+        );
+
+        String updatedCV = cvService.updateCV(student.getStudentId(), cvUpdateRequestDTO);
         return ResponseEntity.ok(new StandardResponse(true, "CV updated successfully", updatedCV));
     }
 
@@ -41,7 +49,10 @@ public class CVController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping()
-    public ResponseEntity<StandardResponse> getCV(@RequestParam int studentId){
+    public ResponseEntity<StandardResponse> getCV(@RequestParam int studentId) {
+//        Student student = studentRepo.findByUser_Id(userId).orElseThrow(
+//                () -> new RuntimeException("Student not found with ID: " + userId)
+//        );
         CVgetResponseDTO cv = cvService.getCV(studentId);
         return ResponseEntity.ok(new StandardResponse(true,"CV fetched successfully",cv));
     }
