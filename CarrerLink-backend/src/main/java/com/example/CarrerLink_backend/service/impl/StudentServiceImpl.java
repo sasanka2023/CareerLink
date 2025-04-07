@@ -39,6 +39,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
+
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
     private final ModelMapper modelMapper;
@@ -299,6 +300,24 @@ private final AmazonS3 amazonS3;
         responseDTO.setProfileImageUrl(profileImageUrl.orElse("default-image-url")); // R
 
         return responseDTO;
+    }
+
+    @Override
+    public String approveStudent(int studentId) {
+
+        Student student = studentRepo.findById(studentId).orElseThrow(
+                () -> new RuntimeException("Student not found with ID: " + studentId)
+        );
+        student.setApproved(true);
+        studentRepo.save(student);
+        return "Student with ID: " + studentId + " approved successfully";
+    }
+
+    @Override
+    public List<StudentgetResponseDTO> getAllStudents() {
+        return studentRepo.findAll().stream()
+                .map(student -> modelMapper.map(student, StudentgetResponseDTO.class))
+                .toList();
     }
 
     public Optional<String> getUrlByUserId(int userId){

@@ -66,4 +66,5 @@ public class Company {
     private UserEntity user;
 
 
+
 }

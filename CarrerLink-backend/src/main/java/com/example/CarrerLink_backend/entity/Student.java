@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -59,6 +60,7 @@ public class Student {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cv_id")
+
     private CV cv;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
@@ -75,6 +77,8 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    private boolean isApproved;
 
 
 

@@ -15,6 +15,7 @@ import com.example.CarrerLink_backend.repo.RoleRepo;
 import com.example.CarrerLink_backend.repo.UserRepo;
 import com.example.CarrerLink_backend.service.AdminService;
 import com.example.CarrerLink_backend.service.CompanyService;
+import com.example.CarrerLink_backend.service.StudentService;
 import lombok.AllArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -40,7 +41,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final RoleRepo roleRepo;
-    private final StudentServiceImpl studentService;
+    private final StudentService studentService;
     private final CompanyService companyService;
     private final AdminService adminService;
 

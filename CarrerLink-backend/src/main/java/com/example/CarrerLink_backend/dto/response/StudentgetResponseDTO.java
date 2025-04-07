@@ -27,7 +27,8 @@ public class StudentgetResponseDTO {
     private String degree;
     private List<ReviewDTO> reviews;
     private List<ProjectsDTO> projects;
-    private String profileImageUrl; // Add this field
+    private String profileImageUrl;
+    private boolean isApproved;// Add this field
 
 
 }

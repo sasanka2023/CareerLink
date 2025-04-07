@@ -18,7 +18,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import JobFieldStudentChart from "./JobFieldStudentChart";
 import TechnologyStudentChart from "./TechnologyStudentChart";
-
+import StudentList  from "./StudentList";
 
 
 const extractRoleFromToken = (token) => {
@@ -290,7 +290,7 @@ const AdminDashboard = () => {
 
                     {activeTab === 'jobs' && <JobFieldManagement />}
 
-
+                    {activeTab === 'cvs' && <StudentList/>}
                     {activeTab === 'tests' && <TestManager initialTests={tests} />}
                     {activeTab === 'Courses' && <Course />}
 

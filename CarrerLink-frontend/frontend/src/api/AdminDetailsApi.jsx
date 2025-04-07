@@ -174,4 +174,6 @@ const getAllCoursesUsingFilters = async (requiredSkill, skillLevel) => {
 
 
 
+
+
 export { getAdminByUserId,saveTechnology,getAllCourses, saveJobField,getAdminList,approveAdmin,getAllTechnologies,getAllJobFields,getAllCoursesUsingFilters };

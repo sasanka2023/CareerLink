@@ -9,6 +9,7 @@ import com.example.CarrerLink_backend.repo.JobFieldRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
 import com.example.CarrerLink_backend.service.AdminService;
 import com.example.CarrerLink_backend.service.impl.CountBroadcastService;
+import com.example.CarrerLink_backend.service.impl.EmailService;
 import com.example.CarrerLink_backend.service.impl.RequiredCoursesServiceIMPL;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,12 +30,13 @@ import java.util.Map;
 @CrossOrigin("http://localhost:3000")
 @AllArgsConstructor
 public class AdminController {
-    private AdminService adminService;
+    private final AdminService adminService;
     private final CountBroadcastService countBroadcastService;
-    @Autowired
-    private RequiredCoursesServiceIMPL requiredCoursesServiceIMPL;
+
+    private final RequiredCoursesServiceIMPL requiredCoursesServiceIMPL;
     private final JobFieldRepo jobFieldRepo;
     private final TechnologyRepo technologyRepo;
+    private final EmailService emailService;
 
     @PostMapping("save")
     public ResponseEntity<StandardResponse> saveAdmin(@RequestBody AdminSaveRequestDTO adminSaveRequestDTO, UserEntity userdata){
