@@ -21,10 +21,11 @@ const TestManager = () => {
         correctAnswer: '',
         marks: ''
     });
+    const [editingQuestionId, setEditingQuestionId] = useState(null); // New state for editing questions
     const [selectedTest, setSelectedTest] = useState(null);
 
     const API_URL = 'http://localhost:8091/api/tests';
-    const token = localStorage.getItem('token'); // Adjust based on your auth setup
+    const token = localStorage.getItem('token');
 
     const testOptions = [
         { value: 'OOP', description: 'Object-Oriented Programming concepts and principles' },
@@ -38,7 +39,6 @@ const TestManager = () => {
     useEffect(() => {
         if (!token) {
             Swal.fire('Error', 'Please log in to access tests', 'error');
-            // Redirect to login page if needed, e.g., window.location.href = '/login';
             return;
         }
         const fetchTests = async () => {
@@ -99,7 +99,7 @@ const TestManager = () => {
                     totalMarks: parseInt(newTest.totalMarks),
                     questions: newTest.questions.map(q => ({
                         ...q,
-                        marks: parseInt(q.marks) // Ensure marks is an integer
+                        marks: parseInt(q.marks)
                     }))
                 }, {
                     headers: { Authorization: `Bearer ${token}` }
@@ -129,7 +129,7 @@ const TestManager = () => {
                 totalMarks: parseInt(newTest.totalMarks),
                 questions: newTest.questions.map(q => ({
                     ...q,
-                    marks: parseInt(q.marks) // Ensure marks is an integer
+                    marks: parseInt(q.marks)
                 }))
             }, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -178,14 +178,33 @@ const TestManager = () => {
 
     const handleAddQuestion = () => {
         if (newQuestion.text && newQuestion.options.every(opt => opt) && newQuestion.correctAnswer && newQuestion.marks) {
-            setNewTest(prev => ({
-                ...prev,
-                questions: [...(prev.questions || []), { ...newQuestion, tempId: Date.now(), marks: parseInt(newQuestion.marks) }]
-            }));
+            if (editingQuestionId) {
+                setNewTest(prev => ({
+                    ...prev,
+                    questions: prev.questions.map(q =>
+                        (q.questionId || q.tempId) === editingQuestionId
+                            ? { ...newQuestion, tempId: q.tempId || Date.now(), marks: parseInt(newQuestion.marks) }
+                            : q
+                    )
+                }));
+                setEditingQuestionId(null);
+            } else {
+                setNewTest(prev => ({
+                    ...prev,
+                    questions: [...(prev.questions || []), { ...newQuestion, tempId: Date.now(), marks: parseInt(newQuestion.marks) }]
+                }));
+            }
             resetQuestionForm();
+            setShowQuestionForm(false);
         } else {
             Swal.fire('Error', 'Please complete all question fields, including marks', 'error');
         }
+    };
+
+    const handleEditQuestion = (question) => {
+        setEditingQuestionId(question.questionId || question.tempId);
+        setNewQuestion({ ...question });
+        setShowQuestionForm(true);
     };
 
     const handleDeleteQuestion = (key) => {
@@ -214,6 +233,7 @@ const TestManager = () => {
             correctAnswer: '',
             marks: ''
         });
+        setEditingQuestionId(null);
     };
 
     const showTestDetails = (test) => {
@@ -225,19 +245,19 @@ const TestManager = () => {
     };
 
     return (
-        <div className="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen p-8">
-            <div className="bg-white rounded-2xl shadow-xl p-8 max-w-5xl mx-auto border border-gray-200">
-                <h2 className="text-4xl font-extrabold text-gray-900 mb-10 tracking-tight">Test Management</h2>
+        <div className="bg-gradient-to-br from-indigo-50 via-gray-100 to-purple-50 min-h-screen p-10">
+            <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-6xl mx-auto border border-gray-100 transform transition-all duration-300 hover:shadow-3xl">
+                <h2 className="text-5xl font-extrabold text-indigo-900 mb-12 tracking-wide">Test Management Dashboard</h2>
 
-                <div className="space-y-8 bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-100">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-10 bg-gradient-to-r from-gray-50 to-indigo-50 p-8 rounded-2xl shadow-inner border border-indigo-100">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Test Title</label>
+                            <label className="block text-sm font-bold text-indigo-800 mb-3">Test Title</label>
                             <select
                                 name="title"
                                 value={newTest.title}
                                 onChange={handleInputChange}
-                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm transition-all duration-200"
+                                className="w-full p-4 border border-indigo-200 rounded-xl focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 bg-white shadow-md transition-all duration-300 hover:border-indigo-400"
                             >
                                 <option value="">Select a Test</option>
                                 {testOptions.map(option => (
@@ -246,124 +266,132 @@ const TestManager = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <label className="block text-sm font-bold text-indigo-800 mb-3">Description</label>
                             <input
                                 type="text"
                                 name="description"
                                 value={newTest.description}
                                 readOnly
-                                className="w-full p-3 border border-gray-300 rounded-xl bg-gray-100 shadow-sm"
+                                className="w-full p-4 border border-indigo-200 rounded-xl bg-indigo-50 shadow-md text-gray-600"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Duration (minutes)</label>
+                            <label className="block text-sm font-bold text-indigo-800 mb-3">Duration (minutes)</label>
                             <input
                                 type="number"
                                 name="durationMinutes"
                                 value={newTest.durationMinutes}
                                 onChange={handleInputChange}
                                 placeholder="Duration (minutes)"
-                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm transition-all duration-200"
+                                className="w-full p-4 border border-indigo-200 rounded-xl focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 bg-white shadow-md transition-all duration-300 hover:border-indigo-400"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Total Marks</label>
+                            <label className="block text-sm font-bold text-indigo-800 mb-3">Total Marks</label>
                             <input
                                 type="number"
                                 name="totalMarks"
                                 value={newTest.totalMarks}
                                 onChange={handleInputChange}
                                 placeholder="Total Marks"
-                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm transition-all duration-200"
+                                className="w-full p-4 border border-indigo-200 rounded-xl focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 bg-white shadow-md transition-all duration-300 hover:border-indigo-400"
                             />
                         </div>
                     </div>
 
-                    <div className="mt-6">
+                    <div className="mt-8">
                         <button
                             onClick={() => setShowQuestionForm(true)}
-                            className="flex items-center px-5 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors duration-200 shadow-md"
+                            className="flex items-center px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                         >
-                            <Plus size={20} className="mr-2" /> Add Question
+                            <Plus size={22} className="mr-2" /> Add New Question
                         </button>
 
                         {showQuestionForm && (
-                            <div className="mt-6 p-6 bg-white rounded-xl shadow-md border border-gray-200">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-xl font-semibold text-gray-800">New Question</h3>
-                                    <button onClick={() => setShowQuestionForm(false)} className="text-gray-500 hover:text-gray-700">
-                                        <X size={24} />
+                            <div className="mt-8 p-8 bg-white rounded-2xl shadow-xl border border-indigo-100 animate-fade-in">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h3 className="text-2xl font-bold text-indigo-900">{editingQuestionId ? 'Edit Question' : 'New Question'}</h3>
+                                    <button onClick={() => { setShowQuestionForm(false); resetQuestionForm(); }} className="text-indigo-500 hover:text-indigo-700 transition-colors duration-200">
+                                        <X size={26} />
                                     </button>
                                 </div>
-                                <div className="space-y-4">
+                                <div className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Question Text</label>
+                                        <label className="block text-sm font-bold text-indigo-800 mb-3">Question Text</label>
                                         <input
                                             type="text"
                                             name="text"
                                             value={newQuestion.text}
                                             onChange={handleQuestionChange}
-                                            placeholder="Question Text"
-                                            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm"
+                                            placeholder="Enter question text"
+                                            className="w-full p-4 border border-indigo-200 rounded-xl focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 bg-white shadow-md transition-all duration-300"
                                         />
                                     </div>
                                     {newQuestion.options.map((option, index) => (
                                         <div key={index}>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">Option {index + 1}</label>
+                                            <label className="block text-sm font-bold text-indigo-800 mb-3">Option {index + 1}</label>
                                             <input
                                                 type="text"
                                                 name={`option-${index}`}
                                                 value={option}
                                                 onChange={(e) => handleQuestionChange(e, index)}
                                                 placeholder={`Option ${index + 1}`}
-                                                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm"
+                                                className="w-full p-4 border border-indigo-200 rounded-xl focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 bg-white shadow-md transition-all duration-300"
                                             />
                                         </div>
                                     ))}
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Correct Answer</label>
+                                        <label className="block text-sm font-bold text-indigo-800 mb-3">Correct Answer</label>
                                         <input
                                             type="text"
                                             name="correctAnswer"
                                             value={newQuestion.correctAnswer}
                                             onChange={handleQuestionChange}
                                             placeholder="Correct Answer"
-                                            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm"
+                                            className="w-full p-4 border border-indigo-200 rounded-xl focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 bg-white shadow-md transition-all duration-300"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-gray-700 mb-2">Marks</label>
+                                        <label className="block text-sm font-bold text-indigo-800 mb-3">Marks</label>
                                         <input
                                             type="number"
                                             name="marks"
                                             value={newQuestion.marks}
                                             onChange={handleQuestionChange}
                                             placeholder="Marks"
-                                            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white shadow-sm"
+                                            className="w-full p-4 border border-indigo-200 rounded-xl focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 bg-white shadow-md transition-all duration-300"
                                         />
                                     </div>
                                     <button
                                         onClick={handleAddQuestion}
-                                        className="w-full px-5 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors duration-200 shadow-md text-lg font-semibold"
+                                        className="w-full px-6 py-4 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg font-semibold"
                                     >
-                                        Add Question
+                                        {editingQuestionId ? 'Update Question' : 'Add Question'}
                                     </button>
                                 </div>
                             </div>
                         )}
 
                         {(newTest.questions || []).length > 0 && (
-                            <div className="mt-6">
-                                <h4 className="text-xl font-semibold text-gray-800 mb-4">Questions</h4>
+                            <div className="mt-8">
+                                <h4 className="text-2xl font-bold text-indigo-900 mb-6">Questions</h4>
                                 {(newTest.questions || []).map((question, index) => (
-                                    <div key={question.questionId || question.tempId || index} className="p-4 bg-gray-100 rounded-xl mb-3 flex justify-between items-center shadow-sm hover:bg-gray-200 transition-colors duration-150">
-                                        <span className="text-gray-700 font-medium">{question.text} ({question.marks} marks)</span>
-                                        <button
-                                            onClick={() => handleDeleteQuestion(question.questionId || question.tempId || index)}
-                                            className="text-red-600 hover:text-red-800 transition-colors duration-150"
-                                        >
-                                            <Trash2 size={20} />
-                                        </button>
+                                    <div key={question.questionId || question.tempId || index} className="p-5 bg-indigo-50 rounded-xl mb-4 flex justify-between items-center shadow-md hover:bg-indigo-100 transition-all duration-200">
+                                        <span className="text-indigo-800 font-semibold">{question.text} <span className="text-indigo-600">({question.marks} marks)</span></span>
+                                        <div className="flex gap-3">
+                                            <button
+                                                onClick={() => handleEditQuestion(question)}
+                                                className="p-2 text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                                            >
+                                                <Edit size={22} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteQuestion(question.questionId || question.tempId || index)}
+                                                className="p-2 text-red-600 hover:text-red-800 transition-colors duration-200"
+                                            >
+                                                <Trash2 size={22} />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -372,44 +400,44 @@ const TestManager = () => {
 
                     <button
                         onClick={editingId ? handleUpdateTest : handleAddTest}
-                        className="w-full mt-6 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors duration-200 shadow-lg text-lg font-semibold flex items-center justify-center"
+                        className="w-full mt-8 px-8 py-4 bg-indigo-700 text-white rounded-xl hover:bg-indigo-800 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-xl font-bold flex items-center justify-center"
                     >
-                        <Plus size={24} className="mr-2" /> {editingId ? 'Update Test' : 'Create Test'}
+                        <Plus size={28} className="mr-3" /> {editingId ? 'Update Test' : 'Create Test'}
                     </button>
                 </div>
 
-                <div className="mt-10">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-6">Scheduled Tests</h3>
+                <div className="mt-12">
+                    <h3 className="text-3xl font-bold text-indigo-900 mb-8">Scheduled Tests</h3>
                     {tests.length === 0 ? (
-                        <p className="text-gray-500 text-lg">No tests scheduled yet.</p>
+                        <p className="text-indigo-600 text-lg font-medium">No tests scheduled yet.</p>
                     ) : (
-                        <div className="grid grid-cols-1 gap-6">
+                        <div className="grid grid-cols-1 gap-8">
                             {tests.map(test => (
                                 <div
                                     key={test.testId}
-                                    className="p-6 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-xl shadow-md flex justify-between items-center hover:shadow-xl transition-all duration-200 cursor-pointer transform hover:-translate-y-1"
+                                    className="p-8 bg-gradient-to-r from-indigo-200 to-purple-200 rounded-2xl shadow-lg flex justify-between items-center hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2"
                                     onClick={() => showTestDetails(test)}
                                 >
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-800">{test.title}</h3>
-                                        <p className="text-gray-600 mt-1">{test.description}</p>
-                                        <p className="text-gray-600 mt-1">
+                                        <h3 className="text-2xl font-semibold text-indigo-900">{test.title}</h3>
+                                        <p className="text-indigo-700 mt-2">{test.description}</p>
+                                        <p className="text-indigo-700 mt-2">
                                             {test.durationMinutes} mins | {test.totalMarks} marks
                                         </p>
-                                        <p className="text-gray-600 mt-1">Questions: {(test.questions || []).length}</p>
+                                        <p className="text-indigo-700 mt-2">Questions: {(test.questions || []).length}</p>
                                     </div>
-                                    <div className="flex gap-4">
+                                    <div className="flex gap-5">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); handleEditTest(test); }}
-                                            className="p-2 text-blue-600 hover:text-blue-800 transition-colors duration-150"
+                                            className="p-3 text-blue-700 hover:text-blue-900 transition-colors duration-200"
                                         >
-                                            <Edit size={24} />
+                                            <Edit size={26} />
                                         </button>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); handleDeleteTest(test.testId); }}
-                                            className="p-2 text-red-600 hover:text-red-800 transition-colors duration-150"
+                                            className="p-3 text-red-700 hover:text-red-900 transition-colors duration-200"
                                         >
-                                            <Trash2 size={24} />
+                                            <Trash2 size={26} />
                                         </button>
                                     </div>
                                 </div>
@@ -420,36 +448,36 @@ const TestManager = () => {
             </div>
 
             {selectedTest && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto border border-gray-200">
-                        <div className="flex justify-between items-center mb-6">
-                            <h4 className="text-2xl font-bold text-gray-800">Test Details</h4>
-                            <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
-                                <X size={28} />
+                <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 animate-fade-in">
+                    <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-3xl w-full mx-6 max-h-[85vh] overflow-y-auto border border-indigo-100 transform transition-all duration-300 scale-95 hover:scale-100">
+                        <div className="flex justify-between items-center mb-8">
+                            <h4 className="text-3xl font-bold text-indigo-900">Test Details</h4>
+                            <button onClick={closeModal} className="text-indigo-500 hover:text-indigo-700 transition-colors duration-200">
+                                <X size={30} />
                             </button>
                         </div>
-                        <div className="space-y-4">
-                            <p><strong className="text-gray-700">Title:</strong> <span className="text-gray-600">{selectedTest.title}</span></p>
-                            <p><strong className="text-gray-700">Description:</strong> <span className="text-gray-600">{selectedTest.description}</span></p>
-                            <p><strong className="text-gray-700">Duration:</strong> <span className="text-gray-600">{selectedTest.durationMinutes} minutes</span></p>
-                            <p><strong className="text-gray-700">Total Marks:</strong> <span className="text-gray-600">{selectedTest.totalMarks}</span></p>
-                            <h5 className="text-lg font-semibold text-gray-800 mt-6 mb-3">Questions</h5>
+                        <div className="space-y-6">
+                            <p><strong className="text-indigo-800 font-semibold">Title:</strong> <span className="text-indigo-600">{selectedTest.title}</span></p>
+                            <p><strong className="text-indigo-800 font-semibold">Description:</strong> <span className="text-indigo-600">{selectedTest.description}</span></p>
+                            <p><strong className="text-indigo-800 font-semibold">Duration:</strong> <span className="text-indigo-600">{selectedTest.durationMinutes} minutes</span></p>
+                            <p><strong className="text-indigo-800 font-semibold">Total Marks:</strong> <span className="text-indigo-600">{selectedTest.totalMarks}</span></p>
+                            <h5 className="text-xl font-semibold text-indigo-900 mt-8 mb-4">Questions</h5>
                             {selectedTest.questions.length > 0 ? (
-                                <ul className="space-y-6">
+                                <ul className="space-y-8">
                                     {selectedTest.questions.map((q, index) => (
-                                        <li key={q.questionId} className="bg-gray-50 p-4 rounded-xl shadow-sm">
-                                            <p className="font-medium text-gray-800"><strong>Q{index + 1}:</strong> {q.text} ({q.marks} marks)</p>
-                                            <ul className="mt-2 space-y-1 pl-5 list-disc text-gray-600">
+                                        <li key={q.questionId} className="bg-indigo-50 p-6 rounded-xl shadow-md transition-all duration-200 hover:bg-indigo-100">
+                                            <p className="font-semibold text-indigo-800"><strong>Q{index + 1}:</strong> {q.text} <span className="text-indigo-600">({q.marks} marks)</span></p>
+                                            <ul className="mt-3 space-y-2 pl-6 list-disc text-indigo-700">
                                                 {q.options.map((opt, optIndex) => (
                                                     <li key={optIndex}>{opt}</li>
                                                 ))}
                                             </ul>
-                                            <p className="mt-2"><strong className="text-gray-700">Correct Answer:</strong> <span className="text-green-600">{q.correctAnswer}</span></p>
+                                            <p className="mt-3"><strong className="text-indigo-800">Correct Answer:</strong> <span className="text-green-600 font-medium">{q.correctAnswer}</span></p>
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <p className="text-gray-500">No questions added yet.</p>
+                                <p className="text-indigo-600 font-medium">No questions added yet.</p>
                             )}
                         </div>
                     </div>
