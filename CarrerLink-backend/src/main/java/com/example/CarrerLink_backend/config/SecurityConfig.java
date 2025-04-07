@@ -70,9 +70,19 @@ public class SecurityConfig {
                         // Student role endpoints
                         .requestMatchers("GET", "/api/students/**").hasRole("STUDENT")
                         .requestMatchers("/api/students/**").hasRole("STUDENT")
+
+                        // Test-related endpoints
+                        .requestMatchers("GET", "/api/tests/**").hasAnyRole("SUPERADMIN", "STUDENT") // Allow students and superadmins to view tests
+                        .requestMatchers("POST", "/api/tests/**").hasRole("SUPERADMIN") // Only superadmins can create tests
+                        .requestMatchers("PUT", "/api/tests/**").hasRole("SUPERADMIN") // Only superadmins can update tests
+                        .requestMatchers("DELETE", "/api/tests/**").hasRole("SUPERADMIN") // Only superadmins can delete tests
+                        .requestMatchers("/api/enrollments/**").hasRole("STUDENT") // Only students can enroll
+
+                        // Admin role endpoints
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")
+
                         // Authenticated endpoints (no specific role)
-                        .requestMatchers("/api/cv/**", "/api/v1/requiredCourses/**","/api/admin").authenticated()
+                        .requestMatchers("/api/cv/**", "/api/v1/requiredCourses/**", "/api/admin").authenticated()
 
                         // Catch-all rule
                         .anyRequest().authenticated()
@@ -105,7 +115,6 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        // Update allowed methods to include PATCH
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
