@@ -1,5 +1,6 @@
 package com.example.CarrerLink_backend.service.impl;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
@@ -13,29 +14,40 @@ import com.example.CarrerLink_backend.exception.OperationFailedException;
 import com.example.CarrerLink_backend.exception.ResourceNotFoundException;
 import com.example.CarrerLink_backend.repo.*;
 import com.example.CarrerLink_backend.service.CompanyService;
+import com.example.CarrerLink_backend.utill.CommonFileSaveBinaryDataDto;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
 
+    @Value("${aws.s3.bucket-name}")
+    private String bucketName;
     private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper;
     private final TechnologyRepo technologyRepo;
+    private final CompanyImageRepository companyImageRepository;
     private final ClientRepo clientRepo;
     private static final String ACTION_1 = " not found. ";
     private final StudentJobsRepo studentJobsRepo;
     private final JobRepo jobRepo;
     private final StudentRepo studentRepo;
-    private final EmailService emailService;
+    private final AmazonS3 amazonS3;
+    private final  FileServiceImpl fileService;
+
 
     @Override
     public List<CompanygetResponseDTO> getCompanies(String location, String category) {
@@ -93,31 +105,86 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
-    public String updateCompany(CompanyUpdateRequestDTO companyUpdateRequestDTO) {
-        if (companyUpdateRequestDTO.getId() == null) {
+    public String updateCompany(CompanyUpdateRequestDTO dto, MultipartFile companyImage, MultipartFile coverImage) throws IOException {
+        if (dto.getId() == null) {
             throw new InvalidInputException("Company ID is required for an update.");
         }
-        if (!companyRepository.existsById(companyUpdateRequestDTO.getId())) {
-            throw new ResourceNotFoundException("Company with ID " + companyUpdateRequestDTO.getId() + ACTION_1);
-        }
-        Company company = companyRepository.findById(companyUpdateRequestDTO.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Company with ID " + companyUpdateRequestDTO.getId() + ACTION_1));
-        company.setName(companyUpdateRequestDTO.getName());
-        company.setLocation(companyUpdateRequestDTO.getLocation());
-        company.setCategory(companyUpdateRequestDTO.getCategory());
-        company.setSlogan(companyUpdateRequestDTO.getSlogan());
-        company.setDescription(companyUpdateRequestDTO.getDescription());
-        company.setSize(companyUpdateRequestDTO.getSize());
-        company.setMobile(companyUpdateRequestDTO.getMobile());
-        company.setWebsite(companyUpdateRequestDTO.getWebsite());
-        company.setRequirements(companyUpdateRequestDTO.getRequirements());
 
-        updateProducts(companyUpdateRequestDTO, company);
-        updateClients(companyUpdateRequestDTO, company);
-        updateTechnologies(companyUpdateRequestDTO, company);
+        Company company = companyRepository.findById(dto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found for ID: " + dto.getId()));
+
+        company.setName(dto.getName());
+        company.setLocation(dto.getLocation());
+        company.setCategory(dto.getCategory());
+        company.setSlogan(dto.getSlogan());
+        company.setDescription(dto.getDescription());
+        company.setSize(dto.getSize());
+        company.setMobile(dto.getMobile());
+        company.setWebsite(dto.getWebsite());
+        company.setRequirements(dto.getRequirements());
+
+
+
+        if (companyImage != null && !companyImage.isEmpty()) {
+            company.setCompanyPicUrl(saveCompanyImageFile(company.getId(), companyImage, "company_image"));
+
+        }
+
+        if (coverImage != null && !coverImage.isEmpty()) {
+            company.setCoverPicUrl(saveCompanyImageFile(company.getId(), coverImage, "cover_image"));
+        }
         companyRepository.save(company);
+
         return "Updated successfully";
     }
+
+
+    public String saveCompanyImageFile(long companyId, MultipartFile file, String imageType) {
+        if (file == null || file.isEmpty()) {
+            System.out.println("No file provided for company " + companyId + " (" + imageType + ")");
+            return null;
+        }
+
+        try {
+            Company company = companyRepository.findById(companyId)
+                    .orElseThrow(() -> new RuntimeException("Company not found for ID: " + companyId));
+
+            CompanyImage existingImage = companyImageRepository.findByCompanyIdAndType(companyId, imageType)
+                    .orElse(null);
+
+            // Delete old
+            if (existingImage != null && existingImage.getUrl() != null) {
+                String oldKey = existingImage.getUrl()
+                        .substring(existingImage.getUrl().lastIndexOf("/") + 1);
+                amazonS3.deleteObject(bucketName, imageType + "/" + oldKey);
+            }
+
+            // Upload new
+            CommonFileSaveBinaryDataDto resource = fileService.createResource(file, imageType + "/", bucketName);
+
+            if (existingImage == null) {
+                existingImage = new CompanyImage();
+                existingImage.setId(UUID.randomUUID().toString());
+            }
+
+            existingImage.setUrl(resource.getUrl());
+            existingImage.setFileName(file.getOriginalFilename());
+            existingImage.setType(imageType);
+            existingImage.setCompany(company);
+
+            companyImageRepository.save(existingImage);
+
+            return existingImage.getUrl();
+
+        } catch (Exception e) {
+            System.out.println("Failed to save " + imageType + " for company " + companyId + ": " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 
     public void updateProducts(CompanyUpdateRequestDTO companyUpdateRequestDTO,Company company){
         if (companyUpdateRequestDTO.getProducts() != null) {
@@ -191,20 +258,14 @@ public class CompanyServiceImpl implements CompanyService {
             studentJobs.setInterviewDate(jobApproveResponseDTO.getInterviewDate());
             studentJobs.setStatus(jobApproveResponseDTO.getStatus());
             studentJobsRepo.save(studentJobs);
-            String emailBody = String.format(
-                    "Dear %s,\n\nYour application for '%s' has been approved.\nRegards,\n%s",
-                    student.getFirstName(),
-                    job.getJobTitle(),
-                    job.getCompany().getName()
-            );
-
-            try {
-                emailService.sendEmail(student.getEmail(), "Job Application Approved", emailBody);
-            } catch (Exception e) {
-                // Log the error and proceed
-
-            }
-
+//            Notification notification = Notification.builder()
+//                    .message("Your job application for " + job.getJobTitle() + " has been approved!")
+//                    .userId((long) studentId)
+//                    .isRead(false)
+//                    .createdAt(LocalDateTime.now())
+//                    .student(student)
+//                    .build();
+//            notificationService.sendNotification(String.valueOf(studentId), notification);
             return "approved successfully ";
         }
         else{

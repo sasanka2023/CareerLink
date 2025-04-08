@@ -12,13 +12,18 @@ import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CompanyService;
 import com.example.CarrerLink_backend.service.impl.EmailService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -90,6 +95,7 @@ public class CompanyController {
     }
 
     // Update an existing company
+    @PutMapping(consumes = {"multipart/form-data"})
     @Operation(summary = "Update a company")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Company updated successfully"),
@@ -97,11 +103,32 @@ public class CompanyController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PutMapping()
-    public ResponseEntity<StandardResponse> updateCompany(@RequestBody CompanyUpdateRequestDTO companyUpdateRequestDTO) {
-        String updatedCompany = companyService.updateCompany(companyUpdateRequestDTO);
-        return ResponseEntity.ok(new StandardResponse(true, "Company updated successfully", updatedCompany));
+    public ResponseEntity<StandardResponse> updateCompany(
+            @RequestPart("company") String companyJson,
+            @RequestPart(value = "companyImage", required = false) MultipartFile companyImage,
+            @RequestPart(value = "coverImage", required = false) MultipartFile coverImage) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        CompanyUpdateRequestDTO companyUpdateRequestDTO;
+        try {
+            companyUpdateRequestDTO = objectMapper.readValue(companyJson, CompanyUpdateRequestDTO.class);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body(new StandardResponse(false, "Invalid JSON format", null));
+        }
+
+        try {
+            System.out.println("Company Image: " + (companyImage != null ? companyImage.getOriginalFilename() : "null"));
+            System.out.println("Cover Image: " + (coverImage != null ? coverImage.getOriginalFilename() : "null"));
+
+            String result = companyService.updateCompany(companyUpdateRequestDTO, companyImage, coverImage);
+            return ResponseEntity.ok(new StandardResponse(true, "Company updated successfully", result));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StandardResponse(false, "Error uploading images: " + e.getMessage(), null));
+        }
     }
+
+
 
     // Delete a company
     @Operation(summary = "Delete a company")
