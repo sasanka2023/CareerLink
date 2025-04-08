@@ -270,12 +270,12 @@ const AdminDashboard = () => {
                                 </div>
                                 <div className="gradient-card-3 p-6 rounded-2xl text-white">
                                     <h3 className="text-lg font-medium mb-2 opacity-90">Pending CVs</h3>
-                                    <p className="text-3xl font-bold">{cvs.filter(cv => cv.status === 'pending').length}</p>
+                                    <p className="text-3xl font-bold">{counts.cvs || 0}</p>
                                     <p className="mt-2 text-sm opacity-90">Awaiting review</p>
                                 </div>
                                 <div className="gradient-card-4 p-6 rounded-2xl text-white">
                                     <h3 className="text-lg font-medium mb-2 opacity-90">Scheduled Tests</h3>
-                                    <p className="text-3xl font-bold">{tests.length}</p>
+                                    <p className="text-3xl font-bold">{counts.tests || 0}</p>
                                     <p className="mt-2 text-sm opacity-90">Tests this week</p>
                                 </div>
                             </div>

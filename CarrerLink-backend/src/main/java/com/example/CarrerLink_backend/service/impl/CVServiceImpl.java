@@ -27,7 +27,7 @@ public class CVServiceImpl implements CVService {
     private final CVRepo cvRepo;
     private final  ModelMapper modelMapper;
     private final StudentRepo studentRepo;
-
+    private final CountBroadcastService broadcastService;
     private static final String ACTION_1 = " does not exist.";
 
     @Override
@@ -124,7 +124,8 @@ public class CVServiceImpl implements CVService {
             certification.setCv(existingCV);
             certifications.add(certification);
         }
-        existingCV.setCertifications(certifications); // Replace the entire list   cvRepo.save(existingCV);
+        existingCV.setCertifications(certifications);
+        broadcastService.broadcastCounts();// Replace the entire list   cvRepo.save(existingCV);
         return "CV updated successfully";
 
     }

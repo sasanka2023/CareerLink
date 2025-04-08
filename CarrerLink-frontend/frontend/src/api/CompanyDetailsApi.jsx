@@ -1,6 +1,5 @@
 import axiosInstance from './AxiosInstance';
-
-// const getCompanyDetailsById = async (companyId) => {
+import {ApproveJob} from "./CompanyDetailsGetApi";// const getCompanyDetailsById = async (companyId) => {
 //     try {
 //         const response = await axiosInstance.get(`/companies/${companyId}`);
 //
