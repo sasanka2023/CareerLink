@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, Loader2, X, FileText, Briefcase, Code, GraduationCap, Bookmark } from 'lucide-react';
+import {getAllStudents} from "../../../api/StudentDetailsApi";
 
 const dummyStudents = [
     {
@@ -59,14 +60,19 @@ export default function StudentTab() {
     const [selectedStudent, setSelectedStudent] = useState(null);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setStudents(dummyStudents);
-            setLoading(false);
-        }, 1000);
+        getAllStudents()
+            .then(response => {
+                setStudents(response.data);
 
-        return () => clearTimeout(timer);
+                setLoading(false);
+            })
+            .catch(error => {
+                setError("Failed to load student data.");
+                setLoading(false);
+            });
     }, []);
 
+    console.log(selectedStudent);
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
@@ -110,7 +116,7 @@ export default function StudentTab() {
                                     <div className="h-10 w-10 flex-shrink-0">
                                         <img
                                             className="h-10 w-10 rounded-full object-cover"
-                                            src={student.image}
+                                            src={student.profileImageUrl}
                                             alt={student.name}
                                         />
                                     </div>
@@ -127,7 +133,8 @@ export default function StudentTab() {
                                 <div className="text-sm text-gray-900">{student.department}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{student.gpa.toFixed(2)}</div>
+                                <div className="text-sm text-gray-900">{student.gpa !== undefined && student.gpa !== null ? student.gpa.toFixed(2) : "N/A"
+                                }</div>
                             </td>
                         </tr>
                     ))}
@@ -172,7 +179,8 @@ export default function StudentTab() {
                                             <p><span className="font-medium">University:</span> {selectedStudent.university}</p>
                                             <p><span className="font-medium">Degree:</span> {selectedStudent.degree}</p>
                                             <p><span className="font-medium">Department:</span> {selectedStudent.department}</p>
-                                            <p><span className="font-medium">GPA:</span> {selectedStudent.gpa.toFixed(2)}</p>
+                                            <p><span className="font-medium">GPA:</span> {typeof selectedStudent.gpa === "number" ? selectedStudent.gpa.toFixed(2) : "N/A"
+                                            }</p>
                                         </div>
                                     </div>
 
@@ -182,10 +190,10 @@ export default function StudentTab() {
                                             Technologies
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
-                                            {selectedStudent.technologies.map((tech, index) => (
-                                                <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
-                          {tech}
-                        </span>
+                                            {selectedStudent.technologies?.map((tech) => (
+                                                <span key={tech.techId} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+        {tech.techName}
+    </span>
                                             ))}
                                         </div>
                                     </div>
@@ -196,49 +204,49 @@ export default function StudentTab() {
                                             Job Fields
                                         </h4>
                                         <div className="flex flex-wrap gap-2">
-                                            {selectedStudent.jobFields.map((field, index) => (
-                                                <span key={index} className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
-                          {field}
-                        </span>
+                                            {selectedStudent.jobFields?.map((field) => (
+                                                <span key={field.jobFieldId} className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+        {field.jobField}
+    </span>
                                             ))}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Additional Information */}
-                                <div className="space-y-4">
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h4 className="text-lg font-semibold mb-3 flex items-center">
-                                            <Briefcase className="w-5 h-5 mr-2" />
-                                            Applied Jobs
-                                        </h4>
-                                        <div className="space-y-3">
-                                            {selectedStudent.appliedJobs.map((job, index) => (
-                                                <div key={index} className="border-b pb-2 last:border-0 last:pb-0">
-                                                    <p className="font-medium">{job.company} - {job.position}</p>
-                                                    <p className="text-sm text-gray-600">Status: {job.status}</p>
-                                                    <p className="text-sm text-gray-600">Applied: {job.appliedDate}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
+                                {/*<div className="space-y-4">*/}
+                                {/*    <div className="bg-gray-50 p-4 rounded-lg">*/}
+                                {/*        <h4 className="text-lg font-semibold mb-3 flex items-center">*/}
+                                {/*            <Briefcase className="w-5 h-5 mr-2" />*/}
+                                {/*            Applied Jobs*/}
+                                {/*        </h4>*/}
+                                {/*        <div className="space-y-3">*/}
+                                {/*            {selectedStudent.appliedJobs.map((job, index) => (*/}
+                                {/*                <div key={index} className="border-b pb-2 last:border-0 last:pb-0">*/}
+                                {/*                    <p className="font-medium">{job.company} - {job.position}</p>*/}
+                                {/*                    <p className="text-sm text-gray-600">Status: {job.status}</p>*/}
+                                {/*                    <p className="text-sm text-gray-600">Applied: {job.appliedDate}</p>*/}
+                                {/*                </div>*/}
+                                {/*            ))}*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
 
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h4 className="text-lg font-semibold mb-3 flex items-center">
-                                            <FileText className="w-5 h-5 mr-2" />
-                                            Test Results
-                                        </h4>
-                                        <div className="space-y-3">
-                                            {selectedStudent.enrolledTests.map((test, index) => (
-                                                <div key={index} className="border-b pb-2 last:border-0 last:pb-0">
-                                                    <p className="font-medium">{test.testName}</p>
-                                                    <p className="text-sm text-gray-600">Date: {test.date}</p>
-                                                    <p className="text-sm text-gray-600">Score: {test.score}/{test.maxScore}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
+                                {/*    <div className="bg-gray-50 p-4 rounded-lg">*/}
+                                {/*        <h4 className="text-lg font-semibold mb-3 flex items-center">*/}
+                                {/*            <FileText className="w-5 h-5 mr-2" />*/}
+                                {/*            Test Results*/}
+                                {/*        </h4>*/}
+                                {/*        <div className="space-y-3">*/}
+                                {/*            {selectedStudent.enrolledTests.map((test, index) => (*/}
+                                {/*                <div key={index} className="border-b pb-2 last:border-0 last:pb-0">*/}
+                                {/*                    <p className="font-medium">{test.testName}</p>*/}
+                                {/*                    <p className="text-sm text-gray-600">Date: {test.date}</p>*/}
+                                {/*                    <p className="text-sm text-gray-600">Score: {test.score}/{test.maxScore}</p>*/}
+                                {/*                </div>*/}
+                                {/*            ))}*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
                             </div>
                         </div>
                     </div>
