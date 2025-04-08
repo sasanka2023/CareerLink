@@ -169,7 +169,7 @@ function Companies() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-4">
                     <img
-                      src={company.logo}
+                      src={company.companyPicUrl}
                       alt={company.name}
                       className="w-16 h-16 rounded-lg object-cover"
                     />
