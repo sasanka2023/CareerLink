@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "student_job")
@@ -27,7 +29,8 @@ public class StudentJobs {
     private Job job;
 
     @Column(name = "interview_date")
-    private LocalDate interviewDate;  // Store interview date
+
+    private OffsetDateTime  interviewDate;  // Store interview date
 
     @Column(name = "status",columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean status = false;

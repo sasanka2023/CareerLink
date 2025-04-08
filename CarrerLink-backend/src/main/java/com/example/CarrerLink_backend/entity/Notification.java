@@ -18,6 +18,7 @@ public class Notification {
     private Long id;
     private String message;
     private int studentId;
+    @Column(name = "is_read")
     private boolean isRead;
     private LocalDateTime createdAt;
 

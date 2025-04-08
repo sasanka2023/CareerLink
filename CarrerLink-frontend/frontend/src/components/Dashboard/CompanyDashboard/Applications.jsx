@@ -5,14 +5,16 @@ import { getAllApplicants, getAllJobsByCompany } from "../../../api/JobDetailsAp
 import { ApproveJob } from "../../../api/CompanyDetailsGetApi";
 import { AuthContext } from "../../../api/AuthProvider";
 import { useNavigate } from 'react-router-dom';
+
 function Applications({ applicants, company }) {
-  const { token} = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [selectedPosition, setSelectedPosition] = useState("");
   const [students, setStudents] = useState([]);
-  const [interviewDates, setInterviewDates] = useState({});
-  const [jobId,setJobId] = useState(0);
+  const [interviewDateTimes, setInterviewDateTimes] = useState({});
+  const [jobId, setJobId] = useState(0);
   const navigate = useNavigate();
+
   useEffect(() => {
     let isMounted = true;
     const fetchCompanyData = async () => {
@@ -36,8 +38,6 @@ function Applications({ applicants, company }) {
     return () => { isMounted = false; };
   }, [token]);
 
-  if (loading) return <div>Loading...</div>;
-
   const handleApplicantsChange = async (jobId) => {
     try {
       const response = await getAllApplicants(jobId);
@@ -49,11 +49,10 @@ function Applications({ applicants, company }) {
     }
   };
 
-  // ✅ Corrected function: Updates only one applicant's date
-  const handleDateChange = (applicantId, date) => {
-    setInterviewDates((prevDates) => ({
-      ...prevDates,
-      [applicantId]: date,
+  const handleDateTimeChange = (applicantId, dateTime) => {
+    setInterviewDateTimes(prev => ({
+      ...prev,
+      [applicantId]: dateTime
     }));
   };
 
@@ -68,60 +67,70 @@ function Applications({ applicants, company }) {
         body: JSON.stringify({ studentId, message })
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     } catch (error) {
       console.error('Notification error:', error);
       Swal.fire('Error', 'Failed to send notification', 'error');
     }
   };
 
-
   const handleApproveJob = async (studentId, jobId) => {
-
-
-    if (!interviewDates[studentId]) {
-
+    const dateTime = interviewDateTimes[studentId];
+    if (!dateTime) {
       Swal.fire({
         icon: "warning",
-        title: "Interview Date Required",
-        text: "Please assign an interview date before approving the applicant.",
+        title: "Interview Date & Time Required",
+        text: "Please assign an interview date and time before approving.",
         confirmButtonColor: "#ff9800",
       });
       return;
     }
 
+    const selectedDateTime = new Date(dateTime);
+    const currentDateTime = new Date();
+
+    if (selectedDateTime < currentDateTime) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Date/Time",
+        text: "Please select a future date and time for the interview.",
+        confirmButtonColor: "#f44336",
+      });
+      return;
+    }
+    const isoInterviewDate = `${dateTime}:00.000Z`;
+
     const requestBody = {
       id: 0,
-      interviewDate: interviewDates[studentId],
+      interviewDate: isoInterviewDate, // Use the formatted date
       status: true,
     };
 
     try {
       const response = await ApproveJob(studentId, jobId, requestBody);
-      console.log(studentId);
-      console.log(jobId);
-      console.log(requestBody);
       if (response?.success) {
-        //sending notifications
+        const formattedDateTime = new Date(isoInterviewDate).toLocaleString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
         await sendNotification(
             studentId,
-            `Your application for ${selectedPosition} has been approved! Interview scheduled on ${interviewDates[studentId]}`
+            `Your application for ${selectedPosition} has been approved! Interview scheduled on ${formattedDateTime}`
         );
-        // Update the students state to reflect the approval
-        setStudents(prevStudents =>
-            prevStudents.map(student =>
-                student.studentId === studentId
-                    ? { ...student, status: true }
-                    : student
-            )
-        );
+
+        setStudents(prev => prev.map(student =>
+            student.studentId === studentId ? { ...student, status: true } : student
+        ));
 
         Swal.fire({
           icon: "success",
           title: "Approved!",
-          text: "The applicant has been successfully approved.",
+          text: "Applicant approved and notified with interview details.",
           confirmButtonColor: "#4CAF50",
         });
       }
@@ -130,11 +139,13 @@ function Applications({ applicants, company }) {
       Swal.fire({
         icon: "error",
         title: "Approval Failed",
-        text: "Something went wrong. Please try again later.",
+        text: error.message || "Something went wrong. Please try again later.",
         confirmButtonColor: "#f44336",
       });
     }
   };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
       <div className="space-y-8">
@@ -150,7 +161,9 @@ function Applications({ applicants, company }) {
                       handleApplicantsChange(job.jobId);
                     }}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        selectedPosition === job.jobTitle ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        selectedPosition === job.jobTitle
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                 >
                   {job.jobTitle}
@@ -175,16 +188,19 @@ function Applications({ applicants, company }) {
                 </div>
 
                 <div className="w-[120px]">
-              <span className="inline-block px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-sm">
-                {applicant.status === false ? "Pending" : "Approved"}
+              <span className={`inline-block px-3 py-1 rounded-full text-sm ${
+                  applicant.status ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"
+              }`}>
+                {applicant.status ? "Approved" : "Pending"}
               </span>
                 </div>
 
-                <div className="flex items-center gap-2 w-[250px]">
+                <div className="flex items-center gap-2 w-[300px]">
                   <input
-                      type="date"
-                      value={interviewDates[applicant.studentId] || applicant.interviewDate}
-                      onChange={(e) => handleDateChange(applicant.studentId, e.target.value)}
+                      type="datetime-local"
+                      value={interviewDateTimes[applicant.studentId] || ""}
+                      min={new Date().toISOString().slice(0, 16)}
+                      onChange={(e) => handleDateTimeChange(applicant.studentId, e.target.value)}
                       className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
                   />
                   <Calendar className="h-4 w-4 text-gray-400 flex-shrink-0" />

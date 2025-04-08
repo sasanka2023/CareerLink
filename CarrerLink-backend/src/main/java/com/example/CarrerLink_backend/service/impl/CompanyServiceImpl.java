@@ -1,6 +1,10 @@
 package com.example.CarrerLink_backend.service.impl;
 
+
+import com.example.CarrerLink_backend.config.CompanyRegisteredEvent;
+
 import com.amazonaws.services.s3.AmazonS3;
+
 import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.request.CompanySaveRequestDTO;
 import com.example.CarrerLink_backend.dto.request.CompanyUpdateRequestDTO;
@@ -19,12 +23,21 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,6 +62,9 @@ public class CompanyServiceImpl implements CompanyService {
     private final  FileServiceImpl fileService;
 
 
+//    private  ApplicationEventPublisher eventPublisher;
+//    private  SimpMessagingTemplate messagingTemplate;
+//    private  NotificationRepository notificationRepository;
     @Override
     public List<CompanygetResponseDTO> getCompanies(String location, String category) {
         List<Company> companies;
@@ -99,7 +115,9 @@ public class CompanyServiceImpl implements CompanyService {
         }
         Company company = modelMapper.map(companySaveRequestDTO, Company.class);
         company.setUser(user);
-        companyRepository.save(company);
+        Company savedCompany = companyRepository.save(company);
+
+//        eventPublisher.publishEvent(new CompanyRegisteredEvent(this, savedCompany));
         return "Company saved successfully";
     }
 
@@ -258,6 +276,27 @@ public class CompanyServiceImpl implements CompanyService {
             studentJobs.setInterviewDate(jobApproveResponseDTO.getInterviewDate());
             studentJobs.setStatus(jobApproveResponseDTO.getStatus());
             studentJobsRepo.save(studentJobs);
+
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy 'at' hh:mm a");
+            String formattedDateTime = studentJobs.getInterviewDate().format(formatter) + " UTC";
+            String emailBody = String.format(
+                    "Dear %s,\n\nYour application for '%s' has been approved.\nInterview Date & Time: %s\n\nBest regards,\n%s Team",
+                    student.getFirstName(),
+                    job.getJobTitle(),
+                    formattedDateTime,
+                    job.getCompany().getName()
+            );
+
+
+            try {
+                emailService.sendEmail(student.getEmail(), "Interview Scheduled - " + job.getJobTitle(), emailBody);
+            } catch (Exception e) {
+                // Log the error and proceed
+
+            }
+
+
 //            Notification notification = Notification.builder()
 //                    .message("Your job application for " + job.getJobTitle() + " has been approved!")
 //                    .userId((long) studentId)
@@ -266,6 +305,7 @@ public class CompanyServiceImpl implements CompanyService {
 //                    .student(student)
 //                    .build();
 //            notificationService.sendNotification(String.valueOf(studentId), notification);
+
             return "approved successfully ";
         }
         else{
