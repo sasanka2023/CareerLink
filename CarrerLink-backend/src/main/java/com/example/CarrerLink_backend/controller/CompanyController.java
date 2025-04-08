@@ -19,6 +19,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @RestController
@@ -154,6 +157,9 @@ public class CompanyController {
             @RequestParam int studentId,
             @RequestParam int jobId,
             @RequestBody JobApproveResponseDTO jobApproveResponseDTO){
+        if (jobApproveResponseDTO.getInterviewDate().isBefore(OffsetDateTime.now(ZoneOffset.UTC))) {
+            throw new IllegalArgumentException("Interview date must be in the future");
+        }
         String message = companyService.approveJob(studentId,jobId,jobApproveResponseDTO);
         return ResponseEntity.ok(new StandardResponse(true,"Job approved successfully",message));
     }

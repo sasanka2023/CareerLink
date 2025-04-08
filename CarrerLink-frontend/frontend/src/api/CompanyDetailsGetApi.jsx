@@ -59,7 +59,7 @@ const getAllCompanies = async () => {
   };
 
 const ApproveJob = async (studentId,jobId,requestBody) => {
-  console.log(requestBody);
+  console.log("Sending requestBody:", requestBody);
   try {
     const response = await axiosInstance.put('companies/approve-job', requestBody, {
       params: { studentId, jobId } // Pass query parameters here

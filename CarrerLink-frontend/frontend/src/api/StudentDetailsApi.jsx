@@ -54,7 +54,7 @@ const applyForJob = async (applicationData) => {
   }
 };
 
-const getRecommendedCourses = async (token, studentId) => {
+const getRecommendedCourses = async (studentId) => {
   try {
     // Validate studentId exists and is a number
     if (!studentId || isNaN(studentId)) {
@@ -62,28 +62,22 @@ const getRecommendedCourses = async (token, studentId) => {
     }
 
     const response = await axiosInstance.get(
-      `/students/recommend-courses`, // Corrected API path
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: { studentId }, // Pass the studentId as query param
-      }
+        `students/recommend-courses?studentId=${studentId}`
     );
-
-    console.log("API Request URL:", `/students/recommend-courses`);
 
     if (!response.data?.success) {
       throw new Error(response.data?.message || "Invalid response structure");
     }
+    console.log(response.data);
 
-    return response.data;
+    return {
+      success: true,
+      data: response.data.data || [],
+    };
   } catch (error) {
-    console.error("API Request Failed:", {
-      endpoint: "/students/recommend-courses",
+    console.error("Error fetching recommended courses:", {
       status: error.response?.status,
-      error: error.message,
-      response: error.response?.data,
+      message: error.response?.data?.message || error.message,
     });
 
     return {
