@@ -10,6 +10,7 @@ import com.example.CarrerLink_backend.dto.response.JobApproveResponseDTO;
 import com.example.CarrerLink_backend.dto.response.JobgetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
 import com.example.CarrerLink_backend.service.CompanyService;
+import com.example.CarrerLink_backend.service.impl.EmailService;
 import com.example.CarrerLink_backend.utill.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +27,7 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
+
 
     @Operation(
             summary = "Get companies with filters",

@@ -5,8 +5,10 @@ import com.example.CarrerLink_backend.dto.*;
 import com.example.CarrerLink_backend.dto.response.AdminGetResponseDTO;
 import com.example.CarrerLink_backend.dto.response.CompanygetResponseDTO;
 import com.example.CarrerLink_backend.entity.UserEntity;
+import com.example.CarrerLink_backend.repo.CVRepo;
 import com.example.CarrerLink_backend.repo.JobFieldRepo;
 import com.example.CarrerLink_backend.repo.TechnologyRepo;
+import com.example.CarrerLink_backend.repo.TestRepository;
 import com.example.CarrerLink_backend.service.AdminService;
 import com.example.CarrerLink_backend.service.impl.CountBroadcastService;
 import com.example.CarrerLink_backend.service.impl.EmailService;
@@ -37,6 +39,8 @@ public class AdminController {
     private final JobFieldRepo jobFieldRepo;
     private final TechnologyRepo technologyRepo;
     private final EmailService emailService;
+    private final CVRepo cvRepo;
+    private TestRepository testRepository;
 
     @PostMapping("save")
     public ResponseEntity<StandardResponse> saveAdmin(@RequestBody AdminSaveRequestDTO adminSaveRequestDTO, UserEntity userdata){
@@ -148,6 +152,8 @@ public class AdminController {
         Map<String, Long> counts = new HashMap<>();
         counts.put("technologies", technologyRepo.count());
         counts.put("jobFields", jobFieldRepo.count());
+        counts.put("cvs",cvRepo.count());
+        counts.put("tests",cvRepo.count());
         return ResponseEntity.ok(new StandardResponse(true, "Dashboard counts", counts));
     }
 

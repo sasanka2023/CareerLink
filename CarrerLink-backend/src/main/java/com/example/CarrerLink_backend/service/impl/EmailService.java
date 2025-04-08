@@ -21,4 +21,12 @@ public class EmailService {
         message.setText("Dear " + adminName + ",\n\nYour admin account has been approved. You can now access the admin dashboard.");
         mailSender.send(message);
     }
+
+    public void sendEmail(String email, String jobApplicationApproved, String emailBody) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(jobApplicationApproved);
+        message.setText(emailBody);
+        mailSender.send(message);
+    }
 }

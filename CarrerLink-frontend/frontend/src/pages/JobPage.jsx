@@ -5,6 +5,8 @@ import { Briefcase, MapPin, Clock, DollarSign, Building2, GraduationCap, Code, G
 import { useLocation } from "react-router-dom";
 
 
+
+
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../api/AuthProvider";
 import Swal from "sweetalert2";
@@ -27,7 +29,7 @@ function JobPage() {
         </div>
     );
   }
-  const handleApply = () => {
+  const handleApply =async () => {
     if (!token) {
       Swal.fire({
         title: 'Login Required',
@@ -42,6 +44,7 @@ function JobPage() {
       });
       return;
     }
+
 
     // Add your actual apply logic here for logged-in users
     console.log('User is logged in, proceed with application');

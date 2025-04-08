@@ -35,7 +35,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final StudentJobsRepo studentJobsRepo;
     private final JobRepo jobRepo;
     private final StudentRepo studentRepo;
-
+    private final EmailService emailService;
 
     @Override
     public List<CompanygetResponseDTO> getCompanies(String location, String category) {
@@ -191,14 +191,20 @@ public class CompanyServiceImpl implements CompanyService {
             studentJobs.setInterviewDate(jobApproveResponseDTO.getInterviewDate());
             studentJobs.setStatus(jobApproveResponseDTO.getStatus());
             studentJobsRepo.save(studentJobs);
-//            Notification notification = Notification.builder()
-//                    .message("Your job application for " + job.getJobTitle() + " has been approved!")
-//                    .userId((long) studentId)
-//                    .isRead(false)
-//                    .createdAt(LocalDateTime.now())
-//                    .student(student)
-//                    .build();
-//            notificationService.sendNotification(String.valueOf(studentId), notification);
+            String emailBody = String.format(
+                    "Dear %s,\n\nYour application for '%s' has been approved.\nRegards,\n%s",
+                    student.getFirstName(),
+                    job.getJobTitle(),
+                    job.getCompany().getName()
+            );
+
+            try {
+                emailService.sendEmail(student.getEmail(), "Job Application Approved", emailBody);
+            } catch (Exception e) {
+                // Log the error and proceed
+
+            }
+
             return "approved successfully ";
         }
         else{
