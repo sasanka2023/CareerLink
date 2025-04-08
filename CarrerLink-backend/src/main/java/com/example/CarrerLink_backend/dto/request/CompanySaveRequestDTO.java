@@ -21,4 +21,6 @@ public class CompanySaveRequestDTO {
     private String website;
     private String size;
     private UserSaveRequestDTO userSaveRequestDTO;
+    private String companyPicUrl;
+    private String coverPicUrl;
 }

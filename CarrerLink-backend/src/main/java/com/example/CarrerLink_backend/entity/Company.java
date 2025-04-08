@@ -65,6 +65,13 @@ public class Company {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(name = "company_img_url")
+    private String companyPicUrl;
+
+    @Column(name = "cover_img_url")
+    private String coverPicUrl;
+
+
 
 
 }

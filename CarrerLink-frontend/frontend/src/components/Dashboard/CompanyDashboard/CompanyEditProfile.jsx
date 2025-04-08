@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Mail, MapPin, Briefcase, Globe, Smartphone, Users, Type, Tag, ListChecks } from 'lucide-react';
+import { Mail, MapPin, Briefcase, Globe, Smartphone, Users, Type, Tag, ListChecks,Camera } from 'lucide-react';
 import { AuthContext } from '../../../api/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -15,6 +15,8 @@ function CompanyEditProfile() {
     const navigate = useNavigate();
     const { token } = useContext(AuthContext);
     const [company, setCompany] = useState(null);
+    const [profilePicture, setProfilePicture] = useState(null); // For preview
+    const [coverImagePreview, setCoverImagePreview] = useState(null); // For preview
     const [formData, setFormData] = useState({
         id: '',
         name: '',
@@ -28,6 +30,9 @@ function CompanyEditProfile() {
         size: '',
         technologies: [],
     });
+    const [companyImage, setCompanyImage] = useState(null);
+    const [coverImage, setCoverImage] = useState(null);
+
 
     useEffect(() => {
         const fetchCompanyData = async () => {
@@ -72,6 +77,27 @@ function CompanyEditProfile() {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
+    const handleFileChange = (e) => {
+        const file = e.target.files?.[0];
+        const type = e.target.name;
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                if (type === 'companyImage') {
+                    setCompanyImage(file);
+                    setProfilePicture(reader.result); // or setCompanyImagePreview
+                } else if (type === 'coverImage') {
+                    setCoverImage(file);
+                    setCoverImagePreview(reader.result);
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
+
 
     const addTechnology = (tech) => {
         if (!formData.technologies.some(t => t.techName === tech)) {
@@ -91,15 +117,22 @@ function CompanyEditProfile() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const form = new FormData();
+        form.append(
+            "company",
+            new Blob([JSON.stringify(formData)], { type: "application/json" })
+        );
+        if (companyImage) form.append("companyImage", companyImage);
+        if (coverImage) form.append("coverImage", coverImage);
+
         try {
-            const response = await updateCompany(formData);
-            if (response.success) {
-                Swal.fire({
-                    title: "Updated Successfully!",
-                    icon: "success",
-                });
-                navigate('/company-dashboard');
-            }
+            const response = await updateCompany(form);
+            Swal.fire({
+                title: "Updated Successfully!",
+                icon: "success",
+            });
+            navigate('/company-dashboard');
         } catch (error) {
             Swal.fire({
                 title: "Update Failed",
@@ -114,12 +147,61 @@ function CompanyEditProfile() {
     return (
         <div className="max-w-4xl mx-auto p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Edit Company Profile</h2>
-            <div className="bg-white rounded-xl shadow-sm p-8">
+            <div className="bg-white items-center rounded-xl shadow-sm p-8">
+                <div className="flex flex-row items-center justify-center mb-8 p-6 ">
+                    {/* Company Image Upload */}
+                    <div className="relative">
+                        <img
+                            src={profilePicture || company?.companyImageUrl || '/placeholder-company.png'} // fallback
+                            alt="Company"
+                            className="w-40 h-40 border-gray-300 border rounded-full object-cover"
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            name="companyImage"
+                            className="hidden"
+                            id="companyImageInput"
+                        />
+                        <label
+                            htmlFor="companyImageInput"
+                            className="absolute -bottom-1 -right-1 p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors cursor-pointer"
+                        >
+                            <Camera className="h-5 w-5" />
+                        </label>
+                    </div>
+
+                    {/* Cover Image Upload */}
+                    <div className="relative">
+                        <img
+                            src={coverImagePreview || company?.coverImageUrl || '/placeholder-cover.jpg'} // fallback
+                            alt="Cover"
+                            className="w-96 h-40 pl-4  ml-4 border-gray-300 border rounded-xl object-cover"
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="hidden"
+                            name="coverImage"
+                            id="coverImageInput"
+                        />
+                        <label
+                            htmlFor="coverImageInput"
+                            className="absolute -bottom-1 -right-1 p-2  bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors cursor-pointer"
+                        >
+                            <Camera className="h-5 w-5" />
+                        </label>
+                    </div>
+
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-4">
                         {/* Company Name */}
                         <div className="flex items-center space-x-4">
-                            <Type className="h-5 w-5 text-gray-400" />
+                            <Type className="h-5 w-5 text-gray-400"/>
                             <input
                                 type="text"
                                 name="name"
@@ -133,7 +215,7 @@ function CompanyEditProfile() {
 
                         {/* Slogan */}
                         <div className="flex items-center space-x-4">
-                            <Type className="h-5 w-5 text-gray-400" />
+                            <Type className="h-5 w-5 text-gray-400"/>
                             <input
                                 type="text"
                                 name="slogan"
@@ -146,7 +228,7 @@ function CompanyEditProfile() {
 
                         {/* Description */}
                         <div className="flex items-center space-x-4">
-                            <Briefcase className="h-5 w-5 text-gray-400" />
+                            <Briefcase className="h-5 w-5 text-gray-400"/>
                             <textarea
                                 name="description"
                                 value={formData.description}
@@ -159,7 +241,7 @@ function CompanyEditProfile() {
 
                         {/* Category */}
                         <div className="flex items-center space-x-4">
-                            <Tag className="h-5 w-5 text-gray-400" />
+                            <Tag className="h-5 w-5 text-gray-400"/>
                             <select
                                 name="category"
                                 value={formData.category}
@@ -178,7 +260,7 @@ function CompanyEditProfile() {
 
                         {/* Requirements */}
                         <div className="flex items-center space-x-4">
-                            <ListChecks className="h-5 w-5 text-gray-400" />
+                            <ListChecks className="h-5 w-5 text-gray-400"/>
                             <textarea
                                 name="requirements"
                                 value={formData.requirements}
@@ -192,7 +274,7 @@ function CompanyEditProfile() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Location */}
                             <div className="flex items-center space-x-4">
-                                <MapPin className="h-5 w-5 text-gray-400" />
+                                <MapPin className="h-5 w-5 text-gray-400"/>
                                 <input
                                     type="text"
                                     name="location"
@@ -205,7 +287,7 @@ function CompanyEditProfile() {
 
                             {/* Mobile */}
                             <div className="flex items-center space-x-4">
-                                <Smartphone className="h-5 w-5 text-gray-400" />
+                                <Smartphone className="h-5 w-5 text-gray-400"/>
                                 <input
                                     type="text"
                                     name="mobile"
@@ -220,7 +302,7 @@ function CompanyEditProfile() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Website */}
                             <div className="flex items-center space-x-4">
-                                <Globe className="h-5 w-5 text-gray-400" />
+                                <Globe className="h-5 w-5 text-gray-400"/>
                                 <input
                                     type="text"
                                     name="website"
@@ -233,7 +315,7 @@ function CompanyEditProfile() {
 
                             {/* Company Size */}
                             <div className="flex items-center space-x-4">
-                                <Users className="h-5 w-5 text-gray-400" />
+                                <Users className="h-5 w-5 text-gray-400"/>
                                 <select
                                     name="size"
                                     value={formData.size}
@@ -281,11 +363,14 @@ function CompanyEditProfile() {
                             </div>
                         </div>
 
+
+
+
                         <button
                             type="submit"
-                            className="w-full px-6 py-3 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700"
+                            className="w-full px-6 py-3 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 focus:outline-none"
                         >
-                            Save Changes
+                            Update Profile
                         </button>
                     </div>
                 </form>
