@@ -1,7 +1,6 @@
 
 
 import { useState,useContext,useEffect } from 'react';
-import { Plus } from 'lucide-react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Swal from 'sweetalert2';
@@ -18,7 +17,8 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import JobFieldStudentChart from "./JobFieldStudentChart";
 import TechnologyStudentChart from "./TechnologyStudentChart";
-import StudentList  from "./StudentList";
+import StudentsList  from "./StudentsList";
+import StudentsTab from "./StudentsTab";
 
 
 const extractRoleFromToken = (token) => {
@@ -285,12 +285,12 @@ const AdminDashboard = () => {
                             </div>
                         </>
                     )}
-
+                    {activeTab === 'students' && <StudentsTab/>}
                     {activeTab === 'technologies' && <TechnologyManagement />}
 
                     {activeTab === 'jobs' && <JobFieldManagement />}
 
-                    {activeTab === 'cvs' && <StudentList/>}
+                    {activeTab === 'cvs' && <StudentsList/>}
                     {activeTab === 'tests' && <TestManager initialTests={tests} />}
                     {activeTab === 'Courses' && <Course />}
 
