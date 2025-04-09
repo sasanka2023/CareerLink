@@ -1,7 +1,6 @@
 package com.example.CarrerLink_backend.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -81,7 +80,6 @@ public class Student {
     private boolean isApproved;
 
 
-
-
-
+    public Student(Long studentId) {
+    }
 }

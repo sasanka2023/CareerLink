@@ -1,49 +1,95 @@
 // SubmissionController.java
 package com.example.CarrerLink_backend.controller;
 
+import com.example.CarrerLink_backend.entity.SkillSet;
+import com.example.CarrerLink_backend.entity.Student;
 import com.example.CarrerLink_backend.entity.Submission;
+import com.example.CarrerLink_backend.entity.Test;
+import com.example.CarrerLink_backend.repo.SkillSetRepo;
 import com.example.CarrerLink_backend.repo.SubmissionRepository;
+import com.example.CarrerLink_backend.repo.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/submissions")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubmissionController {
 
     @Autowired
     private SubmissionRepository submissionRepository;
 
+    @Autowired
+    private TestRepository testRepository;
+
+    @Autowired
+    private SkillSetRepo skillSetRepo;
+
     @PostMapping
     public ResponseEntity<String> submitTest(@RequestBody SubmissionRequest request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long studentId = getStudentIdFromUsername(username); // Replace with actual logic
+
+        // Save the submission
         Submission submission = new Submission(null, studentId, request.getTestId(), request.getAnswers(), request.getScore(), request.getTotalMarks());
         submissionRepository.save(submission);
-        return ResponseEntity.ok("Test submitted successfully");
+
+        // Fetch the test to get the title (skillName)
+        Optional<Test> testOpt = testRepository.findById(request.getTestId());
+        if (testOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Test not found");
+        }
+        Test test = testOpt.get();
+        String skillName = test.getTitle();
+
+        // Calculate skill level based on score
+        String skillLevel = determineSkillLevel(request.getScore(), request.getTotalMarks());
+
+        // Update or create SkillSet entry
+        List<SkillSet> existingSkills = skillSetRepo.findByStudent_StudentId(Math.toIntExact(studentId));
+        SkillSet skillSet = existingSkills.stream()
+                .filter(skill -> skill.getSkillName().equals(skillName))
+                .findFirst()
+                .orElse(new SkillSet(0, skillName, skillLevel, new Student(studentId), null)); // Assuming CV is optional
+
+        skillSet.setSkillLevel(skillLevel);
+        skillSetRepo.save(skillSet);
+
+        return ResponseEntity.ok("Test submitted and skill level updated successfully");
     }
 
     @GetMapping("/student/{testId}")
     public ResponseEntity<SubmissionResponse> getSubmission(@PathVariable Long testId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long studentId = getStudentIdFromUsername(username); // Replace with actual logic
+        Long studentId = getStudentIdFromUsername(username);
         Submission submission = submissionRepository.findByStudentIdAndTestId(studentId, testId)
                 .orElseThrow(() -> new RuntimeException("Submission not found"));
         return ResponseEntity.ok(new SubmissionResponse(submission.getScore(), submission.getTotalMarks(), submission.getAnswers()));
     }
 
-    // Placeholder method - replace with actual logic to fetch student ID
     private Long getStudentIdFromUsername(String username) {
-        // Example: Query your User table or service to get the student ID
-        // For now, returning a static value
-        return 1L; // Replace with real implementation
+        // Replace with actual logic to fetch student ID from your User entity/service
+        return 1L; // Placeholder
+    }
+
+    private String determineSkillLevel(int score, int totalMarks) {
+        double percentage = (double) score / totalMarks * 100;
+        if (percentage >= 70 && percentage <= 100) return "Expert";
+        else if (percentage >= 60 && percentage < 70) return "Advanced";
+        else if (percentage >= 50 && percentage < 60) return "Intermediate";
+        else if (percentage >= 40 && percentage < 50) return "Beginner";
+        else if (percentage >= 0 && percentage < 40) return "Novice";
+        else return "Invalid"; // Shouldn't happen with valid input
     }
 }
 
-// DTO for incoming submission request
+// DTOs remain unchanged
 class SubmissionRequest {
     private Long testId;
     private Map<Long, String> answers;
@@ -60,7 +106,6 @@ class SubmissionRequest {
     public void setTotalMarks(int totalMarks) { this.totalMarks = totalMarks; }
 }
 
-// DTO for outgoing submission response
 class SubmissionResponse {
     private int score;
     private int totalMarks;

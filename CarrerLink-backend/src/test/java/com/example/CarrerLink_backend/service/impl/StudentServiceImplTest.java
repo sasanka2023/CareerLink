@@ -53,7 +53,7 @@ class StudentServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        student = new Student();
+        student = new Student(studentId);
         student.setStudentId(1);
         student.setFirstName("sasanka");
         student.setLastName("gayathra");
