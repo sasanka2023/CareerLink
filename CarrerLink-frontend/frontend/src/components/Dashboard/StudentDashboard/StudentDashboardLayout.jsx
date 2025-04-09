@@ -201,17 +201,17 @@ function StudentDashboardLayout({ children, StudentName, profileImage }) {
             )}
           </nav>
           <div className="p-4 border-t border-gray-200 space-y-1">
-            <Link
-              to="/student-dashboard/settings"
-              className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg transition-colors ${
-                isActive("/student-dashboard/settings")
-                  ? "bg-indigo-50 text-indigo-600"
-                  : "text-gray-700 hover:bg-gray-50"
-              }`}
-            >
-              <Settings className="h-5 w-5" />
-              <span>Settings</span>
-            </Link>
+            {/*<Link*/}
+            {/*  to="/student-dashboard/settings"*/}
+            {/*  className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg transition-colors ${*/}
+            {/*    isActive("/student-dashboard/settings")*/}
+            {/*      ? "bg-indigo-50 text-indigo-600"*/}
+            {/*      : "text-gray-700 hover:bg-gray-50"*/}
+            {/*  }`}*/}
+            {/*>*/}
+            {/*  <Settings className="h-5 w-5" />*/}
+            {/*  <span>Settings</span>*/}
+            {/*</Link>*/}
             <button
               className="w-full flex items-center space-x-2 px-4 py-2.5 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               onClick={handleLogout}
@@ -231,15 +231,15 @@ function StudentDashboardLayout({ children, StudentName, profileImage }) {
           </h1>
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <button
-                className="p-2 text-gray-600 hover:bg-gray-100 rounded-full"
-                onClick={() => setShowNotifications(!showNotifications)}
-              >
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-                )}
-              </button>
+              {/*<button*/}
+              {/*  className="p-2 text-gray-600 hover:bg-gray-100 rounded-full"*/}
+              {/*  onClick={() => setShowNotifications(!showNotifications)}*/}
+              {/*>*/}
+              {/*  <Bell className="h-5 w-5" />*/}
+              {/*  {unreadCount > 0 && (*/}
+              {/*    <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>*/}
+              {/*  )}*/}
+              {/*</button>*/}
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4 max-h-60 overflow-y-auto">
                   {notifications.length === 0 ? (
