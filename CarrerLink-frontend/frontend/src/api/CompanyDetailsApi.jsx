@@ -48,4 +48,26 @@ const updateCompany = async (formData) => {
     );
 };
 
-export {  getCompanyDetailsByUsername,updateCompany };
+
+// Add this to your CompanyDetailsGetApi.js
+const getAllCompanies = async () => {
+    try {
+        const response = await axiosInstance.get('/companies');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching companies:', error);
+        throw error;
+    }
+};
+
+// Add this to your CompanyDetailsGetApi.js
+const approveCompany = async (companyId) => {
+    try {
+        const response = await axiosInstance.put(`/admin/approve/company/${companyId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error approving company:', error);
+        throw error;
+    }
+};
+export {  getCompanyDetailsByUsername,updateCompany,getAllCompanies,approveCompany };

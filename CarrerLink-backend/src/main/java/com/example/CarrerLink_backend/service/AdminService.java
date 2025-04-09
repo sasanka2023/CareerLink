@@ -37,4 +37,6 @@ public interface AdminService {
 
 
     List<RequireCoursesDTO> getAllCourses( String requiredSkill, String skillLevel);
+
+    String approveCompany(int id);
 }

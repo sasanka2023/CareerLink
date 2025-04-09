@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 
 @AllArgsConstructor
@@ -14,7 +16,11 @@ public class JobApproveResponseDTO {
 
 
     private int id;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate interviewDate;  // Store interview date
+
+    @JsonFormat(
+            pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX",
+            timezone = "UTC"
+    )
+    private OffsetDateTime  interviewDate;  // Store interview date
     private Boolean status;
 }

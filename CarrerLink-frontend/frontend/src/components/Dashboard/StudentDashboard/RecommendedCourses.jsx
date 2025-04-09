@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "../StudentDashboard/StudentDashboardLayout";
 import { AuthContext } from "../../../api/AuthProvider";
-import { getRecommendedCourses } from "../../../api/StudentDetailsApi";
+import { getRecommendedCourses,getStudentByUsername } from "../../../api/StudentDetailsApi";
 import CourseCard from "../../Cards/CourseCard";
 import { AlertTriangle, Info } from "lucide-react";
 
@@ -29,20 +29,32 @@ const RecommendedCourses = () => {
       try {
         if (!token) throw new Error("No authentication token found");
 
-        const studentId = extractUserIdFromToken(token);
-        if (!studentId)
-          throw new Error("Failed to extract student ID from token");
+        const userId = extractUserIdFromToken(token);
+        if (!userId) throw new Error("Failed to extract user ID from token");
 
-        const response = await getRecommendedCourses(token, studentId);
+        // First get the studentId using userId
+        const studentResponse = await getStudentByUsername(userId);
+        if (!studentResponse.success || !studentResponse.data?.studentId) {
+          throw new Error(
+              "Student profile not found. Please complete your profile."
+          );
+        }
+        const studentId = studentResponse.data.studentId;
+        const response = await getRecommendedCourses(studentId);
         if (response.success) {
-          setCourses(response.data);
+          setCourses(response.data || []);
         } else {
           throw new Error(
-            response.message || "Failed to load course recommendations"
+              response.message || "Failed to load course recommendations"
           );
         }
       } catch (error) {
-        setError(error.message);
+        let errorMessage = error.message;
+        if (error.message.includes("profile not found")) {
+          errorMessage =
+              "Please complete your student profile to get recommendations.";
+        }
+        setError(errorMessage);
         console.error("Recommendations error:", error);
       } finally {
         setLoading(false);

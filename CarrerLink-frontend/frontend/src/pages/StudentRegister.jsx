@@ -605,9 +605,15 @@ const StudentRegister = () => {
                                             >
                                                 <option value="">Result</option>
                                                 <option value="A">A</option>
+                                                <option value="A-">A-</option>
                                                 <option value="B">B</option>
                                                 <option value="C">C</option>
+
                                                 <option value="F">F</option>
+
+                                                <option value="D+">D+</option>
+                                                <option value="E">E</option>
+
                                             </select>
                                             <button
                                                 type="button"
