@@ -1,6 +1,7 @@
 package com.example.CarrerLink_backend.repo;
 
 import com.example.CarrerLink_backend.entity.Company;
+import com.example.CarrerLink_backend.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findByName(String name);
 
     Optional<Company> findByUser_Id(int userId);
+
+
+    Optional<Company> findByUser(UserEntity user);
 
 
 

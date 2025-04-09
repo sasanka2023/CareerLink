@@ -6,6 +6,15 @@ const LoginApi = async (formData) => {
       username: formData.username,
       password: formData.password,
     });
+
+    //-------------------------------------------------
+      if (response.data.message === "Company account not approved") {
+          return {
+              token: null,
+              message: "Your company account is pending admin approval"
+          };
+      }
+//-------------------------------------------
       const token = response.data.token;
       localStorage.setItem('token', token);
     console.log(response);

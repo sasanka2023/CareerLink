@@ -13,7 +13,7 @@ import {
 import { AuthContext } from "../../../api/AuthProvider";
 import {useNavigate} from "react-router-dom";
 
-
+import { Building } from 'lucide-react';
 const Sidebar = ({ activeTab, setActiveTab, userRole }) => {
 
 
@@ -112,6 +112,18 @@ const Sidebar = ({ activeTab, setActiveTab, userRole }) => {
                         <Calendar size={20} className="mr-3"/>
                         <span className="font-medium">Test Schedule</span>
                         {activeTab === 'tests' && <ChevronRight className="ml-auto" size={18}/>}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('companies')}
+                        className={`flex items-center w-full p-3 rounded-xl transition-all ${
+                            activeTab === 'companies'
+                                ? 'bg-indigo-50 text-indigo-600'
+                                : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                    >
+                        <Building size={20} className="mr-3"/>
+                        <span className="font-medium">Companies</span>
+                        {activeTab === 'companies' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     {userRole === "ROLE_SUPERADMIN" && (<button
                             onClick={() => setActiveTab('adminlist')}
