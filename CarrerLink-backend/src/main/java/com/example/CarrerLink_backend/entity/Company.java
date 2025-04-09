@@ -65,6 +65,8 @@ public class Company {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    private boolean status;
+
 
 
 }

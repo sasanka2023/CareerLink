@@ -168,4 +168,11 @@ public class AdminController {
         return ResponseEntity.ok(new StandardResponse(true, "Job Field student counts", counts));
     }
 
+    @PutMapping("approve/company/{id}")
+    public ResponseEntity<StandardResponse> approveCompany(@PathVariable int id) {
+        String message = adminService.approveCompany(id);
+        return ResponseEntity.ok(new StandardResponse(true, "Company approved successfully", message));
+
+    }
+
 }

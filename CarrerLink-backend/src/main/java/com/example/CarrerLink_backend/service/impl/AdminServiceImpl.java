@@ -34,7 +34,7 @@ public class AdminServiceImpl implements AdminService {
     private final AdminRepo adminRepo;
     private final UserRepo userRepo;
     private final EmailService emailService;
-
+    private final CompanyRepository companyRepository;
     @Override
     public String saveTechnology(TechnologyDTO technologyDTO) {
         Technology technology = modelMapper.map(technologyDTO, Technology.class);
@@ -218,6 +218,13 @@ public class AdminServiceImpl implements AdminService {
         return modelMapper.map(courses, new TypeToken<List<RequireCoursesDTO>>(){}.getType());
     }
 
+    @Override
+    public String approveCompany(int id) {
+        Company company = companyRepository.findById((long) id).orElseThrow(() -> new RuntimeException("Company not found"));
+        company.setStatus(true);
+        companyRepository.save(company);
+        return "Company "+company.getName()+" approved successfully";
+    }
 
 
 }

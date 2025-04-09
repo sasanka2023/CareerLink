@@ -9,7 +9,7 @@ import { saveTechnology, saveJobField } from '../../../api/AdminDetailsApi';
 import { AuthContext } from '../../../api/AuthProvider';
 import AdminList from "./AdminList";
 import Course from './Course';
-
+import CompanyList from './CompanyList';
 import TestManager from './TestManager';
 
 import TechnologyManagement from './TechnologyManagement';
@@ -293,7 +293,7 @@ const AdminDashboard = () => {
                     {activeTab === 'cvs' && <StudentList/>}
                     {activeTab === 'tests' && <TestManager initialTests={tests} />}
                     {activeTab === 'Courses' && <Course />}
-
+                    {activeTab === 'companies' && <CompanyList />}
                     {userRole === "ROLE_SUPERADMIN" && activeTab === "adminlist" && <AdminList />}
                 </main>
             </div>

@@ -8,6 +8,7 @@ import com.example.CarrerLink_backend.dto.request.RegisterRequestDTO;
 import com.example.CarrerLink_backend.dto.request.StudentSaveRequestDTO;
 import com.example.CarrerLink_backend.dto.response.LoginResponseDTO;
 import com.example.CarrerLink_backend.dto.response.RegisterResponseDTO;
+import com.example.CarrerLink_backend.entity.Company;
 import com.example.CarrerLink_backend.entity.Role;
 import com.example.CarrerLink_backend.entity.RolesEntity;
 import com.example.CarrerLink_backend.entity.UserEntity;
@@ -65,6 +66,17 @@ public class AuthService {
 
         UserEntity user = userRepo.findByUsername(loginRequestDTO.getUsername());
 
+        //--------------------------------------------------------------------
+        if (user.getRole().equals("ROLE_COMPANY")) {
+            Company company = companyService.findByUser(user);
+            if (company == null) {
+                return new LoginResponseDTO(null,null,"Company profile not found","error",null);
+            }
+            if (!company.isStatus()) {
+                return new LoginResponseDTO(null,null,"Company account not approved","error",null);
+            }
+        }
+//-------------------------------------------------------------
 
         Map<String,Object> claims = new HashMap<String,Object>();
         claims.put("role",user.getRole());
