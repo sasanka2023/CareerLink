@@ -60,7 +60,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final StudentRepo studentRepo;
     private final AmazonS3 amazonS3;
     private final  FileServiceImpl fileService;
-
+    private final EmailService emailService;
 
 //    private  ApplicationEventPublisher eventPublisher;
 //    private  SimpMessagingTemplate messagingTemplate;
