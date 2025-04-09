@@ -8,6 +8,7 @@ import {
     LogOut,
     ChevronRight,
     FilePen,
+    ContactRound,
 } from 'lucide-react';
 import { AuthContext } from "../../../api/AuthProvider";
 import {useNavigate} from "react-router-dom";
@@ -39,6 +40,18 @@ const Sidebar = ({ activeTab, setActiveTab, userRole }) => {
                         <LayoutDashboard size={20} className="mr-3"/>
                         <span className="font-medium">Dashboard</span>
                         {activeTab === 'dashboard' && <ChevronRight className="ml-auto" size={18}/>}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('students')}
+                        className={`flex items-center w-full p-3 rounded-xl transition-all ${
+                            activeTab === 'students'
+                                ? 'bg-indigo-50 text-indigo-600'
+                                : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                    >
+                        <ContactRound size={20} className="mr-3"/>
+                        <span className="font-medium">Students</span>
+                        {activeTab === 'students' && <ChevronRight className="ml-auto" size={18}/>}
                     </button>
                     <button
                         onClick={() => setActiveTab('technologies')}

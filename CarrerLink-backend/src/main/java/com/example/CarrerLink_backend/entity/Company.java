@@ -65,7 +65,16 @@ public class Company {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+<<<<<<< HEAD
     private boolean status;
+=======
+    @Column(name = "company_img_url")
+    private String companyPicUrl;
+
+    @Column(name = "cover_img_url")
+    private String coverPicUrl;
+
+>>>>>>> 6ed614601bd6fff1a0b3abc7d6d268ce15347e16
 
 
 

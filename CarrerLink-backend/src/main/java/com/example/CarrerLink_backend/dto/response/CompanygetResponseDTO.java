@@ -32,6 +32,7 @@ public class CompanygetResponseDTO {
     private List<TechnologyDTO> technologies;
     private List<ReviewDTO> reviews;
     private List<ProductDTO> products;
-
+    private String companyPicUrl;
+    private String coverPicUrl;
 }
 
